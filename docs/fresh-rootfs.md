@@ -111,3 +111,18 @@ Für Profil B ohne aktiv konfigurierte Schnittstelle auf radio0 fordert der GPU-
 Startdienst kein aktives Funknetz mehr. LAN/SSH, Abschluss des WLAN-Workers und
 Versorgungsprüfungen bleiben erhalten. Die Konfigurationslogik ist mit sechs
 Fällen getestet; Hardwareprüfung dieser optionalen Konfiguration steht aus.
+
+### Image-Datei: direkter Schreib-/Lesevergleich
+
+Bei einem lokalen Zusammenbau am 09.09.2026 wich die zusammengesetzte Image-Datei
+an einem Byte innerhalb von `luci.so` vom geprüften ext4 ab. Die extrahierte Datei
+im ext4 und die frisch installierte APK-Datei hatten weiterhin gleiche Prüfsummen.
+Eine zweite, zunächst gemeldete Abweichung im freien Bereich war in drei direkten
+Leseversuchen nicht vorhanden. Die Ursache ist offen; der Fehler wurde nicht als
+Kernel- oder SSD-Defekt eingeordnet. Das fehlerhafte Image wurde nicht freigegeben.
+
+Der Zusammensetzer verwendet jetzt `direct_image_io.py`: ausschließlich reguläre,
+alignierte Dateien, O_DIRECT beim Lesen/Schreiben, exclusive neue Zieldatei,
+Quellprüfsummen vor/während/nach dem Kopieren und zwei vollständige direkte
+Ziel-Lesungen. Ein Fehler liefert keinen Erfolgsbericht und kein Upgrade-Artefakt.
+Das ist eine Integritätsprüfung, kein Nachweis einer behobenen Hardwareursache.

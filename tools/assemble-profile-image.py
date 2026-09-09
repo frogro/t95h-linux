@@ -2,6 +2,7 @@
 """Assemble a fresh FAT/ext4 SD image with an explicitly locked tested boot prefix."""
 import argparse,hashlib,importlib.util,json,os,shutil,subprocess
 from pathlib import Path
+from direct_image_io import concatenate
 ROOT=Path(__file__).resolve().parents[1];M=1048576
 
 def sha(p):
@@ -65,14 +66,13 @@ def main():
   for name in ['Image','t95h.dtb','boot.scr','boot.scm']:
    dest=output/('fat-readback-'+name);run([host/'mcopy','-i',fat,'::/boot/'+name,dest])
    if sha(dest)!=sha(boot/name):raise ValueError('FAT readback differs: '+name)
- image=output/'t95h-base.img';digest=hashlib.sha256()
- with image.open('xb') as dst:
-  for src in [prefix,fat,fs]:
-   with src.open('rb') as stream:
-    while data:=stream.read(M):
-     digest.update(data);dst.write(data)
-  dst.flush();os.fsync(dst.fileno());os.posix_fadvise(dst.fileno(),0,0,os.POSIX_FADV_DONTNEED)
- if image.stat().st_size!=2000*M or sha(image)!=digest.hexdigest():raise ValueError('Image readback differs')
- report={'image':image.name,'sha256':sha(image),'bytes':image.stat().st_size,'profile':proof['profile'],'openwrt':proof['openwrt'],'console':a.console,'boot_prefix_sha256':sha(prefix),'rootfs_sha256':sha(fs),'fat_sha256':sha(fat),'rootfs_payload_readback_verified':True,'fat_payload_readback_verified':True,'hardware_tested':False,'sysupgrade_pair_ready':False}
+ image=output/'t95h-base.img'
+ try:
+  direct=concatenate([prefix,fat,fs],image)
+ except Exception as error:
+  (output/'image-failure.json').write_text(json.dumps({'stage':'direct-image-assembly','error':str(error)})+'\n')
+  raise
+ if image.stat().st_size!=2000*M:raise ValueError('Image size differs')
+ report={'image':image.name,'sha256':direct['sha256'],'direct_readback_count':direct['direct_readback_count'],'bytes':image.stat().st_size,'profile':proof['profile'],'openwrt':proof['openwrt'],'console':a.console,'boot_prefix_sha256':direct['source_sha256'][str(prefix)],'rootfs_sha256':direct['source_sha256'][str(fs)],'fat_sha256':direct['source_sha256'][str(fat)],'rootfs_payload_readback_verified':True,'fat_payload_readback_verified':True,'hardware_tested':False,'sysupgrade_pair_ready':False}
  (output/'image-report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 if __name__=='__main__':main()
