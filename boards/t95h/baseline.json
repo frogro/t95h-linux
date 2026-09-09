@@ -26,11 +26,10 @@
     "incremental_patch": "kernel/incremental/0001-xradio-fix-32bit-read-lengths.patch",
     "incremental_patch_sha256": "92fac98cae2975413a29c80f3920ccd056018343f8cd08c90e29b92b4c6869a0"
   },
-  "full_image_build_ready": false,
+  "full_image_build_ready": true,
   "remaining": [
-    "Lock and supply boot-chain sources, toolchain, firmware and licenses",
-    "Validate optional AP-disabled startup dependencies",
-    "Connect fresh kernel APK, OpenWrt rootfs and image assembly in Actions",
-    "Build and verify install/sysupgrade pair for selected profile"
+    "Complete a clean Actions hardware-profile build and verify both artifacts",
+    "Public source recipe/license inventory for binary bootchain/toolchain/firmware inputs",
+    "Documented hardware limitations; no additional tests requested"
   ]
 }

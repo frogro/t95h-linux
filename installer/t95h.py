@@ -27,12 +27,12 @@ elif a.command=='prepare':
  run([sys.executable,str(ROOT/'tools/check-repository.py')],check=True)
  run([sys.executable,str(ROOT/'tools/resolve-stable-versions.py'),'--profile',a.profile,'--console',a.console,'--output',str(a.output)],check=True)
 elif a.command=='dispatch':
- run(['gh','workflow','run','prepare-openwrt.yml','--repo',a.repo,'--ref','main','-f','profile='+a.profile,'-f','console='+a.console],check=True)
- print('Vorbereitung gestartet. Dieser Workflow erzeugt noch kein Image. Status mit: python3 installer/t95h.py status')
+ run(['gh','workflow','run','build-openwrt.yml','--repo',a.repo,'--ref','main','-f','profile='+a.profile,'-f','console='+a.console],check=True)
+ print('Vollständiger Build gestartet: Installationsimage und Sysupgrade. Status mit: python3 installer/t95h.py status')
 elif a.command=='status':
- run(['gh','run','list','--repo',a.repo,'--workflow','prepare-openwrt.yml','--limit','5'],check=True)
+ run(['gh','run','list','--repo',a.repo,'--workflow','build-openwrt.yml','--limit','5'],check=True)
 else:
  if not a.run_id:p.error('--run-id is required for download')
  destination=ROOT/'build'/'actions'/str(a.run_id)
- run(['gh','run','download',str(a.run_id),'--repo',a.repo,'--name','t95h-build-preparation','--dir',str(destination)],check=True)
- print('Vorbereitungsberichte:',destination)
+ run(['gh','run','download',str(a.run_id),'--repo',a.repo,'--name','t95h-'+a.profile+'-'+a.console+'-install-sysupgrade','--dir',str(destination)],check=True)
+ print('Installationsimage, Sysupgrade und Prüfberichte:',destination)

@@ -1,62 +1,53 @@
-# t95h-linux (Entwurf)
+# T95H Linux / OpenWrt
 
-Ein gemeinsamer Board-Unterbau für die T95H/H616, getrennte Buildrezepte für OpenWrt und später gegebenenfalls LibreELEC oder DietPi.
+Privates experimentelles Build-Projekt für die T95H mit H616. Linux 7.2.3,
+Board-Patches und die getestete Bootkette bleiben festgelegt. Jeder neue Auftrag
+ermittelt die aktuelle stabile OpenWrt-Version einmal und baut genau ein Profil.
+Kein A/B-Vergleichsbuild und keine automatischen Hardwaretests.
 
-Der Installer soll OS und unterstützte Variante auswählen, einen GitHub-Actions-Workflow starten und das neu erzeugte Image samt Prüfsumme abrufen. Bei OpenWrt wird vor jedem neuen Auftrag die aktuelle stabile Veröffentlichung ermittelt und anschließend als konkrete Version mit unveränderlichen Eingangsprüfsummen gesperrt. Zwei Builds desselben Auftrags nutzen denselben Lock; ein späterer Auftrag darf eine neue Stable-Version verwenden.
+## Vollständiger Build vom ThinkPad
 
-Gemeinsam: geprüfter BROM/TOC0/SPL/TF-A/U-Boot-Unterbau, Boarddaten und getestete Hardware-Patches. Pro OS: Kernelkompatibilität, Rootfs, Bootargumente, init, Paketquellen und Tests. Die erfolgreiche OpenWrt-Kombination belegt nicht automatisch LibreELEC oder DietPi; insbesondere Multimedia benötigt eigene Validierung.
-
-GitHub-Vorbereitung: Quellprüfung und Stable-Auflösung sind implementiert; ein vollständiger Image-Build und Flash-Installer fehlen noch. Vorrang hat der lokale OpenWrt-Kandidat im übergeordneten Projekt. Private SSH-/Signierschlüssel und Images werden nicht ins spätere Quellrepository aufgenommen.
-
-## Implementierter lokaler Verpackungsschritt
-
-`tools/package-openwrt-upgrade.py` erzeugt aus einem bereits geprüften T95H-FAT-Image ein übereinstimmendes Installationsimage und Sysupgrade-Paket. `tools/test-openwrt-upgrade.py` prüft auf lokalen Dateien; `tools/prepare-openwrt-upgrade-test.py` überträgt zur Box und führt ausschließlich die Vorprüfung `sysupgrade -T` aus. `.github/workflows/package-openwrt.yml` ist die wiederverwendbare CI-Verpackungsstufe, noch kein kompletter Betriebssystem-Build.
-
-`tools/resolve-stable-versions.py` liest die offiziellen Stable-Versionen. Anforderungen an Board-Patches, wählbare Treiber-/Multimedia-Profile und den vollständigen Build-Lock stehen in `docs/release-contract.md`.
-
-## Stand 2026-09-09: konservative Grundlage
-
-`boards/t95h/baseline.json` hält die Auswahl fest: Linux 7.2.3 bleibt gepinnt,
-OpenWrt wird pro Auftrag neu auf stable aufgelöst. Basis+A+B ist vorausgewählt;
-Basis, Basis+A und Basis+B sind ebenfalls für die Vorbereitung wählbar.
-Es gibt vorerst keinen zweiten A/B-Vergleichsbuild.
-
-WLAN: konsolidierter xradio-Quellstand plus vier isolierte u32-Leselängenkorrekturen.
-Der Regressionstest prüft die echten Funktionen aus dem gesperrten Quellpatch.
-Keine Übernahme der experimentellen 40-mA-/PG10-/1-Bit-/Firmware-.65-Änderungen.
-SDIO-Datenfehler sind weiterhin ungelöst; diese Auswahl ist keine Stabilitätsfreigabe.
-
-### Vom ThinkPad
+Im Repository ausführen:
 
 ```sh
 python3 installer/t95h.py dispatch --profile base-A-B --console dual
 python3 installer/t95h.py status
-python3 installer/t95h.py download --run-id RUN_ID
+python3 installer/t95h.py download --run-id RUN_ID --profile base-A-B --console dual
 ```
 
-Dies startet aktuell nur Quellprüfung und Release-Auflösung in Actions und lädt
-Vorbereitungsberichte herunter. Es erstellt noch KEIN Image. Der separate
-wiederverwendbare Verpackungsworkflow erstellt aus einem gesperrten Basisimage
-Installationsimage und Sysupgrade in einem Durchlauf.
+`dispatch` startet **Build T95H install image and sysupgrade**. Der Workflow lädt
+prüfsummengesperrte Eingaben, kompiliert Kernel und passende Module, installiert
+frische OpenWrt-Pakete und erzeugt Installationsimage und Sysupgrade samt
+Prüfsummen und Prüfberichten. Er flasht kein Gerät und veröffentlicht keine
+Hardware-Stabilitätsfreigabe. Ein erfolgreicher kompletter Actions-Lauf ist der
+Nachweis der CI-Build-Kette; reine Vorbereitungs-Checks sind kein Image-Build.
 
-Noch zu ersetzen: die lokale Abhängigkeit von einem Vorgängerimage. Bootquellen,
-Toolchain, Firmware/Lizenzen, Profil-DTS, Dienste und OpenWrt-Pakete müssen zu einem
-vollständigen eigenständigen Build verbunden werden. Widersprüchlich gelesene alte
-Artefakte werden nicht als Release-Ausgangsbasis hochgeladen.
+Profile: `base`, `base-A`, `base-B`, `base-A-B`. Basis enthält HDMI-Konsole und
+Audio, Ethernet, internes WLAN, IR und Frontdisplay. A ergänzt die ausgewählten
+USB-Netzwerk-/Modemtreiber; B GPU/Multimedia einschließlich Cedrus/UVC.
+PCIe, MHI und NVMe bleiben ausgeschlossen. Konsolen: `dual`, `hdmi`, `uart`.
+Die konkreten Pakete/Module stehen in den Artefakt-Manifesten.
+
+Der lokale Einstieg zur gleichen Kette ist `tools/build-openwrt-release.py`.
+Die getrennten Vorbereitungs- und Quellprüfungsworkflows bleiben verfügbar.
+[Build-Eingaben, Signierung und Grenzen](docs/actions-build.md).
 
 ## Standardzugang
 
 AP **openwrt**, WLAN-Passwort **openwrtopenwrt**; SSH/LuCI **root / openwrt**.
-WLAN-Adresse **192.168.50.1**, Ethernet per DHCP. Diese öffentlichen Standards
-gehören zur Erstinstallation. Eigene Zugangsdaten lassen sich mit
-`python3 installer/t95h.py access` lokal vorbereiten.
-[Zugangsregeln und Implementierungsstand](docs/default-access.md).
+WLAN-Adresse **192.168.50.1**, Ethernet per DHCP. Nach Installation ändern.
+`python3 installer/t95h.py access` bereitet eigene Zugangsdaten lokal vor;
+es überträgt diese nicht automatisch als GitHub-Build-Eingabe.
+[Zugangsregeln](docs/default-access.md).
 
-Die [frische Paketstufe](docs/fresh-rootfs.md) installiert die gewählten Pakete
-in einen leeren Ordner. Der erste lokale Basis+A+B-Test mit 252 Paketen ist
-bestanden; Postinstall und vollständige Image-Erzeugung sind noch anzubinden.
+## Dokumentierte Hardwarepunkte
 
-Der separate Workflow **Verify pinned T95H kernel source** lädt das gesperrte
-Linux-Archiv von kernel.org, prüft SHA256 und spielt die Patches einmal in einen
-frischen Baum ein. Er lädt nur den Prüfbericht hoch, keinen Quellbaum und keine
-privaten Dateien. Auch dieser Schritt kompiliert noch keinen Kernel.
+SD-Start: eine Sekunde Wartezeit und bis zu drei MMC-Rescan-/Ladeversuche im
+Bootskript; bisher zwei erfolgreiche Kaltstarts auf den ersten Versuch gemeldet.
+Keine gezielte Stromschaltung, keine Bootmarker und kein Beweis vollständiger
+Kaltstartzuverlässigkeit. Das Skript hilft erst, nachdem es geladen wurde.
+WLAN: konsolidierter xradio-Stand mit vier u32-Leselängenkorrekturen und Firmware
+.58; gelegentliche SDIO-Datenfehler/missed interrupts bleiben dokumentiert.
+GPU-Initialisierung und Audio-Hardwarevalidierung bleiben ebenfalls offene
+Punkte. Weitere Hör-, Belastungs- oder Hardwaretests sind derzeit nicht Teil
+dieses Auftrags. Andere Linux-Distributionen werden später konkret angepasst.

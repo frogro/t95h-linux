@@ -45,7 +45,7 @@ def check():
             assert (b'-----BEGIN '+b'OPENSSH PRIVATE KEY-----') not in raw, name
             assert (b'-----BEGIN '+b'RSA PRIVATE KEY-----') not in raw, name
     return {'repository_checks_passed':True,'baseline':baseline['id'],
-            'profiles':baseline['profiles'],'full_image_build_ready':False,
+            'profiles':baseline['profiles'],'full_image_build_ready':baseline['full_image_build_ready'],
             'hardware_validation':'not implied by repository checks'}
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path);a=p.parse_args()

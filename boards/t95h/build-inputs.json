@@ -1,0 +1,11 @@
+{
+  "repository": "frogro/t95h-linux",
+  "tag": "build-inputs-v1",
+  "asset": "t95h-locked-inputs-v1.tar.gz",
+  "sha256": "268e2e64b9b8fd8f0c72e1b0cb71dd740ee7c58ca72d4fbd0a35ce999595752c",
+  "bytes": 140344138,
+  "toolchain": "aarch64_cortex-a53_gcc-14.4.0_musl",
+  "epoch": 1782734400,
+  "boot_prefix_sha256": "d8fe417be041dd9cd7e1677fed52414fb81f066656a447c2367d9b0fcbc94b75",
+  "provenance": "Allowlisted tested boot prefix, compiler toolchain and locked firmware only; no device backup or private signing key. Private build dependency, not a public source-complete release."
+}

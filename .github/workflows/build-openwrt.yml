@@ -1,0 +1,84 @@
+name: Build T95H install image and sysupgrade
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Hardware profile
+        type: choice
+        options: [base, base-A, base-B, base-A-B]
+        default: base-A-B
+      console:
+        description: Boot console
+        type: choice
+        options: [dual, hdmi, uart]
+        default: dual
+permissions:
+  contents: read
+concurrency:
+  group: t95h-build-${{ inputs.profile }}-${{ inputs.console }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential bc bison flex libssl-dev libelf-dev libncurses-dev device-tree-compiler python3-libfdt kmod rsync cpio xz-utils zstd unzip file gawk gettext swig python3-dev e2fsprogs dosfstools mtools fakeroot busybox qemu-user-static
+      - name: Check sources, profiles and boot retry
+        run: |
+          python3 tools/check-repository.py
+          python3 -m unittest discover -s tests -v
+      - name: Resolve stable OpenWrt once
+        env:
+          PROFILE: ${{ inputs.profile }}
+          CONSOLE: ${{ inputs.console }}
+        run: python3 tools/resolve-stable-versions.py --profile "$PROFILE" --console "$CONSOLE" --output build/request.json
+      - name: Fetch locked private build dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          p=json.loads(Path('boards/t95h/build-inputs.json').read_text())
+          subprocess.run(['gh','release','download',p['tag'],'--repo',p['repository'],'--pattern',p['asset'],'--dir','build/dependencies'],check=True)
+          PY
+      - name: Install repository signing key temporarily
+        env:
+          T95H_APK_SIGNING_KEY: ${{ secrets.T95H_APK_SIGNING_KEY }}
+        run: |
+          test -n "$T95H_APK_SIGNING_KEY"
+          umask 077
+          printf '%s\n' "$T95H_APK_SIGNING_KEY" > "$RUNNER_TEMP/t95h-sign.pem"
+      - name: Compile selected profile and build verified image pair
+        run: |
+          python3 tools/build-openwrt-release.py --request build/request.json --inputs build/dependencies/t95h-locked-inputs-v1.tar.gz --sign-key "$RUNNER_TEMP/t95h-sign.pem" --output build/full --jobs 2 --revision "$((1000 + GITHUB_RUN_NUMBER))"
+      - name: Remove temporary private key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/t95h-sign.pem"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-${{ inputs.profile }}-${{ inputs.console }}-install-sysupgrade
+          path: |
+            build/full/release/*-install.img
+            build/full/release/*-sysupgrade.bin
+            build/full/release/*.json
+            build/full/release/SHA256SUMS
+            build/full/release/RELEASE-NOTES.md
+            build/full/kernel-package/*.apk
+            build/full/keys/t95h-build.pem
+          if-no-files-found: error
+          compression-level: 1
+      - name: Preserve diagnostic build logs
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-build-failure-logs
+          path: |
+            build/request.json
+            build/full/**/*.log
+            build/full/kernel/build-status.json
+          if-no-files-found: ignore
