@@ -28,7 +28,7 @@ elif a.command=='prepare':
  run([sys.executable,str(ROOT/'tools/resolve-stable-versions.py'),'--profile',a.profile,'--console',a.console,'--output',str(a.output)],check=True)
 elif a.command=='dispatch':
  run(['gh','workflow','run','prepare-openwrt.yml','--repo',a.repo,'--ref','main','-f','profile='+a.profile,'-f','console='+a.console],check=True)
- print('Vorbereitung gestartet. Dieser Workflow erzeugt noch kein Image. Status mit: t95h.py status')
+ print('Vorbereitung gestartet. Dieser Workflow erzeugt noch kein Image. Status mit: python3 installer/t95h.py status')
 elif a.command=='status':
  run(['gh','run','list','--repo',a.repo,'--workflow','prepare-openwrt.yml','--limit','5'],check=True)
 else:

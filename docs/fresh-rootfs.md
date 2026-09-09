@@ -65,3 +65,14 @@ Für einen vollständigen Actions-Kernelbuild fehlen deren Download-/Lizenz-Lock
 die Quellreplay-Stufe läuft bereits auf GitHub. Compiler-Identität, Compiler-SHA256,
 Konfiguration und Firmwareprüfsummen stehen im Buildbericht. Dies ersetzt noch
 keinen vollständigen Lock sämtlicher Toolchain-Bestandteile.
+
+## Externe Module pro Profil
+
+`tools/build-profile-modules.py` nimmt den abgeschlossenen Kernel-Ausgabeordner,
+identische Toolchain, Epoch und einen neuen Ausgabeordner entgegen. Vor dem
+Schreiben werden Kernel-/Konfigurations-/Compiler-Prüfsummen und gesperrte externe
+Quellen geprüft. Der Regulatortreiber wird immer, der abgeleitete ANA-Treiber nur
+für B gebaut. Alle In-Tree- und externen Module werden gemeinsam installiert;
+Modulversionen und `depmod` gehören zur Prüfung. Kernel-Quellverknüpfungen werden
+nicht in die Nutzdaten übernommen. Ergebnis ist ein Modul-Staging mit Bericht,
+noch kein APK. Der vollständige Durchlauf wartet auf den laufenden Kernelbuild.
