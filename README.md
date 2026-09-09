@@ -51,3 +51,10 @@ WLAN: konsolidierter xradio-Stand mit vier u32-Leselängenkorrekturen und Firmwa
 GPU-Initialisierung und Audio-Hardwarevalidierung bleiben ebenfalls offene
 Punkte. Weitere Hör-, Belastungs- oder Hardwaretests sind derzeit nicht Teil
 dieses Auftrags. Andere Linux-Distributionen werden später konkret angepasst.
+
+## Erfolgreicher vollständiger Actions-Lauf
+
+Der [Lauf 34363631215](https://github.com/frogro/t95h-linux/actions/runs/34363631215)
+hat Basis+A+B mit dualer Konsole vollständig gebaut. Download, Image-Prüfsummen,
+Kernel-APK-Signatur und das enthaltene SD-Rescan-Skript wurden anschließend auf
+dem ThinkPad geprüft. [Prüfnachweis](docs/actions-validation-20260909.md).

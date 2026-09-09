@@ -28,8 +28,14 @@
   },
   "full_image_build_ready": true,
   "remaining": [
-    "Complete a clean Actions hardware-profile build and verify both artifacts",
     "Public source recipe/license inventory for binary bootchain/toolchain/firmware inputs",
     "Documented hardware limitations; no additional tests requested"
-  ]
+  ],
+  "actions_validation": {
+    "run_id": 34363631215,
+    "profile": "base-A-B",
+    "console": "dual",
+    "result": "success",
+    "download_checksums_verified": true
+  }
 }
