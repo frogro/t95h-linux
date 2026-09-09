@@ -50,3 +50,18 @@ Die Rootfs-Vorbereitung ruft jetzt die eigenständige Profil-DTB-Ableitung auf
 und übernimmt USB-Autoload sowie den D-Bus-Startschutz aus der frisch installierten
 ModemManager-Version. Die abgeleitete ANA-Quelle muss weiterhin zusammen mit
 dem passenden Kernel kompiliert werden. Der Workflow prüft alle vier DT-Profile.
+
+## Einmaliger Profil-Kernelbuild
+
+`tools/build-profile-kernel.py` verbindet den verifizierten Quellaufbau mit einem
+Profil-Kconfig, expliziter Toolchain und den gesperrten eingebetteten Firmwaredateien.
+Es lehnt veränderte Quellen/Firmware ab und prüft nach `olddefconfig`, dass keine
+angeforderte y/m-Funktion verloren ging. `build-status.json` und `build.log`
+werden im neuen Ausgabeordner geführt. Es gibt keinen automatischen zweiten
+Vergleichsbuild und keine Installation auf der Box.
+
+Aktuell werden Toolchain und Firmware noch als lokale geprüfte Eingaben übergeben.
+Für einen vollständigen Actions-Kernelbuild fehlen deren Download-/Lizenz-Locks;
+die Quellreplay-Stufe läuft bereits auf GitHub. Compiler-Identität, Compiler-SHA256,
+Konfiguration und Firmwareprüfsummen stehen im Buildbericht. Dies ersetzt noch
+keinen vollständigen Lock sämtlicher Toolchain-Bestandteile.
