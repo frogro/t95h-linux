@@ -14,7 +14,7 @@ on:
         options: [dual, hdmi, uart]
         default: dual
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: t95h-build-${{ inputs.profile }}-${{ inputs.console }}
   cancel-in-progress: false
@@ -75,6 +75,14 @@ jobs:
             build/full/keys/t95h-build.pem
           if-no-files-found: error
           compression-level: 1
+      - name: Publish verified experimental release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PROFILE: ${{ inputs.profile }}
+          CONSOLE: ${{ inputs.console }}
+        run: |
+          python3 tools/publish-release.py --directory build/full/release --profile "$PROFILE" --console "$CONSOLE" --run-id "$GITHUB_RUN_ID" --attempt "$GITHUB_RUN_ATTEMPT" --commit "$GITHUB_SHA"
       - name: Preserve diagnostic build logs
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

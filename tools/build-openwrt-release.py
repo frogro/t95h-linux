@@ -47,19 +47,23 @@ def main():
  for source,name in [(a.request,'request.json'),(o/'packages/package-lock.json','package-lock.json'),(o/'kernel-package/package-report.json','kernel-package-report.json')]:shutil.copyfile(source,o/'release'/name)
  notes=f'''# T95H {request['profile']}: OpenWrt {version}, Linux {request['kernel']}
 
-Install image and matching sysupgrade from one build. Console: {request['console']}.
+SD installation image and matching SD sysupgrade from one build. Console: {request['console']}.
 Kernel and boot chain remain pinned; OpenWrt stable was resolved once for this run.
 Base includes HDMI console/audio, internal WLAN, Ethernet, IR and frontdisplay.
-Profile A adds the selected USB network/modem support; B adds GPU/media support.
+{('Profile A adds selected USB network/modem support.' if request['profile'] in ('base-A','base-A-B') else 'Additional network profile A is not selected.')}
+{('Profile B adds GPU/media support, including Cedrus/UVC.' if request['profile'] in ('base-B','base-A-B') else 'Multimedia profile B is not selected.')}
 Actual packages and firmware are recorded in package-lock.json and kernel-package-report.json.
 
 Experimental SD rescan: up to three boot payload load attempts. Two successful
 cold starts were reported after the change; general coldboot reliability is not proven.
 Known WLAN SDIO errors, GPU initialization and audio hardware validation remain
 open/documented. No new hardware, listening or stress tests are implied.
+eMMC standalone boot has separate experimental validation; this SD image pair
+is not an eMMC installation or eMMC upgrade package. The SD reset/FIFO experiment
+is not included in this release boot chain pending further validation.
 Default access: root / openwrt; AP openwrt / openwrtopenwrt. Change these credentials.
 Public source-complete redistribution of the binary boot/toolchain/firmware inputs
-requires the remaining provenance/license work. This is a private test artifact.
+requires the remaining provenance/license work. This is an experimental artifact, not a source-completeness certification.
 '''
  (o/'release/RELEASE-NOTES.md').write_text(notes)
  print('PASS: selected-profile install and sysupgrade complete; hardware limitations documented',flush=True)

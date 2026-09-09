@@ -1,9 +1,74 @@
 # T95H Linux / OpenWrt
 
-Privates experimentelles Build-Projekt für die T95H mit H616. Linux 7.2.3,
+Experimentelles Build-Projekt für die T95H mit H616. Linux 7.2.3,
 Board-Patches und die getestete Bootkette bleiben festgelegt. Jeder neue Auftrag
 ermittelt die aktuelle stabile OpenWrt-Version einmal und baut genau ein Profil.
 Kein A/B-Vergleichsbuild und keine automatischen Hardwaretests.
+
+## Einstieg über installer.sh
+
+Voraussetzungen auf dem ThinkPad: `git`, `gh`, `python3` und `gh auth login`
+mit Berechtigung zum Workflow-Start. Das Repository ist öffentlich.
+Authentifizierter Download als Alternative zu wget:
+
+```sh
+gh api -H 'Accept: application/vnd.github.raw+json' repos/frogro/t95h-linux/contents/installer.sh?ref=main > installer.sh
+sh installer.sh
+```
+
+Direkter Download:
+
+```sh
+wget -O installer.sh https://raw.githubusercontent.com/frogro/t95h-linux/main/installer.sh
+sh installer.sh
+```
+
+Das Skript legt einen separaten Checkout unter `~/.local/share/t95h-installer`
+an, fragt Profil und Konsole ab und startet den vollständigen Actions-Build.
+Vorhandene lokale Änderungen werden nicht überschrieben. Es flasht kein Gerät.
+Ohne Dialog und für spätere Downloads:
+
+```sh
+sh installer.sh dispatch --profile base-A-B --console dual
+sh installer.sh status
+sh installer.sh releases
+sh installer.sh release-download --tag t95h-RUN_ID-ATTEMPT
+```
+
+Ein erfolgreicher Build veröffentlicht ein experimentelles
+Prerelease mit Installationsimage, Sysupgrade, Prüfsummen, Manifesten und diesem
+Einstiegsskript. Das Release bleibt während des Uploads als Entwurf verborgen.
+Download und Prüfsummenprüfung laufen über `gh`; ein Prerelease ist keine
+Bestätigung vollständiger Hardwarestabilität.
+
+## eMMC: Installation aus einem SD-System
+
+Eine dritte SD-Partition ist nicht erforderlich. Vorgesehen ist ein System mit
+FAT-Bootpartition und ext4-Rootpartition auf SD. Das Installationsprogramm gehört
+in dieses Root-Dateisystem und wird bewusst gestartet, niemals automatisch beim
+Einstecken oder Booten. Der ThinkPad kann den Vorgang über SSH bedienen.
+
+Die SD muss dafür **ihr eigenes Root-Dateisystem** verwenden. Eine SD, die bereits
+zur eMMC weiterleitet, ist kein Installations-/Rettungssystem zum Überschreiben
+der eMMC. Vor dem Schreiben sind Board, laufendes Root-Medium, eMMC-CID, Größe,
+freie Nutzung des Ziels und die Prüfsumme des passenden eMMC-Pakets zu prüfen.
+SD- und eMMC-Images benötigen unterschiedliche Kennungen und Bootkonfigurationen.
+Ein SD-Sysupgrade darf nicht auf eMMC angewendet werden.
+
+**Stand:** Direkter eMMC-Boot mit Reset/FIFO-Backport wurde beobachtet. Der generische
+eMMC-Release-Installer und eMMC-Sysupgrade sind noch nicht freigegeben; aktuelle
+Actions-Releases enthalten das SD-Imagepaar. Die experimentellen lokalen
+Installationsskripte sind kein Bestandteil des Download-Installers.
+
+Geplanter Ablauf im selben ThinkPad-Installer: Ziel SD/eMMC wählen, SD starten,
+Box-Adresse und Root-Passwort eingeben. Der Installer baut SSH selbst auf; eine
+manuell geöffnete SSH-Sitzung ist nicht nötig. Nach vollständig geprüfter
+Übertragung läuft der Schreibauftrag auf der Box unabhängig von der Verbindung.
+Bei Wiederverbindung wird der gespeicherte Auftragsstatus abgefragt, nicht blind
+noch einmal geschrieben. Vorher muss die Verbindung funktionieren; für diesen
+Schritt ist Ethernet mit DHCP vorgesehen. Eine Verbindungstrennung gilt weder
+als erfolgreicher Abschluss noch als Erlaubnis zum Neustart.
+[Technischer eMMC-Stand](docs/emmc-installation.md).
 
 ## Vollständiger Build vom ThinkPad
 
