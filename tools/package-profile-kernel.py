@@ -27,6 +27,11 @@ def main():
  ib=a.imagebuilder.resolve(strict=True);apk=ib/'staging_dir/host/bin/apk'
  a.sign_key.resolve(strict=True);a.keys.resolve(strict=True)
  out=a.output.resolve();out.mkdir(parents=True,exist_ok=False);root=out/'root';shutil.copytree(m/'root',root,symlinks=True)
+ # The tested WLAN worker loads this exact path directly with insmod.
+ regulators=list((root/'lib/modules').rglob('t95h_aldo2.ko'))
+ if len(regulators)!=1:raise ValueError('Regulator module missing or duplicated')
+ target=root/'lib/modules'/mp['kernel_release']/'t95h_aldo2.ko'
+ if regulators[0]!=target:shutil.move(regulators[0],target)
  # Preserve the tested late-only ANA loading path, outside modalias autoload.
  if 'B' in groups:
   paths=list(root.rglob('t95h_ana_provider.ko'))

@@ -17,13 +17,34 @@ gpu_ok() {
 }
 step=prechecks
 trap 'rc=$?; if [ "$rc" -ne 0 ]; then log "STOP: step=$step rc=$rc"; fi' EXIT
+radio_required() {
+ # Hardware supplies and the WLAN worker are checked separately below.
+ # Only demand an active radio when an enabled interface actually uses it.
+ . /lib/functions.sh
+ config_load wireless
+ config_get disabled radio0 disabled 0
+ [ "$disabled" != 1 ] || return 1
+ t95h_radio_required=0
+ t95h_check_iface() {
+  local device disabled
+  config_get device "$1" device
+  config_get disabled "$1" disabled 0
+  if [ "$device" = radio0 ] && [ "$disabled" != 1 ]; then
+   t95h_radio_required=1
+  fi
+ }
+ config_foreach t95h_check_iface wifi-iface
+ [ "$t95h_radio_required" = 1 ]
+}
 ready() {
  pidof dropbear >/dev/null 2>&1 || return 1
  [ "$(ubus -t 2 call network.interface.lan status | jsonfilter -e '@.up')" = true ] || return 1
  [ "$(cat /sys/class/net/eth0/carrier 2>/dev/null)" = 1 ] || return 1
- w=$(ubus -t 2 call network.wireless status) || return 1
- [ "$(printf '%s' "$w" | jsonfilter -e '@.radio0.up')" = true ] || return 1
- [ "$(printf '%s' "$w" | jsonfilter -e '@.radio0.pending')" = false ] || return 1
+ if radio_required; then
+  w=$(ubus -t 2 call network.wireless status) || return 1
+  [ "$(printf '%s' "$w" | jsonfilter -e '@.radio0.up')" = true ] || return 1
+  [ "$(printf '%s' "$w" | jsonfilter -e '@.radio0.pending')" = false ] || return 1
+ fi
  service=$(ubus -t 2 call service list '{"name":"t95h-wlan-late"}') || return 1
  [ "$(printf '%s' "$service" | jsonfilter -e '@["t95h-wlan-late"].instances.instance1.running')" = false ] || return 1
  [ "$(printf '%s' "$service" | jsonfilter -e '@["t95h-wlan-late"].instances.instance1.exit_code')" = 0 ] || return 1

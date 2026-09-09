@@ -1,0 +1,5 @@
+echo "T95H: loading FAT boot script"
+if load mmc 0:1 0x48000000 /boot/boot.scm; then
+    source 0x48000000
+fi
+echo "T95H: boot script failed"

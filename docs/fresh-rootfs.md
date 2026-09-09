@@ -92,3 +92,22 @@ Datenbank vorzeitig gebunden werden. Die übrigen Module verbleiben im normalen
 Modulbaum; dessen Abhängigkeiten werden anschließend neu erzeugt. Der private
 Signierschlüssel wird weder in das Paket noch ins Repo kopiert. APK-Signaturprüfung
 ist Teil der Paketstufe. Dies ersetzt nicht die ausstehende Hardwareprüfung.
+
+## Frisches Installationsimage
+
+`tools/assemble-profile-image.py` erhält das geprüfte Rootfs-Staging, den explizit
+geprüften Bootprefix, ImageBuilder, Epoch und Konsolenauswahl. Es erstellt FAT16
+(64 MiB) und ext4 (1932 MiB) neu und behält die festgelegte Partitionstabelle,
+Dateisystem-IDs und Bootkette. Die Bootskripte liegen mit Prüfsummen und lesbarem
+Text im Repo. Es werden keine alten Rootfs-Partitionen übernommen.
+
+Vor der Ausgabe werden alle regulären Rootfs-Dateien und Symlinks aus ext4 sowie
+Kernel, DTB und Skripte aus FAT ausgelesen und mit den Eingaben verglichen. Die
+Image-Datei wird nach dem Schreiben erneut vollständig gehasht. Dies ist eine
+Dateiprüfung am ThinkPad, keine Hardware-Bootfreigabe. Das bestehende Upgrade-
+Paketwerkzeug leitet anschließend das zusammengehörige Artefaktpaar daraus ab.
+
+Für Profil B ohne aktiv konfigurierte Schnittstelle auf radio0 fordert der GPU-
+Startdienst kein aktives Funknetz mehr. LAN/SSH, Abschluss des WLAN-Workers und
+Versorgungsprüfungen bleiben erhalten. Die Konfigurationslogik ist mit sechs
+Fällen getestet; Hardwareprüfung dieser optionalen Konfiguration steht aus.
