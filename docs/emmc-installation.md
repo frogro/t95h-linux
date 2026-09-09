@@ -29,23 +29,32 @@ The user observed boot on the second attempt; waiting time on the first attempt
 was uncertain. This does not prove improved SD reliability. Existing SD load
 retry behavior in the release is separate from this new experiment.
 
-## One ThinkPad installer, no third partition
+## Agreed installation SD layout and local command
 
-Use an SD with FAT boot and ext4 root. Its rootfs can hold the installation worker;
-an additional installation partition is unnecessary. It must boot its own SD
-rootfs, not chainload the eMMC rootfs that the installer would overwrite.
+Each profile is intended to offer a normal SD image and a second installation-SD
+image with an additional partition containing the matching eMMC payload and its
+verification manifest. Installation runs locally from the SD rootfs, with HDMI
+console and USB keyboard; neither SSH nor an Internet connection is required.
+The planned command is `t95h-install-emmc`, not yet shipped.
 
-The intended user flow is to choose eMMC in the ThinkPad installer, boot the SD,
-then enter the device address and root password. No manual SSH session is needed:
-the installer creates the connection. Before writing it must verify board identity,
-SD root, exact target CID/size, absence of mounted target partitions and the
-complete storage-specific payload. Erasure of Android requires an explicit choice.
+Before any target write, display:
 
-After verified transfer a detached on-device worker performs the write. The
-ThinkPad reconnects to inspect the same operation receipt; it must not restart a
-write merely because the connection dropped. Preserve selected access settings
-and generate unique device keys. Boot-code handling and partition identities must
-be explicit for eMMC. A SD sysupgrade package must be rejected on eMMC.
+> ACHTUNG: Das vorhandene Betriebssystem auf der eMMC und alle dort gespeicherten
+> Daten werden gelöscht und durch OpenWrt ersetzt.
+
+Require the exact interactive confirmation `EMMC LOESCHEN`; all other input
+cancels. Booting the card must never trigger an unattended erase. Verify board,
+SD root, target CID/size, unmounted target partitions and the full payload first.
+An SD that chainloads eMMC root is not a suitable installation environment.
+
+Preserve current SD OpenWrt root password, SSH configuration, host keys and
+administrator authorized keys, network/AP configuration and LuCI access settings.
+Do not regenerate an existing SSH identity during migration. This state is copied
+locally and never uploaded to release assets. Do not migrate Android settings.
+Storage-specific mount/UUID/boot configuration must instead be adapted for eMMC.
+Validate restored access settings before reporting installation success. A DHCP
+address is not guaranteed to stay identical. Subsequent SD and eMMC sysupgrade
+packages must have separate media checks; SD packages must be rejected on eMMC.
 
 ## Current release boundary
 
