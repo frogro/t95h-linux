@@ -1,0 +1,35 @@
+{
+  "status": "verified local tested binary lineage; standalone source recipe still required",
+  "bytes": 4194304,
+  "sha256": "d8fe417be041dd9cd7e1677fed52414fb81f066656a447c2367d9b0fcbc94b75",
+  "boot_code_after_mbr_sha256": "50de66c9575c1271729a16f819903d6452c7f0863e89ba763c2f22a11e41c276",
+  "mbr_sha256": "b35d7f03884005e675d687aa0f5e83c2dddbf9c774b27ca08a60e36b800b1e7e",
+  "partition_entries": [
+    {
+      "type": 14,
+      "start_sector": 8192,
+      "sectors": 131072
+    },
+    {
+      "type": 131,
+      "start_sector": 139264,
+      "sectors": 3956736
+    },
+    {
+      "type": 0,
+      "start_sector": 0,
+      "sectors": 0
+    },
+    {
+      "type": 0,
+      "start_sector": 0,
+      "sectors": 0
+    }
+  ],
+  "tested_reference": "outputs/cedrus-sysupgrade-v3/release-A/prefix.bin",
+  "matching_image": "outputs/cedrus-hdmi-fixed/A/t95h-openwrt-cedrus.img",
+  "code_lineage": "outputs/ana-smc-compare/A/boot-prefix.bin",
+  "lineage_sha256": "6ce48340578efcb48548b052bf329e90571dd56e74c7fa886f58006ad249306c",
+  "difference_from_lineage": "MBR only; bytes 512..4194303 identical",
+  "actions_input_available": false
+}

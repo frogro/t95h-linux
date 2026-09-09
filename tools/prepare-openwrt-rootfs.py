@@ -91,13 +91,24 @@ def main():
  for path in (root/'etc/rc.d').glob('*ustreamer'):path.unlink()
  forbidden=list(root.glob('etc/dropbear/dropbear_*_host_key'))+list(root.glob('root/.ssh/*'))
  if forbidden:raise ValueError('Unexpected device keys in fresh root')
+ evidence=json.loads((root/'usr/share/t95h/build-profile.json').read_text())
+ kernel_verified=False
+ if 'modules_sha256' in evidence:
+  if evidence['profile']!=proof['profile']:raise ValueError('Kernel package profile differs from request')
+  for path,expected in [(out/'kernel-boot/Image',evidence['kernel_sha256']),
+                        (out/'kernel-boot/t95h.dtb',evidence['dtb_sha256']),
+                        (root/'usr/share/t95h/kernel.config',evidence['config_sha256'])]:
+   if sha(path)!=expected:raise ValueError('Kernel package evidence mismatch: '+str(path))
+  modules={str(f.relative_to(root)):sha(f) for f in root.rglob('*.ko')}
+  if modules!=evidence['modules_sha256']:raise ValueError('Rootfs kernel module inventory differs from signed package')
+  kernel_verified=True
  report={'rootfs_preparation_passed':True,'bootable_image_ready':False,'previous_image_used':False,
          'profile':proof['profile'],'openwrt':proof['openwrt'],'runtime':runtime,
          'default_root_password':'documented public default initialized',
-         'kernel_source_release_validated':False,
+         'kernel_payload_validated':kernel_verified,
          'compiler_sha256':sha(compiler),
-         'remaining':['Profile DT and firmware verification','Kernel rebuild with selected source patch',
-                      'Rebuild matching external ANA provider from startup/ana','GPU startup without AP','Bootchain and image pair']}
+         'remaining':(['Kernel package provenance missing'] if not kernel_verified else [])+
+                     ['GPU startup without AP','Bootchain and image pair']}
  (out/'rootfs-report.json').write_text(json.dumps(report,indent=2)+'\n')
  print('PASS: postinstall, board services and default access prepared; image not ready.')
 if __name__=='__main__':main()

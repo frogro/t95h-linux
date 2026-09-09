@@ -12,3 +12,12 @@ SD test: scripts/test-dual-console-sd.py in the enclosing project. It saves the
 FAT partition and boot prefix, updates only boot.scm through a FAT mount, then
 remounts read-only to verify. Restoring the saved boot.scm on the FAT boot partition
 reverts the console change. Hardware validation is pending.
+
+## Tested binary lineage
+
+`tested-prefix-lock.json` records the exact 4 MiB prefix of the tested Cedrus
+image and its partition table. Bytes after the first 512-byte sector match the
+historical `ana-smc-compare/A/boot-prefix.bin` exactly; the FAT/rootfs layout only
+changed the MBR. This is verified local binary provenance, not yet a standalone
+source recipe or a downloadable Actions input. Never replace it with a different
+SPL/BL31 experiment simply because that experiment was created later.

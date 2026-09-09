@@ -5,8 +5,17 @@
   "boot_chain_policy": "retain tested chain; standalone source recipe still required",
   "openwrt_policy": "resolve stable once for each new job; no fallback",
   "default_profile": "base-A-B",
-  "profiles": ["base", "base-A", "base-B", "base-A-B"],
-  "consoles": ["dual", "hdmi", "uart"],
+  "profiles": [
+    "base",
+    "base-A",
+    "base-B",
+    "base-A-B"
+  ],
+  "consoles": [
+    "dual",
+    "hdmi",
+    "uart"
+  ],
   "comparison_build": false,
   "wlan": {
     "driver": "xradio from consolidated source lock plus isolated u32 read-size fix",
@@ -19,10 +28,9 @@
   },
   "full_image_build_ready": false,
   "remaining": [
-    "Replace local previous-image dependency with fresh OpenWrt rootfs assembly",
     "Lock and supply boot-chain sources, toolchain, firmware and licenses",
-    "Connect per-profile DTS, external modules, services and kernel package providers",
-    "Resolve selected packages against the current OpenWrt release",
+    "Validate optional AP-disabled startup dependencies",
+    "Connect fresh kernel APK, OpenWrt rootfs and image assembly in Actions",
     "Build and verify install/sysupgrade pair for selected profile"
   ]
 }

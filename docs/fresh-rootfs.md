@@ -76,3 +76,19 @@ für B gebaut. Alle In-Tree- und externen Module werden gemeinsam installiert;
 Modulversionen und `depmod` gehören zur Prüfung. Kernel-Quellverknüpfungen werden
 nicht in die Nutzdaten übernommen. Ergebnis ist ein Modul-Staging mit Bericht,
 noch kein APK. Der vollständige Durchlauf wartet auf den laufenden Kernelbuild.
+
+## Signiertes Kernelpaket
+
+Der erste konservative Basis+A+B-Kernel und alle 35 ladbaren Module wurden am
+09.09.2026 erfolgreich gebaut. `tools/package-profile-kernel.py` erzeugt daraus
+mit explizitem lokalem Signierschlüssel und öffentlichen Prüfschlüsseln ein APK.
+Es prüft die Kernel-/Modulprovenienz und übernimmt nur tatsächlich aktivierte
+Kernel-Provider. Die Firmware wird über ihre gesperrten Prüfsummen eingebunden;
+`wireless-regdb` bleibt Eigentümer der externen Regulierungsdatenbank.
+
+Der ANA-Treiber wird nach `/usr/lib/t95h-gpu` verschoben und erhält dort die vom
+späten Startdienst geprüfte Prüfsummendatei. Er darf nicht über die Modulalias-
+Datenbank vorzeitig gebunden werden. Die übrigen Module verbleiben im normalen
+Modulbaum; dessen Abhängigkeiten werden anschließend neu erzeugt. Der private
+Signierschlüssel wird weder in das Paket noch ins Repo kopiert. APK-Signaturprüfung
+ist Teil der Paketstufe. Dies ersetzt nicht die ausstehende Hardwareprüfung.
