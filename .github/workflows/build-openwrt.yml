@@ -68,6 +68,7 @@ jobs:
             build/full/release/*.json
             build/full/release/SHA256SUMS
             build/full/release/platform.sh
+            build/full/release/t95h-keep
             build/full/release/RELEASE-NOTES.md
             build/full/kernel-package/*.apk
             build/full/keys/t95h-build.pem

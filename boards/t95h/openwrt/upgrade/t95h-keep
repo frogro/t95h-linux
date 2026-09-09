@@ -1,0 +1,10 @@
+/etc/config/
+/etc/dropbear/
+/etc/passwd
+/etc/shadow
+/etc/group
+/etc/uhttpd.key
+/etc/uhttpd.crt
+/etc/ttyd.key
+/etc/ttyd.crt
+/etc/sysupgrade.conf

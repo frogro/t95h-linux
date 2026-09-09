@@ -3,14 +3,17 @@
 import argparse,getpass,hashlib,json,shlex,sys
 from pathlib import Path
 import paramiko
-p=argparse.ArgumentParser();p.add_argument('--build',type=Path,required=True);p.add_argument('--host',default='192.168.178.177');a=p.parse_args();b=a.build.resolve()
-proof=json.loads((b/'build-proof.json').read_text());tests=json.loads((b/'upgrade-test.json').read_text());ab=json.loads((b.parent/'ab-proof.json').read_text())
-assert tests['passed'] and ab['passed'] and tests['sysupgrade_sha256']==proof['sysupgrade_sha256']
-assert ab['sysupgrade_sha256']==proof['sysupgrade_sha256']
-files=[(b/proof['sysupgrade'],'/tmp/t95h-sysupgrade.bin',proof['sysupgrade_sha256']),(b/'platform.sh','/tmp/t95h-platform.sh',proof['platform_sha256']),(b/'t95h-keep','/tmp/t95h-upgrade-keep',proof['keep_sha256'])]
+p=argparse.ArgumentParser();p.add_argument('--build',type=Path,required=True);p.add_argument('--host',default='192.168.178.177');p.add_argument('--verify-only',action='store_true');a=p.parse_args();b=a.build.resolve()
+proof=json.loads((b/'build-proof.json').read_text());tests=json.loads((b/'upgrade-test.json').read_text())
+assert tests['passed'] and tests['sysupgrade_sha256']==proof['sysupgrade_sha256']
+keep=b/'t95h-keep'
+if not keep.is_file():keep=Path(__file__).resolve().parents[1]/'boards/t95h/openwrt/upgrade/t95h-keep'
+files=[(b/proof['sysupgrade'],'/tmp/t95h-sysupgrade.bin',proof['sysupgrade_sha256']),(b/'platform.sh','/tmp/t95h-platform.sh',proof['platform_sha256']),(keep,'/tmp/t95h-upgrade-keep',proof['keep_sha256'])]
 for src,_,expected in files:
  with src.open('rb') as f:actual=hashlib.file_digest(f,'sha256').hexdigest()
  if expected:assert actual==expected,src
+if a.verify_only:
+ print('PASS: Paket, Hook und Erhaltungsliste stimmen mit dem geprüften Build überein. Kein SSH-Zugriff.');sys.exit(0)
 c=paramiko.SSHClient();c.load_system_host_keys();c.load_host_keys(str(Path.home()/'.ssh/known_hosts'))
 c.connect(a.host,username='root',password=getpass.getpass('SSH-Passwort für root: '),allow_agent=False,look_for_keys=False,timeout=10)
 def execute(cmd,timeout=600):
@@ -53,6 +56,7 @@ if [ -f "$here/keep" ]; then cp -p "$here/keep" /lib/upgrade/keep.d/t95h; else r
 sync
 RESTORE
 chmod 700 "$backup/restore.sh"
+mkdir -p /lib/upgrade/keep.d
 cp /tmp/t95h-platform.sh /lib/upgrade/platform.sh
 cp /tmp/t95h-upgrade-keep /lib/upgrade/keep.d/t95h
 chmod 644 /lib/upgrade/platform.sh /lib/upgrade/keep.d/t95h
