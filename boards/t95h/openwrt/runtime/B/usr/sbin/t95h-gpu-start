@@ -1,0 +1,94 @@
+#!/bin/sh
+# Verified experimental late-start: keep network services independent.
+set -eu
+D=/usr/lib/t95h-gpu
+G=/sys/bus/platform/devices/1800000.gpu
+P=/sys/bus/platform/devices/7010250.power-controller
+LOG=/root/t95h-gpu-start-last.log
+log() {
+ logger -t t95h-gpu "$*"
+ printf '%s %s\n' "$(cut -d ' ' -f1 /proc/uptime)" "$*" >> "$LOG"
+ sync
+}
+gpu_ok() {
+ [ "$(readlink "$G/driver" 2>/dev/null)" = ../../../../bus/platform/drivers/panfrost ] &&
+ [ -c /dev/dri/renderD128 ] &&
+ [ "$(readlink -f /sys/class/drm/renderD128/device 2>/dev/null)" = "$(readlink -f "$G")" ]
+}
+step=prechecks
+trap 'rc=$?; if [ "$rc" -ne 0 ]; then log "STOP: step=$step rc=$rc"; fi' EXIT
+ready() {
+ pidof dropbear >/dev/null 2>&1 || return 1
+ [ "$(ubus -t 2 call network.interface.lan status | jsonfilter -e '@.up')" = true ] || return 1
+ [ "$(cat /sys/class/net/eth0/carrier 2>/dev/null)" = 1 ] || return 1
+ w=$(ubus -t 2 call network.wireless status) || return 1
+ [ "$(printf '%s' "$w" | jsonfilter -e '@.radio0.up')" = true ] || return 1
+ [ "$(printf '%s' "$w" | jsonfilter -e '@.radio0.pending')" = false ] || return 1
+ service=$(ubus -t 2 call service list '{"name":"t95h-wlan-late"}') || return 1
+ [ "$(printf '%s' "$service" | jsonfilter -e '@["t95h-wlan-late"].instances.instance1.running')" = false ] || return 1
+ [ "$(printf '%s' "$service" | jsonfilter -e '@["t95h-wlan-late"].instances.instance1.exit_code')" = 0 ] || return 1
+ cpu=0; gpu=0; wlan=0
+ for r in /sys/class/regulator/regulator.*; do
+  name=$(cat "$r/name" 2>/dev/null) || continue
+  case "$name" in
+   t95h-cpu-dcdca|t95h-gpu-inherited|t95h-aldo2-wlan)
+    [ "$(cat "$r/state" 2>/dev/null)" = enabled ] || return 1
+    uv=$(cat "$r/microvolts" 2>/dev/null) || return 1
+    case "$name" in
+     t95h-cpu-dcdca) [ "$uv" -ge 900000 ] && [ "$uv" -le 1120000 ] || return 1; cpu=1 ;;
+     t95h-gpu-inherited) [ "$uv" = 960000 ] || [ "$uv" = 1100000 ] || return 1; gpu=1 ;;
+     t95h-aldo2-wlan) [ "$uv" = 3300000 ] || return 1; wlan=1 ;;
+    esac ;;
+  esac
+ done
+ [ "$cpu$gpu$wlan" = 111 ]
+}
+if [ "${1:-}" = --check-ready ]; then
+ if ready; then echo 'PASS: LAN/SSH, WLAN worker, radio and regulators ready'; exit 0; fi
+ echo 'NOT READY'; exit 1
+fi
+[ "$(uname -r)" = 7.2.3-t95h-candidate3 ] || { log 'STOP: incompatible kernel'; exit 1; }
+(cd "$D" && sha256sum -c SHA256SUMS) || { log 'STOP: module checksum'; exit 1; }
+[ -d "$G" ] && [ -d "$P" ] || { log 'STOP: missing platform devices'; exit 1; }
+if gpu_ok; then log 'PASS: standard Panfrost already bound with matching render node'; exit 0; fi
+[ ! -L "$G/driver" ] && [ ! -L "$P/driver" ] || { log 'STOP: unexpected bound driver'; exit 1; }
+# No writes to hardware before readiness. Allow initial boot activity to settle.
+umask 077
+printf 'boot_id=%s\n' "$(cat /proc/sys/kernel/random/boot_id)" > "$LOG"
+log 'Waiting: minimum uptime 120s plus 15 consecutive ready samples'
+n=0; stable=0
+while [ "$n" -lt 240 ]; do
+ age=$(cut -d . -f1 /proc/uptime)
+ if [ "$age" -ge 120 ] && ready; then stable=$((stable+1)); else stable=0; fi
+ [ "$stable" -ge 15 ] && break
+ n=$((n+1)); sleep 1
+done
+[ "$stable" -ge 15 ] || { log 'STOP: readiness timeout; no GPU probe'; exit 1; }
+[ ! -L "$G/driver" ] && [ ! -L "$P/driver" ] || { log 'STOP: driver state changed during wait'; exit 1; }
+step=hold
+log 'Readiness confirmed; holding GPU before provider registration'
+echo t95h-gpu-start-hold > "$G/driver_override"
+[ "$(cat "$G/driver_override")" = t95h-gpu-start-hold ] || { log 'STOP: GPU hold readback mismatch'; exit 1; }
+step=ana-provider
+log 'Registering ANA provider with EL3 confirmation'
+insmod "$D/t95h_ana_provider.ko"
+[ -L "$P/driver" ] || { log 'STOP: ANA provider did not bind'; exit 1; }
+step=standard-panfrost
+[ -d /sys/bus/platform/drivers/panfrost ] || { log 'STOP: standard Panfrost driver absent'; exit 1; }
+if ! gpu_ok; then
+ echo panfrost > "$G/driver_override"
+ [ "$(cat "$G/driver_override")" = panfrost ] || { log 'STOP: Panfrost selection readback mismatch'; exit 1; }
+ if [ ! -L "$G/driver" ]; then
+  log 'Requesting standard Panfrost probe'
+  probe_rc=0
+  echo 1800000.gpu > /sys/bus/platform/drivers_probe || probe_rc=$?
+  log "Probe request returned rc=$probe_rc; checking actual binding"
+ fi
+fi
+step=verify-render-node
+n=0
+while ! gpu_ok; do
+ n=$((n+1)); [ "$n" -lt 30 ] || { log 'STOP: no matching standard Panfrost render node'; exit 1; }
+ sleep 1
+done
+log 'PASS: standard Panfrost bound and matching render node available'

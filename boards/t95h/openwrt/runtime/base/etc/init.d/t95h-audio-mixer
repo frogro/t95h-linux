@@ -1,0 +1,11 @@
+#!/bin/sh /etc/rc.common
+START=98
+start() {
+    [ -r /etc/t95h-audio.state ] || return 0
+    for id in /proc/asound/card*/id; do
+        [ "$(cat "$id" 2>/dev/null)" = Codec ] || continue
+        /usr/sbin/alsactl -U -I -P -f /etc/t95h-audio.state restore Codec
+        return $?
+    done
+    return 0
+}

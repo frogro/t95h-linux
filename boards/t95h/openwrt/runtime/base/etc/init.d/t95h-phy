@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+START=18
+start() {
+ # Match the onboard SDIO controller, independent of the assigned phy number.
+ for p in /sys/class/ieee80211/phy*; do
+  [ -e "$p/device" ] || continue
+  case "$(readlink -f "$p/device")" in
+   */4021000.mmc/*)
+    uci -q set wireless.radio0.phy="${p##*/}"
+    uci -q commit wireless
+    break
+   ;;
+  esac
+ done
+}

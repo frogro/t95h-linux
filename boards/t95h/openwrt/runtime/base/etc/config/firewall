@@ -1,0 +1,23 @@
+config defaults
+ option input 'REJECT'
+ option output 'ACCEPT'
+ option forward 'REJECT'
+
+config zone
+ option name 'uplink'
+ list network 'lan'
+ option input 'ACCEPT'
+ option output 'ACCEPT'
+ option forward 'REJECT'
+ option masq '1'
+
+config zone
+ option name 'wlan'
+ list network 'wlan'
+ option input 'ACCEPT'
+ option output 'ACCEPT'
+ option forward 'REJECT'
+
+config forwarding
+ option src 'wlan'
+ option dest 'uplink'

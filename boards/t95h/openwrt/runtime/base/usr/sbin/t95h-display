@@ -1,0 +1,23 @@
+#!/bin/sh
+# Display is optional; no boot waits and no writes outside its own LED sysfs nodes.
+display=
+for n in /sys/class/leds/*/message; do
+ [ -f "$n" ] || continue
+ case "$(readlink -f "$n")" in *i2c-display*) display="$n"; break;; esac
+done
+[ -n "$display" ] || { logger -t t95h-display 'FD655 message interface absent'; exit 0; }
+printf 'boot' > "$display"
+while sleep 10; do
+ if [ "$(date +%Y)" -ge 2026 ]; then date +%H%M > "$display"; fi
+ for led in /sys/class/leds/*; do
+  case "$(readlink -f "$led")" in *i2c-display*) ;; *) continue;; esac
+  case "$led" in
+   *:ethernet) value=$(cat /sys/class/net/eth0/carrier 2>/dev/null);;
+   *:wifi) value=$(cat /sys/class/net/phy0-ap0/carrier 2>/dev/null);;
+   *:colon) value=1;;
+   *) continue;;
+  esac
+  [ "$value" = 1 ] || value=0
+  printf '%s' "$value" > "$led/brightness"
+ done
+done

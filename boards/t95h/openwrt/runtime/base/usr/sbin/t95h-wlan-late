@@ -1,0 +1,25 @@
+#!/bin/sh
+# Runs as a procd worker, never in the pre-init path. One attempt per start.
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+n=0
+while [ "$n" -lt 60 ]; do
+ if pidof dropbear >/dev/null 2>&1 &&
+    [ "$(ubus -t 2 call network.interface.lan status 2>/dev/null | jsonfilter -e '@.up')" = true ]; then
+  break
+ fi
+ n=$((n+1)); sleep 1
+done
+[ "$n" -lt 60 ] || { logger -t t95h-wlan-late 'LAN/SSH not ready; no WLAN power attempt'; exit 1; }
+logger -t t95h-wlan-late 'LAN and SSH ready; registering WLAN supply'
+if [ ! -d /sys/module/t95h_aldo2 ]; then
+ /sbin/insmod /lib/modules/"$(uname -r)"/t95h_aldo2.ko || {
+  logger -t t95h-wlan-late 'ALDO2 registration failed'; exit 1;
+ }
+fi
+n=0
+while [ ! -d /sys/class/ieee80211/phy0 ] && [ "$n" -lt 30 ]; do
+ n=$((n+1)); sleep 1
+done
+[ -d /sys/class/ieee80211/phy0 ] || { logger -t t95h-wlan-late 'No WLAN PHY after 30 seconds'; exit 1; }
+logger -t t95h-wlan-late 'WLAN PHY available; requesting configured radio0'
+/sbin/wifi up radio0

@@ -1,0 +1,3171 @@
+{
+  "official_target_defaults": [
+    "base-files",
+    "ca-bundle",
+    "dropbear",
+    "fstools",
+    "libc",
+    "libgcc",
+    "libustream-mbedtls",
+    "logd",
+    "mtd",
+    "netifd",
+    "uci",
+    "uclient-fetch",
+    "urandom-seed",
+    "urngd",
+    "uboot-envtools",
+    "partx-utils",
+    "mkf2fs",
+    "e2fsprogs",
+    "procd-ujail",
+    "dnsmasq",
+    "firewall4",
+    "nftables",
+    "kmod-nft-offload",
+    "odhcp6c",
+    "odhcpd-ipv6only",
+    "ppp",
+    "ppp-mod-pppoe",
+    "apk-mbedtls"
+  ],
+  "replacements": {
+    "dnsmasq": "dnsmasq-full",
+    "nftables": "nftables-json"
+  },
+  "seeds": {
+    "base": [
+      "alsa-utils",
+      "apk-mbedtls",
+      "base-files",
+      "block-mount",
+      "ca-bundle",
+      "coreutils-od",
+      "curl",
+      "dnsmasq-full",
+      "dropbear",
+      "e2fsprogs",
+      "ethtool",
+      "firewall4",
+      "fstools",
+      "htop",
+      "ip-full",
+      "iputils-ping",
+      "iw-full",
+      "kmod-nft-offload",
+      "libc",
+      "libgcc",
+      "libustream-mbedtls",
+      "lm-sensors",
+      "logd",
+      "luci-app-ttyd",
+      "luci-ssl",
+      "mkf2fs",
+      "mtd",
+      "nano",
+      "netifd",
+      "nftables-json",
+      "odhcp6c",
+      "odhcpd-ipv6only",
+      "openssl-util",
+      "partx-utils",
+      "ppp",
+      "ppp-mod-pppoe",
+      "procd-ujail",
+      "socat",
+      "t95h-kernel",
+      "uboot-envtools",
+      "uci",
+      "uclient-fetch",
+      "urandom-seed",
+      "urngd",
+      "usbutils",
+      "wifi-scripts",
+      "wireless-regdb",
+      "wpad-basic-mbedtls"
+    ],
+    "A": [
+      "luci-proto-mbim",
+      "luci-proto-modemmanager",
+      "luci-proto-qmi",
+      "mbim-utils",
+      "modemmanager",
+      "modemmanager-rpcd",
+      "r8152-firmware",
+      "umbim",
+      "uqmi",
+      "usb-modeswitch"
+    ],
+    "B": [
+      "gst1-mod-alsa",
+      "gst1-mod-jpeg",
+      "gst1-mod-rtp",
+      "gst1-mod-rtpmanager",
+      "gst1-mod-udp",
+      "gst1-mod-video4linux2",
+      "gst1-mod-videoparsersbad",
+      "gstreamer1-plugins-base",
+      "gstreamer1-utils",
+      "kmscube",
+      "libmesa-panfrost",
+      "ustreamer",
+      "v4l-utils"
+    ]
+  },
+  "missing_dependencies_or_defaults": {
+    "base": [
+      "mkf2fs",
+      "mtd",
+      "odhcp6c",
+      "odhcpd-ipv6only",
+      "partx-utils",
+      "ppp-mod-pppoe",
+      "procd-ujail",
+      "uboot-envtools"
+    ],
+    "A": [],
+    "B": []
+  },
+  "packages": [
+    {
+      "name": "alsa-lib",
+      "version": "1.2.11-r1",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "B"
+      ],
+      "dependencies": [
+        "kmod-sound-core",
+        "libc",
+        "libpthread",
+        "librt"
+      ]
+    },
+    {
+      "name": "alsa-ucm-conf",
+      "version": "1.2.11-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "alsa-utils",
+      "version": "1.2.11-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "alsa-lib",
+        "alsa-ucm-conf",
+        "libc",
+        "libncursesw6",
+        "libpthread"
+      ]
+    },
+    {
+      "name": "apk-mbedtls",
+      "version": "3.0.5-r3",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libmbedtls21",
+        "wget-any",
+        "zlib"
+      ]
+    },
+    {
+      "name": "base-files",
+      "version": "1711~f5dae5ece4",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "busybox",
+        "fstools",
+        "fwtool",
+        "jsonfilter",
+        "libc",
+        "netifd",
+        "openwrt-keyring",
+        "procd",
+        "procd-seccomp",
+        "usign"
+      ]
+    },
+    {
+      "name": "block-mount",
+      "version": "2026.05.23~16718b6e-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libjson-c5",
+        "libubox20260213",
+        "libuci20250120",
+        "ubox"
+      ]
+    },
+    {
+      "name": "busybox",
+      "version": "1.37.0-r6",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "ca-bundle",
+      "version": "20260601-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "cgi-io",
+      "version": "2026.07.21~31cb3c89-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213",
+        "libubus20251202"
+      ]
+    },
+    {
+      "name": "coreutils",
+      "version": "9.9-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "coreutils-od",
+      "version": "9.9-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "coreutils",
+        "libc"
+      ]
+    },
+    {
+      "name": "curl",
+      "version": "8.19.0-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libcurl4"
+      ]
+    },
+    {
+      "name": "dbus",
+      "version": "1.16.2-r4",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "libdbus",
+        "libexpat"
+      ]
+    },
+    {
+      "name": "dnsmasq-full",
+      "version": "2.93-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libnetfilter-conntrack3",
+        "libnettle8",
+        "libubus20251202",
+        "nftables-json"
+      ]
+    },
+    {
+      "name": "dropbear",
+      "version": "2025.89-r3",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "e2fsprogs",
+      "version": "1.47.3-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libe2p2",
+        "libext2fs2",
+        "libuuid1"
+      ]
+    },
+    {
+      "name": "ethtool",
+      "version": "6.15-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "firewall4",
+      "version": "2025.03.17~b6e51575-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "kmod-nft-core",
+        "kmod-nft-fib",
+        "kmod-nft-nat",
+        "kmod-nft-offload",
+        "libc",
+        "nftables-json",
+        "ucode>=2022.03.22",
+        "ucode-mod-fs",
+        "ucode-mod-ubus",
+        "ucode-mod-uci"
+      ]
+    },
+    {
+      "name": "fstools",
+      "version": "2026.05.23~16718b6e-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "ubox"
+      ]
+    },
+    {
+      "name": "fwtool",
+      "version": "2025.10.03~04cd252e-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "getrandom",
+      "version": "2025.10.30~6f78fa49-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "glib2",
+      "version": "2.82.0-r1",
+      "profile": "A+B",
+      "needed_by": [
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libattr",
+        "libc",
+        "libffi",
+        "libpcre2",
+        "libpthread",
+        "zlib"
+      ]
+    },
+    {
+      "name": "gst1-mod-adder",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-alsa",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "alsa-lib",
+        "libc",
+        "libgst1audio",
+        "libgst1tag",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-app",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1app",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-audioconvert",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-audiomixer",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-audiorate",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1tag",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-audioresample",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1tag",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-audiotestsrc",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1controller",
+        "libgst1tag",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-compositor",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-encoding",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1pbutils",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-gio",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-ivorbisdec",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1tag",
+        "libgstreamer1",
+        "libvorbisidec"
+      ]
+    },
+    {
+      "name": "gst1-mod-ogg",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1pbutils",
+        "libgst1riff",
+        "libgst1tag",
+        "libgst1video",
+        "libgstreamer1",
+        "libogg0"
+      ]
+    },
+    {
+      "name": "gst1-mod-opengl",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgraphene",
+        "libgst1controller",
+        "libgst1gl",
+        "libgstreamer1",
+        "libjpeg",
+        "libpng"
+      ]
+    },
+    {
+      "name": "gst1-mod-opus",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1pbutils",
+        "libgst1video",
+        "libgstreamer1",
+        "libopus"
+      ]
+    },
+    {
+      "name": "gst1-mod-overlaycomposition",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-pbtypes",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-playback",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1pbutils",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-rawparse",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-subparse",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-tcp",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1net",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-theora",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1tag",
+        "libgst1video",
+        "libgstreamer1",
+        "libogg0",
+        "libtheora"
+      ]
+    },
+    {
+      "name": "gst1-mod-typefindfunctions",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1pbutils",
+        "libgst1tag",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-videoconvertscale",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-videorate",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-videotestsrc",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-volume",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1controller",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gst1-mod-vorbis",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "gst1-mod-ogg",
+        "libc",
+        "libgst1audio",
+        "libgst1tag",
+        "libgstreamer1",
+        "libvorbis"
+      ]
+    },
+    {
+      "name": "gst1-plugins-base",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "gst1-mod-adder",
+        "gst1-mod-alsa",
+        "gst1-mod-app",
+        "gst1-mod-audioconvert",
+        "gst1-mod-audiomixer",
+        "gst1-mod-audiorate",
+        "gst1-mod-audioresample",
+        "gst1-mod-audiotestsrc",
+        "gst1-mod-compositor",
+        "gst1-mod-encoding",
+        "gst1-mod-gio",
+        "gst1-mod-ivorbisdec",
+        "gst1-mod-ogg",
+        "gst1-mod-opengl",
+        "gst1-mod-opus",
+        "gst1-mod-overlaycomposition",
+        "gst1-mod-pbtypes",
+        "gst1-mod-playback",
+        "gst1-mod-rawparse",
+        "gst1-mod-subparse",
+        "gst1-mod-tcp",
+        "gst1-mod-theora",
+        "gst1-mod-typefindfunctions",
+        "gst1-mod-videoconvertscale",
+        "gst1-mod-videorate",
+        "gst1-mod-videotestsrc",
+        "gst1-mod-volume",
+        "gst1-mod-vorbis",
+        "libc",
+        "libgst1allocators",
+        "libgst1app",
+        "libgst1audio",
+        "libgst1fft",
+        "libgst1gl",
+        "libgst1pbutils",
+        "libgst1riff",
+        "libgst1rtp",
+        "libgst1rtsp",
+        "libgst1sdp",
+        "libgst1tag",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gstreamer1",
+      "version": "1.26.4-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1check",
+        "libgst1controller",
+        "libgst1net",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "gstreamer1-libs",
+      "version": "1.26.4-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "gstreamer1",
+        "libc"
+      ]
+    },
+    {
+      "name": "gstreamer1-plugins-base",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "gst1-plugins-base",
+        "gstreamer1-libs",
+        "libc"
+      ]
+    },
+    {
+      "name": "hostapd-common",
+      "version": "2025.08.26~ca266cc2-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "htop",
+      "version": "3.5.1-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libncurses6"
+      ]
+    },
+    {
+      "name": "ip-full",
+      "version": "6.18.0-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libbpf1",
+        "libc",
+        "libmnl0",
+        "libnl-tiny1"
+      ]
+    },
+    {
+      "name": "iputils-ping",
+      "version": "20250605-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "kmod-crypto-md5",
+        "libc"
+      ]
+    },
+    {
+      "name": "iw-full",
+      "version": "6.17-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libnl-tiny1"
+      ]
+    },
+    {
+      "name": "jansson4",
+      "version": "2.14.1-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "jshn",
+      "version": "2026.06.19~7dd12784-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libjson-c5",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "jsonfilter",
+      "version": "2026.03.16~b9034210-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libjson-c5",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "kmscube",
+      "version": "2024.11.06~311eaaaa-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "glib2",
+        "gstreamer1-plugins-base",
+        "libc",
+        "libgst1allocators",
+        "libgst1app",
+        "libgst1video",
+        "libgstreamer1",
+        "libmesa",
+        "libpng"
+      ]
+    },
+    {
+      "name": "libatomic1",
+      "version": "14.3.0-r5",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libgcc1"
+      ]
+    },
+    {
+      "name": "libattr",
+      "version": "2.5.2-r3",
+      "profile": "A+B",
+      "needed_by": [
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libblkid1",
+      "version": "2.41.5-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libuuid1"
+      ]
+    },
+    {
+      "name": "libblobmsg-json20260213",
+      "version": "2026.06.19~7dd12784-r1",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "libjson-c5",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "libbpf1",
+      "version": "1.6.2-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libelf1"
+      ]
+    },
+    {
+      "name": "libc",
+      "version": "1.2.5-r5",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libgcc1"
+      ]
+    },
+    {
+      "name": "libcap",
+      "version": "2.69-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libcomerr0",
+      "version": "1.47.3-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libuuid1"
+      ]
+    },
+    {
+      "name": "libcurl4",
+      "version": "8.19.0-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "ca-bundle",
+        "libc",
+        "libmbedtls21",
+        "libnghttp2-14",
+        "zlib"
+      ]
+    },
+    {
+      "name": "libdbus",
+      "version": "1.16.2-r4",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "libpthread"
+      ]
+    },
+    {
+      "name": "libdrm",
+      "version": "2.4.123-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libe2p2",
+      "version": "1.47.3-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libuuid1"
+      ]
+    },
+    {
+      "name": "libelf1",
+      "version": "0.192-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "zlib"
+      ]
+    },
+    {
+      "name": "libevdev",
+      "version": "1.13.4-r1",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libexpat",
+      "version": "2.8.2-r1",
+      "profile": "A+B",
+      "needed_by": [
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libext2fs2",
+      "version": "1.47.3-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblkid1",
+        "libc",
+        "libcomerr0",
+        "libss2",
+        "libuuid1"
+      ]
+    },
+    {
+      "name": "libffi",
+      "version": "3.4.7-r1",
+      "profile": "A+B",
+      "needed_by": [
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libgcc1",
+      "version": "14.3.0-r5",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A",
+        "B"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "libgmp10",
+      "version": "6.3.0-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libgraphene",
+      "version": "2025.01.23~47b503d6-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "glib2",
+        "libc"
+      ]
+    },
+    {
+      "name": "libgst1allocators",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libdrm",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1app",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1audio",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1tag",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1check",
+      "version": "1.26.4-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1controller",
+      "version": "1.26.4-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1fft",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1gl",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1allocators",
+        "libgst1video",
+        "libgstreamer1",
+        "libgudev",
+        "libmesa",
+        "libwayland"
+      ]
+    },
+    {
+      "name": "libgst1net",
+      "version": "1.26.4-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1pbutils",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1tag",
+        "libgst1video",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1riff",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1audio",
+        "libgst1tag",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1rtp",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1rtsp",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1sdp",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgst1pbutils",
+        "libgst1rtp",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1tag",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgst1video",
+      "version": "1.26.4-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libgstreamer1"
+      ]
+    },
+    {
+      "name": "libgstreamer1",
+      "version": "1.26.4-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "glib2",
+        "libc",
+        "libpthread",
+        "libxml2-16"
+      ]
+    },
+    {
+      "name": "libgudev",
+      "version": "238-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "glib2",
+        "libc",
+        "libudev"
+      ]
+    },
+    {
+      "name": "libiwinfo-data",
+      "version": "2026.01.14~f5dd57a8-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libiwinfo20230701",
+      "version": "2026.01.14~f5dd57a8-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libiwinfo-data",
+        "libnl-tiny1",
+        "libubus20251202",
+        "libuci20250120"
+      ]
+    },
+    {
+      "name": "libjpeg-turbo",
+      "version": "3.1.1-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libjson-c5",
+      "version": "0.18-r1",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libjson-script20260213",
+      "version": "2026.06.19~7dd12784-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "liblua5.1.5",
+      "version": "5.1.5-r11",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "liblucihttp-ucode",
+      "version": "2023.03.15~9b5b683f-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "liblucihttp0",
+        "libucode20230711"
+      ]
+    },
+    {
+      "name": "liblucihttp0",
+      "version": "2023.03.15~9b5b683f-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libmbedtls21",
+      "version": "3.6.7-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libmbim",
+      "version": "1.32.0-r1",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "glib2",
+        "libc"
+      ]
+    },
+    {
+      "name": "libmesa-panfrost",
+      "version": "25.2.4-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libatomic1",
+        "libc",
+        "libdrm",
+        "libsensors5",
+        "libstdcpp6",
+        "libwayland",
+        "libzstd",
+        "wayland-protocols",
+        "zlib"
+      ]
+    },
+    {
+      "name": "libmnl0",
+      "version": "1.0.5-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libncurses6",
+      "version": "6.4-r3",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "terminfo"
+      ]
+    },
+    {
+      "name": "libnetfilter-conntrack3",
+      "version": "1.1.0-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "kmod-nf-conntrack-netlink",
+        "libc",
+        "libmnl0",
+        "libnfnetlink0"
+      ]
+    },
+    {
+      "name": "libnettle8",
+      "version": "3.10.2-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libgmp10"
+      ]
+    },
+    {
+      "name": "libnfnetlink0",
+      "version": "1.0.2-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libnftnl11",
+      "version": "1.3.1-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libmnl0"
+      ]
+    },
+    {
+      "name": "libnghttp2-14",
+      "version": "1.70.0-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libnl-tiny1",
+      "version": "2025.12.02~40493a65-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libogg0",
+      "version": "1.3.5-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libopenssl-conf",
+      "version": "3.5.7-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libopenssl3"
+      ]
+    },
+    {
+      "name": "libopenssl3",
+      "version": "3.5.7-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libopus",
+      "version": "1.5.2-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libpcre2",
+      "version": "10.47-r1",
+      "profile": "A+B",
+      "needed_by": [
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libpng",
+      "version": "1.6.50-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "zlib"
+      ]
+    },
+    {
+      "name": "libpthread",
+      "version": "1.2.5-r5",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libgcc1"
+      ]
+    },
+    {
+      "name": "libqmi",
+      "version": "1.36.0-r1",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "glib2",
+        "libc",
+        "libmbim",
+        "libqrtr-glib"
+      ]
+    },
+    {
+      "name": "libqrtr-glib",
+      "version": "1.2.2-r3",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "glib2",
+        "libc"
+      ]
+    },
+    {
+      "name": "librt",
+      "version": "1.2.5-r5",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libpthread"
+      ]
+    },
+    {
+      "name": "libsensors5",
+      "version": "3.6.2-r6",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "sysfsutils"
+      ]
+    },
+    {
+      "name": "libss2",
+      "version": "1.47.3-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libcomerr0"
+      ]
+    },
+    {
+      "name": "libstdcpp6",
+      "version": "14.3.0-r5",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "libsysfs2",
+      "version": "2.1.0-r4",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libtheora",
+      "version": "1.2.0-r2",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libogg0"
+      ]
+    },
+    {
+      "name": "libubox20260213",
+      "version": "2026.06.19~7dd12784-r1",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "libubus20251202",
+      "version": "2026.06.28~24864e78-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "libuci20250120",
+      "version": "2025.12.02~66127cd7-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "libuclient20201210",
+      "version": "2026.06.07~daad21fa-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "libucode20230711",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libjson-c5"
+      ]
+    },
+    {
+      "name": "libudebug",
+      "version": "2026.01.16~875e1a7a",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213",
+        "libubus20251202"
+      ]
+    },
+    {
+      "name": "libudev-zero",
+      "version": "1.0.4-r1",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libevdev"
+      ]
+    },
+    {
+      "name": "libusb-1.0-0",
+      "version": "1.0.29-r1",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A"
+      ],
+      "dependencies": [
+        "libatomic1",
+        "libc",
+        "libpthread",
+        "librt"
+      ]
+    },
+    {
+      "name": "libustream-mbedtls20201210",
+      "version": "2026.03.01~99f1c0db-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libmbedtls21",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "libuuid1",
+      "version": "2.41.5-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "librt"
+      ]
+    },
+    {
+      "name": "libuv1",
+      "version": "1.48.0-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libpthread",
+        "librt"
+      ]
+    },
+    {
+      "name": "libvorbis",
+      "version": "1.3.7-r3",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libogg0"
+      ]
+    },
+    {
+      "name": "libvorbisidec",
+      "version": "2024.06.11~9b78f57f-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libogg0"
+      ]
+    },
+    {
+      "name": "libwayland",
+      "version": "1.23.0-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libexpat",
+        "libffi"
+      ]
+    },
+    {
+      "name": "libwebsockets-full",
+      "version": "4.4.1-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libcap",
+        "libopenssl3",
+        "libubox20260213",
+        "libuv1",
+        "zlib"
+      ]
+    },
+    {
+      "name": "libxml2-16",
+      "version": "2.15.1-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libpthread",
+        "zlib"
+      ]
+    },
+    {
+      "name": "libzstd",
+      "version": "1.5.7-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "lm-sensors",
+      "version": "3.6.2-r6",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libsensors5",
+        "sysfsutils"
+      ]
+    },
+    {
+      "name": "logd",
+      "version": "2025.10.30~6f78fa49-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libubox20260213",
+        "libubus20251202",
+        "libudebug"
+      ]
+    },
+    {
+      "name": "lua",
+      "version": "5.1.5-r11",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "liblua5.1.5"
+      ]
+    },
+    {
+      "name": "lua-cjson",
+      "version": "2.1.0-r5",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "liblua5.1.5"
+      ]
+    },
+    {
+      "name": "luci-app-firewall",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "luci-base",
+        "uci-firewall"
+      ]
+    },
+    {
+      "name": "luci-app-package-manager",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "luci-base"
+      ]
+    },
+    {
+      "name": "luci-app-ttyd",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "luci-base",
+        "ttyd"
+      ]
+    },
+    {
+      "name": "luci-base",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "cgi-io",
+        "libc",
+        "liblucihttp-ucode",
+        "rpcd",
+        "rpcd-mod-file",
+        "rpcd-mod-luci",
+        "rpcd-mod-ucode",
+        "ucode",
+        "ucode-mod-fs",
+        "ucode-mod-html",
+        "ucode-mod-log",
+        "ucode-mod-math",
+        "ucode-mod-ubus",
+        "ucode-mod-uci"
+      ]
+    },
+    {
+      "name": "luci-lib-uqr",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "luci-light",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "luci-app-firewall",
+        "luci-mod-admin-full",
+        "luci-proto-ipv6",
+        "luci-proto-ppp",
+        "luci-theme-bootstrap",
+        "rpcd-mod-rrdns",
+        "uhttpd",
+        "uhttpd-mod-ubus"
+      ]
+    },
+    {
+      "name": "luci-mod-admin-full",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "luci-base",
+        "luci-mod-network",
+        "luci-mod-status",
+        "luci-mod-system"
+      ]
+    },
+    {
+      "name": "luci-mod-network",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "luci-base",
+        "luci-lib-uqr",
+        "rpcd-mod-iwinfo"
+      ]
+    },
+    {
+      "name": "luci-mod-status",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libiwinfo20230701",
+        "luci-base",
+        "rpcd-mod-iwinfo"
+      ]
+    },
+    {
+      "name": "luci-mod-system",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "luci-base"
+      ]
+    },
+    {
+      "name": "luci-proto-ipv6",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "luci-proto-mbim",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "umbim"
+      ]
+    },
+    {
+      "name": "luci-proto-modemmanager",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "modemmanager"
+      ]
+    },
+    {
+      "name": "luci-proto-ppp",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "luci-proto-qmi",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "uqmi"
+      ]
+    },
+    {
+      "name": "luci-ssl",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libustream-mbedtls20201210",
+        "luci-app-package-manager",
+        "luci-light",
+        "px5g-mbedtls"
+      ]
+    },
+    {
+      "name": "luci-theme-bootstrap",
+      "version": "26.246.70755~4fd72fd",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "luci-base"
+      ]
+    },
+    {
+      "name": "mbim-utils",
+      "version": "1.32.0-r1",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "libmbim"
+      ]
+    },
+    {
+      "name": "modemmanager",
+      "version": "1.24.0-r10",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "dbus",
+        "glib2",
+        "libc",
+        "libmbim",
+        "libqmi",
+        "libqrtr-glib",
+        "ppp"
+      ]
+    },
+    {
+      "name": "modemmanager-rpcd",
+      "version": "1.24.0-r10",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc",
+        "lua",
+        "lua-cjson",
+        "modemmanager"
+      ]
+    },
+    {
+      "name": "nano",
+      "version": "9.2-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libncurses6"
+      ]
+    },
+    {
+      "name": "netifd",
+      "version": "2026.02.26~cbb83a18-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "jshn",
+        "libc",
+        "libnl-tiny1",
+        "libubox20260213",
+        "libubus20251202",
+        "libuci20250120",
+        "libudebug",
+        "ubus",
+        "ubusd",
+        "ucode",
+        "ucode-mod-fs",
+        "ucode-mod-ubus",
+        "ucode-mod-uci",
+        "ucode-mod-uloop"
+      ]
+    },
+    {
+      "name": "nftables-json",
+      "version": "1.1.6-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "jansson4",
+        "kmod-nft-core",
+        "libc",
+        "libnftnl11"
+      ]
+    },
+    {
+      "name": "openssl-util",
+      "version": "3.5.7-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libopenssl-conf",
+        "libopenssl3"
+      ]
+    },
+    {
+      "name": "openwrt-keyring",
+      "version": "2025.12.10~f0670054-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "ppp",
+      "version": "2.5.2-r4",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A"
+      ],
+      "dependencies": [
+        "kmod-ppp",
+        "libc"
+      ]
+    },
+    {
+      "name": "procd",
+      "version": "2026.03.13~58eb263d-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "jshn",
+        "libblobmsg-json20260213",
+        "libc",
+        "libjson-c5",
+        "libjson-script20260213",
+        "libubox20260213",
+        "libubus20251202",
+        "libudebug",
+        "ubox",
+        "ubus",
+        "ubusd"
+      ]
+    },
+    {
+      "name": "procd-seccomp",
+      "version": "2026.03.13~58eb263d-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "px5g-mbedtls",
+      "version": "11",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libmbedtls21"
+      ]
+    },
+    {
+      "name": "rpcd",
+      "version": "2026.07.19~e37ed9d8-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libjson-c5",
+        "libubox20260213",
+        "libubus20251202",
+        "libuci20250120"
+      ]
+    },
+    {
+      "name": "rpcd-mod-file",
+      "version": "2026.07.19~e37ed9d8-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213",
+        "libubus20251202",
+        "rpcd"
+      ]
+    },
+    {
+      "name": "rpcd-mod-iwinfo",
+      "version": "2026.07.19~e37ed9d8-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libiwinfo20230701>=2023.01.21",
+        "libubox20260213",
+        "libubus20251202",
+        "rpcd"
+      ]
+    },
+    {
+      "name": "rpcd-mod-luci",
+      "version": "20240305-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libnl-tiny1",
+        "libubox20260213",
+        "libubus20251202",
+        "rpcd"
+      ]
+    },
+    {
+      "name": "rpcd-mod-rrdns",
+      "version": "20170710",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213",
+        "libubus20251202",
+        "rpcd"
+      ]
+    },
+    {
+      "name": "rpcd-mod-ucode",
+      "version": "2026.07.19~e37ed9d8-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213",
+        "libubus20251202",
+        "libucode20230711",
+        "rpcd"
+      ]
+    },
+    {
+      "name": "socat",
+      "version": "1.8.1.1-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libpthread",
+        "librt"
+      ]
+    },
+    {
+      "name": "sysfsutils",
+      "version": "2.1.0-r4",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "B"
+      ],
+      "dependencies": [
+        "libc",
+        "libsysfs2"
+      ]
+    },
+    {
+      "name": "t95h-kernel",
+      "version": "7.2.3-r7",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A",
+        "B"
+      ],
+      "dependencies": []
+    },
+    {
+      "name": "terminfo",
+      "version": "6.4-r3",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "ttyd",
+      "version": "1.7.7-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libcap",
+        "libjson-c5",
+        "libopenssl3",
+        "libuv1",
+        "libwebsockets-full",
+        "zlib"
+      ]
+    },
+    {
+      "name": "ubox",
+      "version": "2025.10.30~6f78fa49-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213",
+        "libubus20251202",
+        "libuci20250120",
+        "ubus",
+        "ubusd"
+      ]
+    },
+    {
+      "name": "ubus",
+      "version": "2026.06.28~24864e78-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libubus20251202",
+        "ubusd"
+      ]
+    },
+    {
+      "name": "ubusd",
+      "version": "2026.06.28~24864e78-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "uci",
+      "version": "2025.12.02~66127cd7-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libuci20250120"
+      ]
+    },
+    {
+      "name": "uclient-fetch",
+      "version": "2026.06.07~daad21fa-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libuclient20201210"
+      ]
+    },
+    {
+      "name": "ucode",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libucode20230711"
+      ]
+    },
+    {
+      "name": "ucode-mod-digest",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "ucode"
+      ]
+    },
+    {
+      "name": "ucode-mod-fs",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "ucode"
+      ]
+    },
+    {
+      "name": "ucode-mod-html",
+      "version": "1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libucode20230711"
+      ]
+    },
+    {
+      "name": "ucode-mod-log",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213",
+        "ucode"
+      ]
+    },
+    {
+      "name": "ucode-mod-math",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "ucode"
+      ]
+    },
+    {
+      "name": "ucode-mod-nl80211",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libnl-tiny1",
+        "libubox20260213",
+        "ucode"
+      ]
+    },
+    {
+      "name": "ucode-mod-rtnl",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libnl-tiny1",
+        "libubox20260213",
+        "ucode"
+      ]
+    },
+    {
+      "name": "ucode-mod-ubus",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libubus20251202",
+        "ucode"
+      ]
+    },
+    {
+      "name": "ucode-mod-uci",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libuci20250120",
+        "ucode"
+      ]
+    },
+    {
+      "name": "ucode-mod-uloop",
+      "version": "2026.01.16~85922056-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213",
+        "ucode"
+      ]
+    },
+    {
+      "name": "uhttpd",
+      "version": "2026.06.16~7b1bec45-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libjson-c5",
+        "libjson-script20260213",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "uhttpd-mod-ubus",
+      "version": "2026.06.16~7b1bec45-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libubus20251202",
+        "uhttpd"
+      ]
+    },
+    {
+      "name": "umbim",
+      "version": "2025.10.04~2939b7d0-r1",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "kmod-usb-net",
+        "kmod-usb-net-cdc-mbim",
+        "libc",
+        "libubox20260213",
+        "wwan"
+      ]
+    },
+    {
+      "name": "uqmi",
+      "version": "2025.07.30~7914da43-r2",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "kmod-usb-net",
+        "kmod-usb-net-qmi-wwan",
+        "libblobmsg-json20260213",
+        "libc",
+        "libubox20260213",
+        "wwan"
+      ]
+    },
+    {
+      "name": "urandom-seed",
+      "version": "3",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "getrandom",
+        "libc"
+      ]
+    },
+    {
+      "name": "urngd",
+      "version": "2025.10.03~f17e33d9-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "usb-modeswitch",
+      "version": "2025.10.04~9b4d0a6e-r1",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libblobmsg-json20260213",
+        "libc",
+        "libubox20260213",
+        "libusb-1.0-0"
+      ]
+    },
+    {
+      "name": "usbids",
+      "version": "0.407-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "usbutils",
+      "version": "019-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libudev",
+        "libusb-1.0-0",
+        "usbids"
+      ]
+    },
+    {
+      "name": "usign",
+      "version": "2025.10.03~c4c72b1b-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "libubox20260213"
+      ]
+    },
+    {
+      "name": "wayland-protocols",
+      "version": "1.45-r1",
+      "profile": "B",
+      "needed_by": [
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "wifi-scripts",
+      "version": "1.0-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc",
+        "netifd",
+        "ucode",
+        "ucode-mod-digest",
+        "ucode-mod-nl80211",
+        "ucode-mod-rtnl",
+        "ucode-mod-ubus",
+        "ucode-mod-uci"
+      ]
+    },
+    {
+      "name": "wireless-regdb",
+      "version": "2026.05.30-r1",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "wpad-basic-mbedtls",
+      "version": "2025.08.26~ca266cc2-r2",
+      "profile": "base",
+      "needed_by": [
+        "base"
+      ],
+      "dependencies": [
+        "hostapd-common=2025.08.26~ca266cc2-r2",
+        "libblobmsg-json20260213",
+        "libc",
+        "libmbedtls21",
+        "libnl-tiny1",
+        "libubus20251202",
+        "libucode20230711",
+        "libudebug",
+        "ucode",
+        "ucode-mod-fs",
+        "ucode-mod-nl80211",
+        "ucode-mod-rtnl",
+        "ucode-mod-ubus",
+        "ucode-mod-uloop"
+      ]
+    },
+    {
+      "name": "wwan",
+      "version": "2019.04.29-r6",
+      "profile": "A",
+      "needed_by": [
+        "A"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    },
+    {
+      "name": "zlib",
+      "version": "1.3.1-r1",
+      "profile": "base",
+      "needed_by": [
+        "base",
+        "A",
+        "B"
+      ],
+      "dependencies": [
+        "libc"
+      ]
+    }
+  ],
+  "note": "Installed t95h-kernel is monolithic and supplies virtual kmods; profile-specific provides must be regenerated, not copied blindly.",
+  "policy": "Re-resolve names for each locked OpenWrt version; kernel dependencies must come from matching T95H package; no official kmods."
+}

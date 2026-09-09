@@ -1,0 +1,129 @@
+{
+  "files": {
+    "openwrt/runtime/A/etc/modules.d/70-t95h-usb-wifi": {
+      "sha256": "fe873f81cd132b27a5cd3a76eae8a04f188a3519ae088052a54ee731edeafc33",
+      "mode": "0o644",
+      "profile": "A"
+    },
+    "openwrt/runtime/B/usr/sbin/t95h-gpu-start": {
+      "sha256": "1d05a8575fba45d6b01d0a5896413a072a6ce9876eccfe20543311b20b254849",
+      "mode": "0o755",
+      "profile": "B"
+    },
+    "openwrt/runtime/B/etc/modules.d/72-t95h-cedrus": {
+      "sha256": "873f2122d58da4a8fca3f31499546d7cedf26b4fe1325062c7443a6090db0b85",
+      "mode": "0o644",
+      "profile": "B"
+    },
+    "openwrt/runtime/B/etc/init.d/t95h-gpu": {
+      "sha256": "55e49bd8a8bf6a0d77967e747b761950b0a671ac2e5a831e7ca11d6cc05cff8e",
+      "mode": "0o755",
+      "profile": "B"
+    },
+    "openwrt/runtime/base/sbin/t95h-diag-init": {
+      "sha256": "899f8edc30f20b3b9c060f2389fd268c00c3c4aa3ce8faca12b2d1e53fc8adf6",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/t95h-audio.state": {
+      "sha256": "423c43cf4e54fbc8ef03b4966fc808debc7d3f405ce65ce20a36d77f9f844e01",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/usr/sbin/t95h-display-clock": {
+      "sha256": "f914af30ae417f2cd2dbe7691923a93c029e8e7dd480ac6470643bcc2a452543",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/usr/sbin/t95h-display": {
+      "sha256": "d89b25496971107970e8f8609697e49ac8d3d6e28d0cf69bc1f8bd561f7a3d34",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/usr/sbin/t95h-wlan-late": {
+      "sha256": "8c62b2b4c3173b63acd26513556abdc2d5214faac64324f7a8882f358d90a2cb",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/modules.d/71-t95h-ir": {
+      "sha256": "303aac766fdafc24785e5e756e2f002f01070cafdf153168e2932c70975e3b5d",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/config/fstab": {
+      "sha256": "f5ad1bea9194ad5b9ed7e136e3c90d4b9e4dfa077d0ed268f63228f6cd250c88",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/config/wireless": {
+      "sha256": "9c1d1f600265320cc72ade95738ca14d0c05cc48a3deac4804a0e71f9ce760d3",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/config/firewall": {
+      "sha256": "4da663e300fcdbb26b189ad73ab26ffca2f2aab61f0b8a9059486e97bce772df",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/config/ttyd": {
+      "sha256": "0b7991450b25bba76cbb11843cdb3b1cb7d2b3917c6dbd116c9b4a0c13aaacf0",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/config/system": {
+      "sha256": "7d14d06263c5a658b514e3808e94c968c8f380ce1b52100ef58b0f8f887cd654",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/config/network": {
+      "sha256": "5e66e029380d873a5590e72b5d267a57c490de931711e51055f018e4abb527e1",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/config/dhcp": {
+      "sha256": "d546696ddd77b2f75b983e13ae5fbd5cef68a8bbd3535b5f22617dc09e1fc48c",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/config/dropbear": {
+      "sha256": "867ca6de4e719338f2399957378c42ffc5d12434808356a1f191b3092030d40a",
+      "mode": "0o644",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/init.d/t95h-audio-mixer": {
+      "sha256": "e6b6a7344c7747b6ae44bf77134d0e0ff9db464ce61dd16b74efb496789a53f9",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/init.d/t95h-phy": {
+      "sha256": "ffe0bf429c4e4d2d1dd7188769665ff44ea6cf4b20027000b48106313c037e18",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/init.d/t95h-display": {
+      "sha256": "5bbf143542ce60ff7a28d5092912f203a2687bfe227dfbded79364d96a720a8d",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/init.d/t95h-wlan-late": {
+      "sha256": "d8ce90f47c34dc84b36b8677b847a61198940f7bba946947116baa31520dc08d",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/init.d/t95h-fd655-live": {
+      "sha256": "3c01e0f25218c7fdfc2cc34e69e2c60e48732692a13385ffadd8586363b4e8e3",
+      "mode": "0o755",
+      "profile": "base"
+    },
+    "openwrt/runtime/base/etc/init.d/t95h-ttyd-cert": {
+      "sha256": "08e9f51663acaa4978d3fbde454d435befbd4d4acbdc990b74b2a84fbced8e4e",
+      "mode": "0o755",
+      "profile": "base"
+    }
+  },
+  "source": "explicit allowlist from local tested Cedrus runtime; no inherited rootfs",
+  "inactive_legacy_services": [
+    "t95h-display"
+  ],
+  "no_device_keys": true
+}

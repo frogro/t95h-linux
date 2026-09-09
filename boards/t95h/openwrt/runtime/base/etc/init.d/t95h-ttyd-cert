@@ -1,0 +1,30 @@
+#!/bin/sh /etc/rc.common
+START=94
+start() {
+ # OpenSSL may auto-detect DER: always explicitly write and validate PEM.
+ [ -s /etc/uhttpd.crt ] && [ -s /etc/uhttpd.key ] || return 1
+ local work
+ work=$(mktemp -d /tmp/t95h-ttyd-cert.XXXXXX) || return 1
+ chmod 700 "$work"
+ if ! openssl x509 -in /etc/uhttpd.crt -outform PEM -out "$work/cert.pem" 2>/dev/null; then
+  openssl x509 -inform DER -in /etc/uhttpd.crt -outform PEM -out "$work/cert.pem" || { rm -rf "$work"; return 1; }
+ fi
+ if ! openssl pkey -in /etc/uhttpd.key -outform PEM -out "$work/key.pem" 2>/dev/null; then
+  openssl pkey -inform DER -in /etc/uhttpd.key -outform PEM -out "$work/key.pem" || { rm -rf "$work"; return 1; }
+ fi
+ if ! openssl x509 -inform PEM -in "$work/cert.pem" -noout ||
+    ! openssl pkey -inform PEM -in "$work/key.pem" -check -noout >/dev/null 2>&1 ||
+    ! openssl x509 -inform PEM -in "$work/cert.pem" -pubkey -noout > "$work/cert.pub" ||
+    ! openssl pkey -inform PEM -in "$work/key.pem" -pubout > "$work/key.pub" ||
+    ! cmp -s "$work/cert.pub" "$work/key.pub"; then
+  logger -t t95h-ttyd-cert 'Certificate/key validation failed'
+  rm -rf "$work"; return 1
+ fi
+ chmod 600 "$work/key.pem"
+ chmod 644 "$work/cert.pem"
+ mv "$work/key.pem" /tmp/t95h-ttyd.key &&
+ mv "$work/cert.pem" /tmp/t95h-ttyd.crt
+ local result=$?
+ rm -rf "$work"
+ return "$result"
+}

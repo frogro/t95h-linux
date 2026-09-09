@@ -24,6 +24,14 @@ def check():
         assert 'CONFIG_XRADIO=y' in cfg, profile+': internal WLAN missing'
         assert 'CONFIG_SND=y' in cfg, profile+': base audio missing'
         assert 'CONFIG_DRM=y' in cfg, profile+': base display missing'
+    runtime=json.loads((board/'openwrt/runtime-lock.json').read_text())
+    expected=set(runtime['files'])
+    actual={str(p.relative_to(board)) for p in (board/'openwrt/runtime').rglob('*') if p.is_file()}
+    assert actual==expected, 'Runtime inventory mismatch'
+    for name, entry in runtime['files'].items():
+        p=board/name
+        assert not p.is_symlink() and digest(p)==entry['sha256'], 'Runtime hash mismatch: '+name
+        assert (p.stat().st_mode & 0o777)==int(entry['mode'],8), 'Runtime permissions mismatch: '+name
     tracked=subprocess.check_output(['git','ls-files','-z'],cwd=ROOT).decode().split('\0')
     for name in filter(None,tracked):
         p=ROOT/name

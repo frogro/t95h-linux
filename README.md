@@ -43,3 +43,15 @@ Noch zu ersetzen: die lokale Abhängigkeit von einem Vorgängerimage. Bootquelle
 Toolchain, Firmware/Lizenzen, Profil-DTS, Dienste und OpenWrt-Pakete müssen zu einem
 vollständigen eigenständigen Build verbunden werden. Widersprüchlich gelesene alte
 Artefakte werden nicht als Release-Ausgangsbasis hochgeladen.
+
+## Standardzugang
+
+AP **openwrt**, WLAN-Passwort **openwrtopenwrt**; SSH/LuCI **root / openwrt**.
+WLAN-Adresse **192.168.50.1**, Ethernet per DHCP. Diese öffentlichen Standards
+gehören zur Erstinstallation. Eigene Zugangsdaten lassen sich mit
+`python3 installer/t95h.py access` lokal vorbereiten.
+[Zugangsregeln und Implementierungsstand](docs/default-access.md).
+
+Die [frische Paketstufe](docs/fresh-rootfs.md) installiert die gewählten Pakete
+in einen leeren Ordner. Der erste lokale Basis+A+B-Test mit 252 Paketen ist
+bestanden; Postinstall und vollständige Image-Erzeugung sind noch anzubinden.

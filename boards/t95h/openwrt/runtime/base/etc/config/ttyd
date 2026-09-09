@@ -1,0 +1,9 @@
+config ttyd
+ option enable '1'
+ option port '7681'
+ option ssl '1'
+ option ssl_cert '/tmp/t95h-ttyd.crt'
+ option ssl_key '/tmp/t95h-ttyd.key'
+ option check_origin '1'
+ option credential 'root:openwrt'
+ option command '/bin/login'
