@@ -1,3 +1,4 @@
+# Build dependencies use Ubuntu sources only; unrelated runner browser repositories must not block builds.
 name: Build T95H install image and sysupgrade
 on:
   workflow_dispatch:
@@ -25,8 +26,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Install build dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential bc bison flex libssl-dev libelf-dev libncurses-dev device-tree-compiler python3-libfdt kmod rsync cpio xz-utils zstd unzip file gawk gettext swig python3-dev e2fsprogs dosfstools mtools fakeroot busybox qemu-user-static
+          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" update
+          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" install -y build-essential bc bison flex libssl-dev libelf-dev libncurses-dev device-tree-compiler python3-libfdt kmod rsync cpio xz-utils zstd unzip file gawk gettext swig python3-dev e2fsprogs dosfstools mtools fakeroot busybox qemu-user-static
       - name: Check sources, profiles and boot retry
         run: |
           python3 tools/check-repository.py

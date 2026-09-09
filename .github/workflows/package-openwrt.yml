@@ -1,3 +1,4 @@
+# Build dependencies use Ubuntu sources only; unrelated runner browser repositories must not block builds.
 name: Package locked T95H OpenWrt install and upgrade pair
 on:
   workflow_call:
@@ -24,7 +25,7 @@ jobs:
           name: ${{ inputs.artifact }}
           path: locked-input
       - name: Install filesystem tools
-        run: sudo apt-get update && sudo apt-get install -y e2fsprogs busybox
+        run: sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" update && sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" install -y e2fsprogs busybox
       - name: Package once from locked input
         env:
           SOURCE_DATE_EPOCH: ${{ inputs.source_date_epoch }}
