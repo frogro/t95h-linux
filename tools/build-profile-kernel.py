@@ -12,6 +12,8 @@ import subprocess
 import time
 
 ROOT=Path(__file__).resolve().parents[1]
+# Kconfig def_bool probes of host tools, not requested target drivers/features.
+HOST_PROBES={'CONFIG_OPENSSL_SUPPORTS_ML_DSA','CONFIG_PAHOLE_HAS_LANG_EXCLUDE'}
 def sha(p):
  with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
 def main():
@@ -57,7 +59,9 @@ def main():
   with (out/'build.log').open('w') as log:
    subprocess.run(cmd+['olddefconfig'],cwd=source,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
    actual=(out/'.config').read_text();requested={l for l in cfg.splitlines() if re.fullmatch(r'CONFIG_[A-Za-z0-9_]+=[ym]',l)}
-   missing=sorted(requested-set(actual.splitlines()))
+   host_probe_changes=sorted(l for l in requested-set(actual.splitlines()) if l.split('=')[0] in HOST_PROBES)
+   missing=sorted(l for l in requested-set(actual.splitlines()) if l.split('=')[0] not in HOST_PROBES)
+   (out/'host-probe-differences.json').write_text(json.dumps(host_probe_changes,indent=2)+'\n')
    if missing:raise ValueError('Selected kernel functions changed during configuration: '+repr(missing))
    status('compiling',compiler=version,compiler_sha256=sha(compiler),firmware=selected,config_sha256=sha(out/'.config'))
    print('Compiling one',a.profile,'kernel; log:',out/'build.log',flush=True)
