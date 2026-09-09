@@ -55,3 +55,8 @@ gehören zur Erstinstallation. Eigene Zugangsdaten lassen sich mit
 Die [frische Paketstufe](docs/fresh-rootfs.md) installiert die gewählten Pakete
 in einen leeren Ordner. Der erste lokale Basis+A+B-Test mit 252 Paketen ist
 bestanden; Postinstall und vollständige Image-Erzeugung sind noch anzubinden.
+
+Der separate Workflow **Verify pinned T95H kernel source** lädt das gesperrte
+Linux-Archiv von kernel.org, prüft SHA256 und spielt die Patches einmal in einen
+frischen Baum ein. Er lädt nur den Prüfbericht hoch, keinen Quellbaum und keine
+privaten Dateien. Auch dieser Schritt kompiliert noch keinen Kernel.

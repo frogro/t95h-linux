@@ -1,0 +1,32 @@
+name: Verify pinned T95H kernel source (no compilation)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - boards/t95h/kernel/**
+      - tools/prepare-kernel-source.py
+      - tools/download-kernel-archive.py
+      - .github/workflows/verify-kernel-source.yml
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Download and verify pinned archive
+        run: /usr/bin/python3 tools/download-kernel-archive.py --output build/downloads/kernel.tar.xz
+      - name: Replay consolidated patch and incremental WLAN fix
+        run: /usr/bin/python3 tools/prepare-kernel-source.py --archive build/downloads/kernel.tar.xz --output build/kernel-source
+      - name: Source-only result
+        run: |
+          printf '## Kernel source verified\nFresh archive and locked patches replayed once. No kernel compilation, hardware test or release image.\n' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-kernel-source-proof
+          path: |
+            build/kernel-source/source-report.json
+            build/kernel-source/patch.log
+          if-no-files-found: error
