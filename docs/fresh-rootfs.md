@@ -33,7 +33,7 @@ weiterhin ausdrücklich als nicht bootfertiges Entwicklungsartefakt.
 ## Noch zu verbinden
 
 - Abschließende Prüfung der Dienstabhängigkeiten und Profil-Vollständigkeit.
-- Gesperrte T95H-Runtime, profilgerechte Firmware und externe Module.
+- Profilgerechte Firmware und externe Module zum finalen Kernelpaket zusammenführen.
 - Lokale Konfigurationsdateien auf der Ziel-SD mit 0600; Git speichert nur das
   Executable-Bit, nicht solche vollständigen Dateirechte.
 - Öffentliches Root-Standardpasswort initialisieren, persönliche Schlüssel
@@ -45,3 +45,8 @@ weiterhin ausdrücklich als nicht bootfertiges Entwicklungsartefakt.
 
 Der alte Zusatztreiber und der bewährte Bootunterbau bleiben gesperrt, bis ihre
 Quellen, Abhängigkeiten und Signieranforderungen vollständig eingebunden sind.
+
+Die Rootfs-Vorbereitung ruft jetzt die eigenständige Profil-DTB-Ableitung auf
+und übernimmt USB-Autoload sowie den D-Bus-Startschutz aus der frisch installierten
+ModemManager-Version. Die abgeleitete ANA-Quelle muss weiterhin zusammen mit
+dem passenden Kernel kompiliert werden. Der Workflow prüft alle vier DT-Profile.

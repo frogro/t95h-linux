@@ -34,7 +34,7 @@ def main():
  out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
  root=out/'root';shutil.copytree(source/'root',root,symlinks=True)
  (out/'tmp').mkdir();shutil.copytree(root/'boot',out/'kernel-boot',symlinks=True)
- env=dict(os.environ,STAGING_DIR_HOST=str(ib/'staging_dir/host'),TMPDIR=str(out/'tmp'),
+ env=dict(os.environ,STAGING_DIR=str(compiler.parent.parent),STAGING_DIR_HOST=str(ib/'staging_dir/host'),TMPDIR=str(out/'tmp'),
           TZ='UTC',LC_ALL='C',SOURCE_DATE_EPOCH=str(a.epoch),
           PATH=str(ib/'staging_dir/host/bin')+':'+os.environ['PATH'])
  def run(command,**kwargs):
@@ -58,6 +58,13 @@ def main():
   src=board/name;dst=destination(rel);shutil.copyfile(src,dst)
   mode=0o600 if str(rel).startswith('etc/config/') else int(entry['mode'],8)
   dst.chmod(mode);runtime[str(rel)]=sha(dst)
+ # Derive profile DT and start fixes from repository sources and this package root.
+ run(['python3',ROOT/'tools/stage-startup-fixes.py','--profile',proof['profile'],
+      '--rootfs',root,'--output',out/'startup'])
+ for src in (out/'startup/overlay').rglob('*'):
+  if src.is_file():
+   dst=destination(src.relative_to(out/'startup/overlay'));shutil.copyfile(src,dst);dst.chmod(0o644)
+ shutil.copyfile(out/'startup/t95h.dtb',out/'kernel-boot/t95h.dtb')
  # Standard credentials are public defaults; never copy a device's shadow or keys.
  shadow=destination('etc/shadow')
  hashed=subprocess.run(['openssl','passwd','-6','-salt','t95hdefault','-stdin'],input='openwrt\n',text=True,capture_output=True,check=True).stdout.strip()
@@ -90,7 +97,7 @@ def main():
          'kernel_source_release_validated':False,
          'compiler_sha256':sha(compiler),
          'remaining':['Profile DT and firmware verification','Kernel rebuild with selected source patch',
-                      'USB autoload and ModemManager guard','GPU startup without AP','Bootchain and image pair']}
+                      'Rebuild matching external ANA provider from startup/ana','GPU startup without AP','Bootchain and image pair']}
  (out/'rootfs-report.json').write_text(json.dumps(report,indent=2)+'\n')
  print('PASS: postinstall, board services and default access prepared; image not ready.')
 if __name__=='__main__':main()

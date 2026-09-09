@@ -7,3 +7,18 @@
 Die neue Binärdarstellung unterscheidet sich von der durch libfdt nachbearbeiteten Referenz. 234 Knoten und 1221 Eigenschaften sind vollständig inhaltsgleich. Der Nachweis ist keine Bytegleichheit und kein neuer Hardwaretest. Für Releases ist die dtc-Version zu sperren. Phandle-Zahlen sind Referenzwerte dieses vollständigen Baums und dürfen nicht manuell umnummeriert werden.
 
 Audio bleibt Basis: Mainline-Analogcodec mit Line-Out, AHUB-HDMI mit koordinierter PLL-/Modultaktbelegung und passendem BCLK-Treiberquirk. Optionale zusätzliche Vendor-I2S-Knoten aus dem historischen digitalen Audiopatch wurden nie integriert und werden hier nicht ergänzt. Kein Hörtest auf Benutzerwunsch; der Status bezieht sich auf Quellen, Konfiguration und gespeicherte technische Befunde, nicht akustische Bestätigung.
+
+## Profilableitung für Actions
+
+`tools/stage-startup-fixes.py` erstellt die Referenz selbst und leitet Basis,
+Basis+A, Basis+B oder Basis+A+B daraus ab. Ohne B werden nur GPU, Videoengine
+und deren PPU deaktiviert. HDMI-Konsole, Analog-/HDMI-Audio und die gemeinsame
+Versorgungsbeschreibung bleiben erhalten. In allen Profilen wird ausschließlich
+der veraltete Display-I2C-Client deaktiviert, nicht der vom FD655-Helfer benötigte
+Bus. Mit B wird der passende private PPU-Compatible gesetzt.
+
+Der Regressionstest vergleicht für alle vier Profile sämtliche Eigenschaften
+mit der Referenz plus der ausdrücklich erlaubten Änderungsliste. Das ist eine
+Quellprüfung und kein erneuter Hardwaretest. Für A stammt die ModemManager-Datei
+jetzt aus dem frisch installierten Paket, nicht aus einem alten Image. Wenn die
+Patchstelle upstream verändert wurde, bricht die Vorbereitung zur Prüfung ab.

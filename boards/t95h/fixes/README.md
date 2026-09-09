@@ -1,7 +1,10 @@
 # Startup corrections after the dual-console test
 
-Apply tools/stage-startup-fixes.py after profile DT/overlay staging. The tested
-reference DT and external source remain immutable; the tool produces a derivative
+Run `tools/stage-startup-fixes.py --profile base-A-B --output build/startup`
+to build directly from repository sources; no previous image or parent project
+folder is needed. Add `--rootfs PATH` to the newly installed package root to
+also stage the ModemManager correction for A. Without it the report explicitly
+marks that correction pending. The tested reference DT and external source remain immutable; the tool produces a derivative
 DT, the PPU module source for B, and the ModemManager overlay for A.
 
 * All profiles: disable only /i2c-display/display@24. Keep its i2c-gpio parent
