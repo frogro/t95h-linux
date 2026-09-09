@@ -1,0 +1,2174 @@
+[
+  {
+    "name": "alsa-lib",
+    "version": "1.2.11-r1",
+    "description": "This is the library package for alsa, needed by some userspace programs. You must have enabled the ALSA support in the kernel.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/libs/alsa-lib",
+    "url": "https://www.alsa-project.org/",
+    "file-size": 418033
+  }, {
+    "name": "alsa-ucm-conf",
+    "version": "1.2.11-r1",
+    "description": "This is a set of configuration files needed for some ALS utilities like alsactl.",
+    "arch": "noarch",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/libs/alsa-ucm-conf",
+    "url": "https://www.alsa-project.org/",
+    "file-size": 84373
+  }, {
+    "name": "alsa-utils",
+    "version": "1.2.11-r1",
+    "description": "ALSA (Advanced Linux Sound Architecture) utilities",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/sound/alsa-utils",
+    "url": "https://www.alsa-project.org/",
+    "file-size": 145399
+  }, {
+    "name": "apk-mbedtls",
+    "version": "3.0.5-r3",
+    "description": "apk package manager (mbedtls)",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-only",
+    "origin": "feeds/base/system/apk",
+    "url": "https://gitlab.alpinelinux.org/alpine/apk-tools.git",
+    "file-size": 126702
+  }, {
+    "name": "base-files",
+    "version": "1711~f5dae5ece4",
+    "description": "This package contains a base filesystem and system scripts for OpenWrt.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/base-files",
+    "url": "http://openwrt.org/",
+    "file-size": 58301
+  }, {
+    "name": "block-mount",
+    "version": "2026.05.23~16718b6e-r1",
+    "description": "Block device mounting and checking",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/fstools",
+    "file-size": 25021
+  }, {
+    "name": "busybox",
+    "version": "1.37.0-r6",
+    "description": "The Swiss Army Knife of embedded Linux. It slices, it dices, it makes Julian Fries.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/utils/busybox",
+    "url": "http://busybox.net/",
+    "file-size": 239371
+  }, {
+    "name": "ca-bundle",
+    "version": "20260601-r1",
+    "description": "System CA certificates as a bundle",
+    "arch": "noarch",
+    "license": "GPL-2.0-or-later MPL-2.0",
+    "origin": "feeds/base/system/ca-certificates",
+    "file-size": 107742
+  }, {
+    "name": "cgi-io",
+    "version": "2026.07.21~31cb3c89-r1",
+    "description": "This package contains an cgi utility that is useful for up/downloading files",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/net/cgi-io",
+    "file-size": 10158
+  }, {
+    "name": "coreutils",
+    "version": "9.9-r2",
+    "description": "Full versions of standard GNU utilities. If an equivalent Busybox applet is available, you should consider compiling that instead as Busybox applets are usually smaller, at the expense of reduced functionality.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-or-later",
+    "origin": "feeds/packages/feeds/packages/utils/coreutils",
+    "url": "https://www.gnu.org/software/coreutils/",
+    "file-size": 765
+  }, {
+    "name": "coreutils-od",
+    "version": "9.9-r2",
+    "description": "Full version of standard GNU od utility.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-or-later",
+    "origin": "feeds/packages/feeds/packages/utils/coreutils",
+    "url": "https://www.gnu.org/software/coreutils/",
+    "file-size": 36865
+  }, {
+    "name": "curl",
+    "version": "8.19.0-r2",
+    "description": "A client-side URL transfer utility",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/net/curl",
+    "url": "https://curl.se/",
+    "file-size": 74472
+  }, {
+    "name": "dnsmasq-full",
+    "version": "2.93-r1",
+    "description": "It is intended to provide coupled DNS and DHCP service to a LAN. This is a fully configurable variant with DHCPv4, DHCPv6, DNSSEC, Authoritative DNS and nftset, Conntrack support & NO_ID enabled by default.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/services/dnsmasq",
+    "url": "http://www.thekelleys.org.uk/dnsmasq/",
+    "file-size": 214527
+  }, {
+    "name": "dropbear",
+    "version": "2025.89-r3",
+    "description": "A small SSH2 server/client designed for small memory environments.",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/base/network/services/dropbear",
+    "url": "https://matt.ucc.asn.au/dropbear/",
+    "file-size": 117194
+  }, {
+    "name": "e2fsprogs",
+    "version": "1.47.3-r1",
+    "description": "This package contains essential ext2 filesystem utilities which consists of e2fsck, mke2fs and most of the other core ext2 filesystem utilities.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/utils/e2fsprogs",
+    "url": "http://e2fsprogs.sourceforge.net/",
+    "file-size": 184415
+  }, {
+    "name": "ethtool",
+    "version": "6.15-r1",
+    "description": "ethtool is a small utility for examining and tuning your ethernet-based network interface",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/utils/ethtool",
+    "url": "http://www.kernel.org/pub/software/network/ethtool/",
+    "file-size": 43836
+  }, {
+    "name": "firewall4",
+    "version": "2025.03.17~b6e51575-r2",
+    "description": "This package provides an nftables-based implementation of the UCI firewall sharing the same configuration format.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/network/config/firewall4",
+    "file-size": 30950
+  }, {
+    "name": "fstools",
+    "version": "2026.05.23~16718b6e-r1",
+    "description": "OpenWrt filesystem tools",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/fstools",
+    "file-size": 21337
+  }, {
+    "name": "fwtool",
+    "version": "2025.10.03~04cd252e-r1",
+    "description": "Utility for appending and extracting firmware metadata and signatures",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/fwtool",
+    "file-size": 4573
+  }, {
+    "name": "getrandom",
+    "version": "2025.10.30~6f78fa49-r1",
+    "description": "OpenWrt getrandom system helper",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/ubox",
+    "file-size": 2148
+  }, {
+    "name": "glib2",
+    "version": "2.82.0-r1",
+    "description": "The GLib library of C routines",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/libs/glib2",
+    "url": "http://www.gtk.org/",
+    "file-size": 1254171
+  }, {
+    "name": "gst1-mod-adder",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer adder plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 12149
+  }, {
+    "name": "gst1-mod-alsa",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer ALSA audio source/sink plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 23872
+  }, {
+    "name": "gst1-mod-app",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer app plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 2051
+  }, {
+    "name": "gst1-mod-audioconvert",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer audio format conversion plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 10085
+  }, {
+    "name": "gst1-mod-audiomixer",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer audio mixing plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 10838
+  }, {
+    "name": "gst1-mod-audiorate",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer audio rate adjusting plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 6501
+  }, {
+    "name": "gst1-mod-audioresample",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer audio resampling plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 8446
+  }, {
+    "name": "gst1-mod-audiotestsrc",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer audio test plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 13123
+  }, {
+    "name": "gst1-mod-compositor",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer video compositor plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 26004
+  }, {
+    "name": "gst1-mod-encoding",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer encoding plugin plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 24252
+  }, {
+    "name": "gst1-mod-gio",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer GIO plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 13921
+  }, {
+    "name": "gst1-mod-ivorbisdec",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer Integer Vorbis decoder plugin for devices without floating point plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 6778
+  }, {
+    "name": "gst1-mod-jpeg",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer jpeg support plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-good",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 15191
+  }, {
+    "name": "gst1-mod-ogg",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer ogg parser muxer demuxer plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 47822
+  }, {
+    "name": "gst1-mod-opengl",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer GL plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 96309
+  }, {
+    "name": "gst1-mod-opus",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer OPUS audio codec plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 16506
+  }, {
+    "name": "gst1-mod-overlaycomposition",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer overlay composition plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 7082
+  }, {
+    "name": "gst1-mod-pbtypes",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer pbtypes plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 1940
+  }, {
+    "name": "gst1-mod-playback",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer playback plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 139537
+  }, {
+    "name": "gst1-mod-rawparse",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer parse raw media plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 14834
+  }, {
+    "name": "gst1-mod-rtp",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer RTP plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-good",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 165251
+  }, {
+    "name": "gst1-mod-rtpmanager",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer RTP manager plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-good",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 124337
+  }, {
+    "name": "gst1-mod-subparse",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer subparse plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 27827
+  }, {
+    "name": "gst1-mod-tcp",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer TCP plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 28381
+  }, {
+    "name": "gst1-mod-theora",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer Theora plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 17198
+  }, {
+    "name": "gst1-mod-typefindfunctions",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer 'typefind' functions plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 37919
+  }, {
+    "name": "gst1-mod-udp",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer UDP plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-good",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 25411
+  }, {
+    "name": "gst1-mod-video4linux2",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer video4linux2 support plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-good",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 86595
+  }, {
+    "name": "gst1-mod-videoconvertscale",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer video format conversion and scaling plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 14449
+  }, {
+    "name": "gst1-mod-videoparsersbad",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer videoparsersbad support plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-bad",
+    "url": "http://gstreamer.freedesktop.org/",
+    "file-size": 79907
+  }, {
+    "name": "gst1-mod-videorate",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer Adjusts video frames plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 12737
+  }, {
+    "name": "gst1-mod-videotestsrc",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer video test plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 20519
+  }, {
+    "name": "gst1-mod-volume",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer volume plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 8542
+  }, {
+    "name": "gst1-mod-vorbis",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer Vorbis plugin.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 16316
+  }, {
+    "name": "gst1-plugins-base",
+    "version": "1.26.4-r1",
+    "description": "GStreamer plugins collection (base)",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 1206
+  }, {
+    "name": "gstreamer1",
+    "version": "1.26.4-r2",
+    "description": "GStreamer (All libraries)",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gstreamer1",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 732
+  }, {
+    "name": "gstreamer1-libs",
+    "version": "1.26.4-r2",
+    "description": "GStreamer open source multimedia framework . This meta package contains only dependencies on the other GStreamer componenents.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gstreamer1",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 751
+  }, {
+    "name": "gstreamer1-plugins-base",
+    "version": "1.26.4-r1",
+    "description": "GStreamer plugins collection (base)",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 727
+  }, {
+    "name": "gstreamer1-utils",
+    "version": "1.26.4-r2",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer utilities.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gstreamer1",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 35153
+  }, {
+    "name": "hostapd-common",
+    "version": "2025.08.26~ca266cc2-r2",
+    "description": "hostapd/wpa_supplicant common support files",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/base/network/services/hostapd",
+    "file-size": 1719
+  }, {
+    "name": "htop",
+    "version": "3.5.1-r1",
+    "description": "Htop is an ncursed-based process viewer similar to top, but it allows to scroll the list vertically and horizontally to see all processes and their full command lines.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/admin/htop",
+    "url": "https://hisham.hm/htop/",
+    "file-size": 132148
+  }, {
+    "name": "ip-full",
+    "version": "6.18.0-r2",
+    "description": "Routing control utility (full)",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/utils/iproute2",
+    "url": "http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2",
+    "file-size": 240379
+  }, {
+    "name": "iputils-ping",
+    "version": "20250605-r1",
+    "description": "Send ICMP_ECHOREQUEST packets to IP hosts and report on replies",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/net/iputils",
+    "url": "https://github.com/iputils/iputils",
+    "file-size": 32055
+  }, {
+    "name": "iw-full",
+    "version": "6.17-r1",
+    "description": "cfg80211 interface configuration utility (full version)",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/utils/iw",
+    "url": "http://wireless.kernel.org/en/users/Documentation/iw",
+    "file-size": 98435
+  }, {
+    "name": "jansson4",
+    "version": "2.14.1-r1",
+    "description": "Jansson is a C library for encoding, decoding and manipulating JSON data",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/base/libs/jansson",
+    "url": "http://www.digip.org/jansson/",
+    "file-size": 49094,
+    "tags": [
+      "openwrt:abiversion=4"
+    ]
+  }, {
+    "name": "jshn",
+    "version": "2026.06.19~7dd12784-r1",
+    "description": "Library for parsing and generating JSON from shell scripts",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/libs/libubox",
+    "file-size": 7450
+  }, {
+    "name": "jsonfilter",
+    "version": "2026.03.16~b9034210-r1",
+    "description": "OpenWrt JSON filter utility",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/jsonfilter",
+    "url": "https://git.openwrt.org/project/jsonpath.git",
+    "file-size": 11025
+  }, {
+    "name": "kmscube",
+    "version": "2024.11.06~311eaaaa-r1",
+    "description": "kmscube KMS/DRM/EGL example",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/video/feeds/video/utils/kmscube",
+    "url": "https://www.mesa3d.org",
+    "file-size": 107311
+  }, {
+    "name": "libatomic1",
+    "version": "14.3.0-r5",
+    "description": "Atomic support library",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-with-GCC-exception",
+    "origin": "feeds/base/libs/toolchain",
+    "url": "http://gcc.gnu.org/",
+    "file-size": 7797,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libattr",
+    "version": "2.5.2-r3",
+    "description": "Extended attributes support This package provides libattr",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/utils/attr",
+    "url": "http://savannah.nongnu.org/projects/attr",
+    "file-size": 7294
+  }, {
+    "name": "libblkid1",
+    "version": "2.41.5-r1",
+    "description": "The libblkid library is used to identify block devices (disks) as to their content (e.g. filesystem type, partitions) as well as extracting additional information such as filesystem labels/volume names, partitions, unique identifiers/serial numbers...",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/base/utils/util-linux",
+    "url": "https://www.kernel.org/pub/linux/utils/util-linux/",
+    "file-size": 122337,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libblobmsg-json20260213",
+    "version": "2026.06.19~7dd12784-r1",
+    "description": "blobmsg <-> json conversion library",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/libs/libubox",
+    "file-size": 4710,
+    "tags": [
+      "openwrt:abiversion=20260213"
+    ]
+  }, {
+    "name": "libbpf1",
+    "version": "1.6.2-r1",
+    "description": "libbpf is a library for loading eBPF programs and reading and manipulating eBPF objects from user-space.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1 OR BSD-2-Clause",
+    "origin": "feeds/base/libs/libbpf",
+    "url": "http://www.kernel.org",
+    "file-size": 164515,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libc",
+    "version": "1.2.5-r5",
+    "description": "C library",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-with-GCC-exception",
+    "origin": "feeds/base/libs/toolchain",
+    "url": "http://www.musl-libc.org/",
+    "file-size": 297299
+  }, {
+    "name": "libcap",
+    "version": "2.69-r1",
+    "description": "Linux capabilities library library",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-only",
+    "origin": "feeds/base/libs/libcap",
+    "url": "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/",
+    "file-size": 16248
+  }, {
+    "name": "libcomerr0",
+    "version": "1.47.3-r1",
+    "description": "This package contains libcom_err, the common error description library bundled with e2fsprogs.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/utils/e2fsprogs",
+    "url": "http://e2fsprogs.sourceforge.net/",
+    "file-size": 4732,
+    "tags": [
+      "openwrt:abiversion=0"
+    ]
+  }, {
+    "name": "libcurl4",
+    "version": "8.19.0-r2",
+    "description": "A client-side URL transfer library",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/net/curl",
+    "url": "https://curl.se/",
+    "file-size": 246179,
+    "tags": [
+      "openwrt:abiversion=4"
+    ]
+  }, {
+    "name": "libdrm",
+    "version": "2.4.123-r2",
+    "description": "LIBDRM is the cross-driver middleware which allows user-space applications (such as Mesa and 2D drivers) to communicate with the Kernel by the means of the DRI protocol.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/libs/libdrm",
+    "url": "https://dri.freedesktop.org/",
+    "file-size": 33784
+  }, {
+    "name": "libe2p2",
+    "version": "1.47.3-r1",
+    "description": "This package contains libe2p, ext2fs userspace programs utility library bundled with e2fsprogs.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/utils/e2fsprogs",
+    "url": "http://e2fsprogs.sourceforge.net/",
+    "file-size": 13350,
+    "tags": [
+      "openwrt:abiversion=2"
+    ]
+  }, {
+    "name": "libelf1",
+    "version": "0.192-r1",
+    "description": "ELF manipulation libraries (libelf)",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later OR LGPL-3.0-or-later",
+    "origin": "feeds/base/libs/elfutils",
+    "url": "https://fedorahosted.org/elfutils/",
+    "file-size": 42326,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libevdev",
+    "version": "1.13.4-r1",
+    "description": "libevdev is a wrapper library for evdev devices. it moves the common tasks when dealing with evdev devices into a library and provides a library interface to the callers, thus avoiding erroneous ioctls, etc. The eventual goal is that libevdev wraps all ioctls available to evdev devices, thus making direct access unnecessary.",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/libs/libevdev",
+    "url": "https://www.freedesktop.org/wiki/Software/libevdev/",
+    "file-size": 26310
+  }, {
+    "name": "libevent2-7",
+    "version": "2.1.12-r2",
+    "description": "The libevent API provides a mechanism to execute a callback function when a specific event occurs on a file descriptor or after a timeout has been reached. Furthermore, libevent also support callbacks due to signals or regular timeouts. libevent is meant to replace the event loop found in event driven network servers. An application just needs to call event_dispatch() and then add or remove events dynamically without having to change the event loop. This package contains the libevent shared library historic",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/base/libs/libevent2",
+    "url": "http://libevent.org",
+    "file-size": 111812,
+    "tags": [
+      "openwrt:abiversion=-7"
+    ]
+  }, {
+    "name": "libevent2-core7",
+    "version": "2.1.12-r2",
+    "description": "The libevent API provides a mechanism to execute a callback function when a specific event occurs on a file descriptor or after a timeout has been reached. Furthermore, libevent also support callbacks due to signals or regular timeouts. libevent is meant to replace the event loop found in event driven network servers. An application just needs to call event_dispatch() and then add or remove events dynamically without having to change the event loop. This package contains the libevent core shared library for",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/base/libs/libevent2",
+    "url": "http://libevent.org",
+    "file-size": 65165,
+    "tags": [
+      "openwrt:abiversion=7"
+    ]
+  }, {
+    "name": "libevent2-pthreads7",
+    "version": "2.1.12-r2",
+    "description": "The libevent API provides a mechanism to execute a callback function when a specific event occurs on a file descriptor or after a timeout has been reached. Furthermore, libevent also support callbacks due to signals or regular timeouts. libevent is meant to replace the event loop found in event driven network servers. An application just needs to call event_dispatch() and then add or remove events dynamically without having to change the event loop. This package contains the libevent Pthreads shared library",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/base/libs/libevent2",
+    "url": "http://libevent.org",
+    "file-size": 2854,
+    "tags": [
+      "openwrt:abiversion=7"
+    ]
+  }, {
+    "name": "libexpat",
+    "version": "2.8.2-r1",
+    "description": "A fast, non-validating, stream-oriented XML parsing library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/libs/expat",
+    "url": "https://libexpat.github.io/",
+    "file-size": 51944
+  }, {
+    "name": "libext2fs2",
+    "version": "1.47.3-r1",
+    "description": "libext2fs is a library which can access ext2, ext3 and ext4 filesystems.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/utils/e2fsprogs",
+    "url": "http://e2fsprogs.sourceforge.net/",
+    "file-size": 188494,
+    "tags": [
+      "openwrt:abiversion=2"
+    ]
+  }, {
+    "name": "libf2fs6",
+    "version": "1.16.0-r4",
+    "description": "Library for Flash-Friendly File System (F2FS) tools",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-only",
+    "origin": "feeds/base/utils/f2fs-tools",
+    "file-size": 42415,
+    "tags": [
+      "openwrt:abiversion=6"
+    ]
+  }, {
+    "name": "libffi",
+    "version": "3.4.7-r1",
+    "description": "The libffi library provides a portable, high level programming interface to various calling conventions. This allows a programmer to call any function specified by a call interface description at run-time. FFI stands for Foreign Function Interface. A foreign function interface is the popular name for the interface that allows code written in one language to call code written in another language. The libffi library really only provides the lowest, machine dependent layer of a fully featured foreign function ",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/libs/libffi",
+    "url": "https://sourceware.org/libffi/",
+    "file-size": 17331
+  }, {
+    "name": "libgcc1",
+    "version": "14.3.0-r5",
+    "description": "GCC support library",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-with-GCC-exception",
+    "origin": "feeds/base/libs/toolchain",
+    "url": "http://gcc.gnu.org/",
+    "file-size": 50219,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libgmp10",
+    "version": "6.3.0-r2",
+    "description": "GMP is a free library for arbitrary precision arithmetic, operating on signed integers, rational numbers, and floating point numbers.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/base/libs/gmp",
+    "url": "http://gmplib.org/",
+    "file-size": 222020,
+    "tags": [
+      "openwrt:abiversion=10"
+    ]
+  }, {
+    "name": "libgraphene",
+    "version": "2025.01.23~47b503d6-r1",
+    "description": "A thin layer of types for graphic libraries",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/video/feeds/video/libs/graphene",
+    "url": "https://github.com/ebassi/graphene",
+    "file-size": 129909
+  }, {
+    "name": "libgst1allocators",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer allocators library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 7873
+  }, {
+    "name": "libgst1app",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer app library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 20361
+  }, {
+    "name": "libgst1audio",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer audio library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 111770
+  }, {
+    "name": "libgst1check",
+    "version": "1.26.4-r2",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer check unit testing library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gstreamer1",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 49254
+  }, {
+    "name": "libgst1codecparsers",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer codecparsers library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-bad",
+    "url": "http://gstreamer.freedesktop.org/",
+    "file-size": 141215
+  }, {
+    "name": "libgst1controller",
+    "version": "1.26.4-r2",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer dynamic parameter control library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gstreamer1",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 18762
+  }, {
+    "name": "libgst1fft",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer FFT library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 13111
+  }, {
+    "name": "libgst1gl",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer gl library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 147605
+  }, {
+    "name": "libgst1net",
+    "version": "1.26.4-r2",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer network classes library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gstreamer1",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 27892
+  }, {
+    "name": "libgst1pbutils",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer utils library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 70974
+  }, {
+    "name": "libgst1riff",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer RIFF media library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 19028
+  }, {
+    "name": "libgst1rtp",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer RTP library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 45646
+  }, {
+    "name": "libgst1rtsp",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer RTSP library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 47505
+  }, {
+    "name": "libgst1sdp",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer SDP library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 29460
+  }, {
+    "name": "libgst1tag",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer tag support library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 62567
+  }, {
+    "name": "libgst1video",
+    "version": "1.26.4-r1",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer video library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gst1-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 192969
+  }, {
+    "name": "libgstreamer1",
+    "version": "1.26.4-r2",
+    "description": "GStreamer open source multimedia framework . This package contains the GStreamer core library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/multimedia/gstreamer1",
+    "url": "https://gstreamer.freedesktop.org/",
+    "file-size": 601606
+  }, {
+    "name": "libgudev",
+    "version": "238-r1",
+    "description": "This is libgudev, a library providing GObject bindings for libudev. It used to be part of udev, then merged into systemd. It's now a project on its own.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/packages/feeds/packages/libs/libgudev",
+    "url": "https://gitlab.gnome.org/GNOME/libgudev",
+    "file-size": 11387
+  }, {
+    "name": "libiwinfo-data",
+    "version": "2026.01.14~f5dd57a8-r1",
+    "description": "libiwinfo Lua binding",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/utils/iwinfo",
+    "file-size": 3760
+  }, {
+    "name": "libiwinfo20230701",
+    "version": "2026.01.14~f5dd57a8-r1",
+    "description": "Wireless information library with simplified API for nl80211 and wext driver interfaces.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/utils/iwinfo",
+    "file-size": 29308,
+    "tags": [
+      "openwrt:abiversion=20230701"
+    ]
+  }, {
+    "name": "libjpeg-turbo",
+    "version": "3.1.1-r1",
+    "description": "libjpeg-turbo is a speed focused fork of libjpeg.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause IJG zlib",
+    "origin": "feeds/packages/feeds/packages/libs/libjpeg-turbo",
+    "url": "https://www.libjpeg-turbo.org/",
+    "file-size": 179896
+  }, {
+    "name": "libjson-c5",
+    "version": "0.18-r1",
+    "description": "This package contains a library for javascript object notation backends.",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/base/libs/libjson-c",
+    "url": "https://json-c.github.io/json-c/",
+    "file-size": 32904,
+    "tags": [
+      "openwrt:abiversion=5"
+    ]
+  }, {
+    "name": "libjson-script20260213",
+    "version": "2026.06.19~7dd12784-r1",
+    "description": "Minimalistic JSON based scripting engine",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/libs/libubox",
+    "file-size": 5873,
+    "tags": [
+      "openwrt:abiversion=20260213"
+    ]
+  }, {
+    "name": "liblucihttp-ucode",
+    "version": "2023.03.15~9b5b683f-r1",
+    "description": "ucode binding for the LuCI HTTP utility library",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/luci/feeds/luci/contrib/package/lucihttp",
+    "file-size": 4409
+  }, {
+    "name": "liblucihttp0",
+    "version": "2023.03.15~9b5b683f-r1",
+    "description": "LuCI HTTP utility library",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/luci/feeds/luci/contrib/package/lucihttp",
+    "file-size": 8416,
+    "tags": [
+      "openwrt:abiversion=0"
+    ]
+  }, {
+    "name": "libmbedtls21",
+    "version": "3.6.7-r1",
+    "description": "The aim of the mbedtls project is to provide a quality, open-source cryptographic library written in C and targeted at embedded systems. This package contains the mbedtls library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/base/libs/mbedtls",
+    "url": "https://www.trustedfirmware.org/projects/mbed-tls/",
+    "file-size": 342481,
+    "tags": [
+      "openwrt:abiversion=21"
+    ]
+  }, {
+    "name": "libmesa-panfrost",
+    "version": "25.2.4-r2",
+    "description": "The Panfrost driver stack includes an OpenGL ES implementation for Arm Mali GPUs based on the Midgard, Bifrost and Valhall microarchitectures. It is conformant on Mali-G52, Mali-G57 and Mali-G610, but non-conformant on other GPUs. The following hardware is currently supported: Models Architecture OpenGL ES OpenGL T600, T620, T720 Midgard (v4) 2.0 2.1 T760, T820, T830 T860, T880 Midgard (v5) 3.1 3.1 G72 Bifrost (v6) 3.1 3.1 G31, G51, G52, G76 Bifrost (v7) 3.1 3.1 G57 Valhall (v9) 3.1 3.1 G310, G610 Valhall (",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/video/feeds/video/libs/mesa",
+    "url": "https://www.mesa3d.org",
+    "file-size": 16840140
+  }, {
+    "name": "libmnl0",
+    "version": "1.0.5-r1",
+    "description": "libmnl is a minimalistic user-space library oriented to Netlink developers. There are a lot of common tasks in parsing, validating, constructing of both the Netlink header and TLVs that are repetitive and easy to get wrong. This library aims to provide simple helpers that allows you to re-use code and to avoid re-inventing the wheel. The main features of this library are: . * Small: the shared library requires around 30KB for an x86-based computer. . * Simple: this library avoids complexity and elaborated a",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1+",
+    "origin": "feeds/base/libs/libmnl",
+    "url": "http://www.netfilter.org/projects/libmnl/",
+    "file-size": 8203,
+    "tags": [
+      "openwrt:abiversion=0"
+    ]
+  }, {
+    "name": "libncurses6",
+    "version": "6.4-r3",
+    "description": "Terminal handling library (Unicode)",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/base/libs/ncurses",
+    "url": "http://www.gnu.org/software/ncurses/",
+    "file-size": 177816,
+    "tags": [
+      "openwrt:abiversion=6"
+    ]
+  }, {
+    "name": "libnetfilter-conntrack3",
+    "version": "1.1.0-r1",
+    "description": "libnetfilter_conntrack is a userspace library providing a programming interface (API) to the in-kernel connection tracking state table. The library libnetfilter_conntrack has been previously known as libnfnetlink_conntrack and libctnetlink. This library is currently used by conntrack-tools among many other applications.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/base/libs/libnetfilter-conntrack",
+    "url": "http://www.netfilter.org/projects/libnetfilter_conntrack/",
+    "file-size": 40023,
+    "tags": [
+      "openwrt:abiversion=3"
+    ]
+  }, {
+    "name": "libnettle8",
+    "version": "3.10.2-r1",
+    "description": "GNU crypto library",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/base/libs/nettle",
+    "url": "https://www.lysator.liu.se/~nisse/nettle/",
+    "file-size": 356223,
+    "tags": [
+      "openwrt:abiversion=8"
+    ]
+  }, {
+    "name": "libnfnetlink0",
+    "version": "1.0.2-r1",
+    "description": "libnfnetlink is is the low-level library for netfilter related kernel/userspace communication. It provides a generic messaging infrastructure for in-kernel netfilter subsystems (such as nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their respective users and/or management tools in userspace.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0+",
+    "origin": "feeds/base/libs/libnfnetlink",
+    "url": "http://netfilter.org/projects/libnfnetlink/",
+    "file-size": 11069,
+    "tags": [
+      "openwrt:abiversion=0"
+    ]
+  }, {
+    "name": "libnftnl11",
+    "version": "1.3.1-r1",
+    "description": "libnftnl is a userspace library providing a low-level netlink programming interface (API) to the in-kernel nf_tables subsystem.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/base/libs/libnftnl",
+    "url": "http://www.netfilter.org/projects/libnftnl",
+    "file-size": 64153,
+    "tags": [
+      "openwrt:abiversion=11"
+    ]
+  }, {
+    "name": "libnghttp2-14",
+    "version": "1.70.0-r1",
+    "description": "HTTP/2 C Library",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/libs/nghttp2",
+    "file-size": 69567,
+    "tags": [
+      "openwrt:abiversion=-14"
+    ]
+  }, {
+    "name": "libnl-tiny1",
+    "version": "2025.12.02~40493a65-r1",
+    "description": "This package contains a stripped down version of libnl",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/libs/libnl-tiny",
+    "file-size": 17016,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libogg0",
+    "version": "1.3.5-r1",
+    "description": "Ogg project codecs use the Ogg bitstream format to arrange the raw, compressed bitstream into a more robust, useful form. For example, the Ogg bitstream makes seeking, time stamping and error recovery possible, as well as mixing several sepearate, concurrent media streams into a single physical bitstream.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/libs/libogg",
+    "url": "https://xiph.org/ogg/",
+    "file-size": 18476,
+    "tags": [
+      "openwrt:abiversion=0"
+    ]
+  }, {
+    "name": "libopenssl-conf",
+    "version": "3.5.7-r1",
+    "description": "The OpenSSL Project is a collaborative effort to develop a robust, commercial-grade, full-featured, and Open Source toolkit implementing the Transport Layer Security (TLS) protocol as well as a full-strength general-purpose cryptography library. This package installs the OpenSSL configuration file /etc/ssl/openssl.cnf.",
+    "arch": "aarch64_cortex-a53",
+    "license": "Apache-2.0",
+    "origin": "feeds/base/libs/openssl",
+    "url": "https://www.openssl.org/",
+    "file-size": 6558
+  }, {
+    "name": "libopenssl3",
+    "version": "3.5.7-r1",
+    "description": "The OpenSSL Project is a collaborative effort to develop a robust, commercial-grade, full-featured, and Open Source toolkit implementing the Transport Layer Security (TLS) protocol as well as a full-strength general-purpose cryptography library. This package contains the OpenSSL shared libraries, needed by other programs.",
+    "arch": "aarch64_cortex-a53",
+    "license": "Apache-2.0",
+    "origin": "feeds/base/libs/openssl",
+    "url": "https://www.openssl.org/",
+    "file-size": 2016920,
+    "tags": [
+      "openwrt:abiversion=3"
+    ]
+  }, {
+    "name": "libopus",
+    "version": "1.5.2-r1",
+    "description": "Opus is a totally open, royalty-free, highly versatile audio codec. Opus is unmatched for interactive speech and music transmission over the Internet, but is also intended for storage and streaming applications.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/libs/opus",
+    "url": "https://opus-codec.org",
+    "file-size": 193673
+  }, {
+    "name": "libpcre2",
+    "version": "10.47-r1",
+    "description": "A Perl Compatible Regular Expression library",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/base/libs/pcre2",
+    "url": "https://www.pcre.org/",
+    "file-size": 203555
+  }, {
+    "name": "libpng",
+    "version": "1.6.50-r1",
+    "description": "A PNG format files handling library",
+    "arch": "aarch64_cortex-a53",
+    "license": "Libpng GPL-2.0-or-later BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/libs/libpng",
+    "url": "http://www.libpng.org/pub/png/libpng.html",
+    "file-size": 96227
+  }, {
+    "name": "libpthread",
+    "version": "1.2.5-r5",
+    "description": "POSIX thread library",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-with-GCC-exception",
+    "origin": "feeds/base/libs/toolchain",
+    "url": "http://www.musl-libc.org/",
+    "file-size": 646
+  }, {
+    "name": "librt",
+    "version": "1.2.5-r5",
+    "description": "POSIX.1b RealTime extension library",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-with-GCC-exception",
+    "origin": "feeds/base/libs/toolchain",
+    "url": "http://www.musl-libc.org/",
+    "file-size": 657
+  }, {
+    "name": "libsensors5",
+    "version": "3.6.2-r6",
+    "description": "lm-sensors libraries",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/utils/lm-sensors",
+    "url": "https://hwmon.wiki.kernel.org/lm_sensors",
+    "file-size": 22473,
+    "tags": [
+      "openwrt:abiversion=5"
+    ]
+  }, {
+    "name": "libsmartcols1",
+    "version": "2.41.5-r1",
+    "description": "The smartcols library is used to print tables and trees in a pretty way.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/base/utils/util-linux",
+    "url": "https://www.kernel.org/pub/linux/utils/util-linux/",
+    "file-size": 62319,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libss2",
+    "version": "1.47.3-r1",
+    "description": "This pacakge contains libss, a command-line interface parsing library bundled with e2fsprogs.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/utils/e2fsprogs",
+    "url": "http://e2fsprogs.sourceforge.net/",
+    "file-size": 9306,
+    "tags": [
+      "openwrt:abiversion=2"
+    ]
+  }, {
+    "name": "libstdcpp6",
+    "version": "14.3.0-r5",
+    "description": "GNU Standard C++ Library v3",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-with-GCC-exception",
+    "origin": "feeds/base/libs/toolchain",
+    "url": "http://gcc.gnu.org/",
+    "file-size": 643416,
+    "tags": [
+      "openwrt:abiversion=6"
+    ]
+  }, {
+    "name": "libsysfs2",
+    "version": "2.1.0-r4",
+    "description": "The library's purpose is to provide a consistant and stable interface for querying system device information exposed through sysfs.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/libs/sysfsutils",
+    "url": "http://linux-diag.sourceforge.net/Sysfsutils.html",
+    "file-size": 14629,
+    "tags": [
+      "openwrt:abiversion=2"
+    ]
+  }, {
+    "name": "libtheora",
+    "version": "1.2.0-r2",
+    "description": "Theora is Xiph.Org's first publicly released video codec, intended for use within the Foundation's Ogg multimedia streaming system. Theora is derived directly from On2's VP3 codec; Currently the encoders are nearly identical, but Theora will make use of new features supported by the decoder to improve over what is is possible with VP3.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/libs/libtheora",
+    "url": "http://xiph.org/theora/",
+    "file-size": 191629
+  }, {
+    "name": "libubox20260213",
+    "version": "2026.06.19~7dd12784-r1",
+    "description": "Basic utility library",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/libs/libubox",
+    "file-size": 32905,
+    "tags": [
+      "openwrt:abiversion=20260213"
+    ]
+  }, {
+    "name": "libubus20251202",
+    "version": "2026.06.28~24864e78-r2",
+    "description": "OpenWrt RPC client library",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/system/ubus",
+    "file-size": 12988,
+    "tags": [
+      "openwrt:abiversion=20251202"
+    ]
+  }, {
+    "name": "libuci20250120",
+    "version": "2025.12.02~66127cd7-r1",
+    "description": "C library for the Unified Configuration Interface (UCI)",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/system/uci",
+    "file-size": 19570,
+    "tags": [
+      "openwrt:abiversion=20250120"
+    ]
+  }, {
+    "name": "libuclient20201210",
+    "version": "2026.06.07~daad21fa-r1",
+    "description": "HTTP/1.1 client library",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/libs/uclient",
+    "file-size": 12363,
+    "tags": [
+      "openwrt:abiversion=20201210"
+    ]
+  }, {
+    "name": "libucode20230711",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The libucode package provides the shared runtime library for the ucode interpreter.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 79600,
+    "tags": [
+      "openwrt:abiversion=20230711"
+    ]
+  }, {
+    "name": "libudebug",
+    "version": "2026.01.16~875e1a7a",
+    "description": "udebug client library",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/libs/udebug",
+    "file-size": 4967
+  }, {
+    "name": "libudev-zero",
+    "version": "1.0.4-r1",
+    "description": "Drop-in replacement for libudev",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/packages/feeds/packages/libs/libudev-zero",
+    "url": "https://github.com/illiliti/libudev-zero",
+    "file-size": 11241
+  }, {
+    "name": "libusb-1.0-0",
+    "version": "1.0.29-r1",
+    "description": "libusb is a C library that gives applications easy access to USB devices on many different operating systems.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/base/libs/libusb",
+    "url": "https://libusb.info/",
+    "file-size": 35529,
+    "tags": [
+      "openwrt:abiversion=-0"
+    ]
+  }, {
+    "name": "libustream-mbedtls20201210",
+    "version": "2026.03.01~99f1c0db-r1",
+    "description": "ustream SSL Library (mbedtls)",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/libs/ustream-ssl",
+    "file-size": 6557,
+    "tags": [
+      "openwrt:abiversion=20201210"
+    ]
+  }, {
+    "name": "libuuid1",
+    "version": "2.41.5-r1",
+    "description": "The UUID library is used to generate unique identifiers for objects that may be accessible beyond the local system. This library generates UUIDs compatible with those created by the Open Software Foundation (OSF) Distributed Computing Environment (DCE) utility.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/base/utils/util-linux",
+    "url": "https://www.kernel.org/pub/linux/utils/util-linux/",
+    "file-size": 14731,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libuv1",
+    "version": "1.48.0-r1",
+    "description": "libuv is a multi-platform support library with a focus on asynchronous I/O. It was primarily developed for use by Node.js, but it's also used by Luvit, Julia, pyuv, and others.",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/libs/libuv",
+    "url": "https://libuv.org/",
+    "file-size": 75757,
+    "tags": [
+      "openwrt:abiversion=1"
+    ]
+  }, {
+    "name": "libv4l",
+    "version": "1.30.1-r1",
+    "description": "libv4l is a collection of libraries which adds a thin abstraction layer on top of video4linux2 devices. The purpose of this (thin) layer is to make it easy for application writers to support a wide variety of devices without having to write separate code for different devices in the same class. libv4l consists of 3 different libraries: libv4lconvert, libv4l1 and libv4l2. libv4l1 offers the (deprecated) v4l1 API on top of v4l2 devices, independent of the drivers for those devices supporting v4l1 compatibilit",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/libs/v4l-utils",
+    "url": "https://www.linuxtv.org/",
+    "file-size": 86546
+  }, {
+    "name": "libvorbis",
+    "version": "1.3.7-r3",
+    "description": "Vorbis is a general purpose audio and music encoding format contemporary to MPEG-4's AAC and TwinVQ, the next generation beyond MPEG audio layer 3. Unlike the MPEG sponsored formats (and other proprietary formats such as RealAudio G2 and Windows' flavor of the month), the Vorbis CODEC specification belongs to the public domain. All the technical details are published and documented, and any software entity may make full use of the format without license fee, royalty or patent concerns.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/libs/libvorbis",
+    "url": "http://xiph.org/vorbis/",
+    "file-size": 182088
+  }, {
+    "name": "libvorbisidec",
+    "version": "2024.06.11~9b78f57f-r1",
+    "description": "libvorbisidec is \"tremor\", a fixed-point implementation of libvorbis. It is suitable as a replacement for libvorbis in tremor-aware applications. Tremor is a decoder only.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/packages/feeds/packages/libs/libvorbisidec",
+    "url": "http://wiki.xiph.org/index.php/Tremor",
+    "file-size": 72379
+  }, {
+    "name": "libwayland",
+    "version": "1.23.0-r1",
+    "description": "wayland",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/video/feeds/video/frameworks/wayland",
+    "url": "https://wayland.freedesktop.org/",
+    "file-size": 60233
+  }, {
+    "name": "libwebsockets-full",
+    "version": "4.4.1-r1",
+    "description": "libwebsockets (Full - OpenSSL, libuv, plugins, CGI)",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/libs/libwebsockets",
+    "url": "https://libwebsockets.org",
+    "file-size": 273271
+  }, {
+    "name": "libxml2-16",
+    "version": "2.15.1-r1",
+    "description": "A library for manipulating XML and HTML resources.",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/base/libs/libxml2",
+    "url": "http://xmlsoft.org/",
+    "file-size": 461150,
+    "tags": [
+      "openwrt:abiversion=-16"
+    ]
+  }, {
+    "name": "libzstd",
+    "version": "1.5.7-r1",
+    "description": "Zstandard - Fast real-time compression algorithm. This package provides libzstd library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/utils/zstd",
+    "url": "https://github.com/facebook/zstd",
+    "file-size": 343801
+  }, {
+    "name": "lm-sensors",
+    "version": "3.6.2-r6",
+    "description": "utility to read hardware sensor data",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later LGPL-2.1-or-later",
+    "origin": "feeds/packages/feeds/packages/utils/lm-sensors",
+    "url": "https://hwmon.wiki.kernel.org/lm_sensors",
+    "file-size": 10319
+  }, {
+    "name": "logd",
+    "version": "2025.10.30~6f78fa49-r1",
+    "description": "OpenWrt system log implementation",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/ubox",
+    "file-size": 12839
+  }, {
+    "name": "luci-app-firewall",
+    "version": "26.246.70755~4fd72fd",
+    "description": "Firewall and port forwarding application",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/applications/luci-app-firewall",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 18707
+  }, {
+    "name": "luci-app-package-manager",
+    "version": "26.246.70755~4fd72fd",
+    "description": "Package management application",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/applications/luci-app-package-manager",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 10946
+  }, {
+    "name": "luci-app-ttyd",
+    "version": "26.246.70755~4fd72fd",
+    "description": "ttyd - Command-line tool for sharing terminal over the web",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/applications/luci-app-ttyd",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 2991
+  }, {
+    "name": "luci-base",
+    "version": "26.246.70755~4fd72fd",
+    "description": "LuCI core runtime",
+    "arch": "aarch64_cortex-a53",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/modules/luci-base",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 156177
+  }, {
+    "name": "luci-lib-uqr",
+    "version": "26.246.70755~4fd72fd",
+    "description": "µQR - micro QR: SVG QRcode generator JS library",
+    "arch": "noarch",
+    "license": "MIT",
+    "origin": "feeds/luci/feeds/luci/libs/luci-lib-uqr",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 5455
+  }, {
+    "name": "luci-light",
+    "version": "26.246.70755~4fd72fd",
+    "description": "Light OpenWrt set including admin support and the default Bootstrap theme",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/collections/luci-light",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 876
+  }, {
+    "name": "luci-mod-admin-full",
+    "version": "26.246.70755~4fd72fd",
+    "description": "LuCI Administration - full-featured for full control",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/modules/luci-mod-admin-full",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 799
+  }, {
+    "name": "luci-mod-network",
+    "version": "26.246.70755~4fd72fd",
+    "description": "LuCI Network Administration",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/modules/luci-mod-network",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 74229
+  }, {
+    "name": "luci-mod-status",
+    "version": "26.246.70755~4fd72fd",
+    "description": "LuCI Status Pages",
+    "arch": "aarch64_cortex-a53",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/modules/luci-mod-status",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 45969
+  }, {
+    "name": "luci-mod-system",
+    "version": "26.246.70755~4fd72fd",
+    "description": "LuCI Administration - Global System Settings",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/modules/luci-mod-system",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 21422
+  }, {
+    "name": "luci-proto-ipv6",
+    "version": "26.246.70755~4fd72fd",
+    "description": "Support for DHCPv6/6in4/6to4/6rd/DS-Lite/IPIP6",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/protocols/luci-proto-ipv6",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 4251
+  }, {
+    "name": "luci-proto-ppp",
+    "version": "26.246.70755~4fd72fd",
+    "description": "Support for PPP/PPPoE/PPPoA/PPtP",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/protocols/luci-proto-ppp",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 3296
+  }, {
+    "name": "luci-ssl",
+    "version": "26.246.70755~4fd72fd",
+    "description": "LuCI with HTTPS support (mbedtls as SSL backend)",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/collections/luci-ssl",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 807
+  }, {
+    "name": "luci-theme-bootstrap",
+    "version": "26.246.70755~4fd72fd",
+    "description": "Bootstrap Theme (default)",
+    "arch": "noarch",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/themes/luci-theme-bootstrap",
+    "url": "https://github.com/openwrt/luci",
+    "file-size": 19369
+  }, {
+    "name": "mkf2fs",
+    "version": "1.16.0-r4",
+    "description": "Utility for creating a Flash-Friendly File System (F2FS)",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-only",
+    "origin": "feeds/base/utils/f2fs-tools",
+    "url": "http://git.kernel.org/cgit/linux/kernel/git/jaegeuk/f2fs-tools.git",
+    "file-size": 16147
+  }, {
+    "name": "mtd",
+    "version": "27",
+    "description": "This package contains an utility useful to upgrade from other firmware or older OpenWrt releases.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0+",
+    "origin": "feeds/base/system/mtd",
+    "file-size": 11009
+  }, {
+    "name": "nano",
+    "version": "9.2-r1",
+    "description": "Nano is a small and simple text editor for use on the terminal. Nano started as an enhanced clone of the Pico text editor. Nowadays Nano wants to be a generally useful editor with sensible defaults (linewise scrolling, no automatic line breaking). Nano is an official GNU package.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0-or-later",
+    "origin": "feeds/packages/feeds/packages/utils/nano",
+    "url": "https://www.nano-editor.org/",
+    "file-size": 78691
+  }, {
+    "name": "netifd",
+    "version": "2026.02.26~cbb83a18-r2",
+    "description": "OpenWrt Network Interface Configuration Daemon",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/config/netifd",
+    "file-size": 119792
+  }, {
+    "name": "nftables-json",
+    "version": "1.1.6-r2",
+    "description": "nftables userspace utility with JSON support",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/utils/nftables",
+    "url": "http://netfilter.org/projects/nftables/",
+    "file-size": 326196
+  }, {
+    "name": "odhcp6c",
+    "version": "2026.06.20~07d324ee-r3",
+    "description": "Embedded DHCPv6-client for OpenWrt",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/ipv6/odhcp6c",
+    "file-size": 41361
+  }, {
+    "name": "odhcpd-ipv6only",
+    "version": "2026.06.29~5d7be43f-r1",
+    "description": "odhcpd is a daemon for serving and relaying IP management protocols to configure clients and downstream routers. It tries to follow the RFC 6204 requirements for IPv6 home routers. This is a variant with support for RA and DHCPv6. It can also be used to relay RA, DHCPv6 and NDP messages between routed (non-bridged) interfaces in case no delegated prefixes are available.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/services/odhcpd",
+    "file-size": 56253
+  }, {
+    "name": "openssl-util",
+    "version": "3.5.7-r1",
+    "description": "The OpenSSL Project is a collaborative effort to develop a robust, commercial-grade, full-featured, and Open Source toolkit implementing the Transport Layer Security (TLS) protocol as well as a full-strength general-purpose cryptography library. This package contains the OpenSSL command-line utility.",
+    "arch": "aarch64_cortex-a53",
+    "license": "Apache-2.0",
+    "origin": "feeds/base/libs/openssl",
+    "url": "https://www.openssl.org/",
+    "file-size": 334952
+  }, {
+    "name": "openwrt-keyring",
+    "version": "2025.12.10~f0670054-r1",
+    "description": "The keyring of with the developer using and gpg public keys.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/openwrt-keyring",
+    "url": "https://openwrt.org/docs/guide-user/security/signatures",
+    "file-size": 980
+  }, {
+    "name": "partx-utils",
+    "version": "2.41.5-r1",
+    "description": "contains partx, addpart, delpart",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/base/utils/util-linux",
+    "url": "https://www.kernel.org/pub/linux/utils/util-linux/",
+    "file-size": 58205
+  }, {
+    "name": "ppp",
+    "version": "2.5.2-r4",
+    "description": "This package contains the PPP (Point-to-Point Protocol) daemon.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-4-Clause",
+    "origin": "feeds/base/network/services/ppp",
+    "url": "https://ppp.samba.org/",
+    "file-size": 144570
+  }, {
+    "name": "ppp-mod-pppoe",
+    "version": "2.5.2-r4",
+    "description": "This package contains a PPPoE (PPP over Ethernet) plugin for ppp.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-4-Clause",
+    "origin": "feeds/base/network/services/ppp",
+    "url": "https://ppp.samba.org/",
+    "file-size": 13192
+  }, {
+    "name": "procd",
+    "version": "2026.03.13~58eb263d-r1",
+    "description": "OpenWrt system process manager",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/procd",
+    "file-size": 60335
+  }, {
+    "name": "procd-seccomp",
+    "version": "2026.03.13~58eb263d-r1",
+    "description": "OpenWrt process seccomp helper + utrace",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/procd",
+    "file-size": 13886
+  }, {
+    "name": "procd-ujail",
+    "version": "2026.03.13~58eb263d-r1",
+    "description": "OpenWrt process jail helper",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/procd",
+    "file-size": 42128
+  }, {
+    "name": "px5g-mbedtls",
+    "version": "11",
+    "description": "Px5g is a tiny standalone X.509 certificate generator. It suitable to create key files and certificates in DER and PEM format for use with stunnel, uhttpd and others.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/utils/px5g-mbedtls",
+    "file-size": 5939
+  }, {
+    "name": "rpcd",
+    "version": "2026.07.19~e37ed9d8-r1",
+    "description": "This package provides the UBUS RPC backend server to expose various functionality to frontend programs via JSON-RPC.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/system/rpcd",
+    "file-size": 27456
+  }, {
+    "name": "rpcd-mod-file",
+    "version": "2026.07.19~e37ed9d8-r1",
+    "description": "Provides ubus calls for file and directory operations.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/system/rpcd",
+    "file-size": 9116
+  }, {
+    "name": "rpcd-mod-iwinfo",
+    "version": "2026.07.19~e37ed9d8-r1",
+    "description": "Provides ubus calls for accessing iwinfo data.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/system/rpcd",
+    "file-size": 8289
+  }, {
+    "name": "rpcd-mod-luci",
+    "version": "20240305-r1",
+    "description": "Provides LuCI backend ubus RPC operations.",
+    "arch": "aarch64_cortex-a53",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/libs/rpcd-mod-luci",
+    "file-size": 15519
+  }, {
+    "name": "rpcd-mod-rrdns",
+    "version": "20170710",
+    "description": "Provides rapid mass reverse DNS lookup functionality.",
+    "arch": "aarch64_cortex-a53",
+    "license": "Apache-2.0",
+    "origin": "feeds/luci/feeds/luci/libs/rpcd-mod-rrdns",
+    "file-size": 4582
+  }, {
+    "name": "rpcd-mod-ucode",
+    "version": "2026.07.19~e37ed9d8-r1",
+    "description": "Allows implementing plugins using ucode scripts.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/system/rpcd",
+    "file-size": 8727
+  }, {
+    "name": "socat",
+    "version": "1.8.1.1-r1",
+    "description": "SoCat (for SOcket CAT) establishes two bidirectional byte streams and transfers data between them. Data channels may be files, pipes, devices (terminal or modem, etc.), or sockets (Unix, IPv4, IPv6, raw, UDP, TCP, SSL). It provides forking, logging and tracing, different modes for interprocess communication and many more options.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later OpenSSL",
+    "origin": "feeds/packages/feeds/packages/net/socat",
+    "url": "http://www.dest-unreach.org/socat/",
+    "file-size": 133787
+  }, {
+    "name": "sysfsutils",
+    "version": "2.1.0-r4",
+    "description": "A utility built upon libsysfs that lists devices by bus, class, and topology.",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/libs/sysfsutils",
+    "url": "http://linux-diag.sourceforge.net/Sysfsutils.html",
+    "file-size": 9453
+  }, {
+    "name": "t95h-kernel",
+    "version": "7.2.3-r7",
+    "description": "SIMULATION ONLY - Kconfig capabilities, no compiled modules",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-only"
+  }, {
+    "name": "terminfo",
+    "version": "6.4-r3",
+    "description": "Terminal Info Database (ncurses)",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/base/libs/ncurses",
+    "url": "http://www.gnu.org/software/ncurses/",
+    "file-size": 9421
+  }, {
+    "name": "ttyd",
+    "version": "1.7.7-r1",
+    "description": "ttyd is a command-line tool for sharing terminal over the web.",
+    "arch": "aarch64_cortex-a53",
+    "license": "MIT",
+    "origin": "feeds/packages/feeds/packages/utils/ttyd",
+    "url": "https://github.com/tsl0922/ttyd",
+    "file-size": 411456
+  }, {
+    "name": "uboot-envtools",
+    "version": "2025.10-r2",
+    "description": "This package includes tools to read and modify U-Boot bootloader environment.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0 GPL-2.0+",
+    "origin": "feeds/base/boot/uboot-tools",
+    "url": "http://www.denx.de/wiki/U-Boot",
+    "file-size": 15933
+  }, {
+    "name": "ubox",
+    "version": "2025.10.30~6f78fa49-r1",
+    "description": "OpenWrt system helper toolbox",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/system/ubox",
+    "file-size": 19142
+  }, {
+    "name": "ubus",
+    "version": "2026.06.28~24864e78-r2",
+    "description": "OpenWrt RPC client utility",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/system/ubus",
+    "file-size": 6930
+  }, {
+    "name": "ubusd",
+    "version": "2026.06.28~24864e78-r2",
+    "description": "OpenWrt RPC daemon",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/system/ubus",
+    "file-size": 14769
+  }, {
+    "name": "uci",
+    "version": "2025.12.02~66127cd7-r1",
+    "description": "Utility for the Unified Configuration Interface (UCI)",
+    "arch": "aarch64_cortex-a53",
+    "license": "LGPL-2.1",
+    "origin": "feeds/base/system/uci",
+    "file-size": 7641
+  }, {
+    "name": "uclient-fetch",
+    "version": "2026.06.07~daad21fa-r1",
+    "description": "Tiny wget replacement using libuclient",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/libs/uclient",
+    "file-size": 9075
+  }, {
+    "name": "ucode",
+    "version": "2026.01.16~85922056-r1",
+    "description": "ucode is a tiny script interpreter featuring an ECMAScript oriented script language and Jinja-inspired templating.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 7340
+  }, {
+    "name": "ucode-mod-digest",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The digest module allows ucode scripts to use libmd digests.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 16925
+  }, {
+    "name": "ucode-mod-fs",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The filesystem plugin module allows interaction with the local file system.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 12231
+  }, {
+    "name": "ucode-mod-html",
+    "version": "1",
+    "description": "ucode HTML utility library",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/luci/feeds/luci/contrib/package/ucode-mod-html",
+    "file-size": 22681
+  }, {
+    "name": "ucode-mod-log",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The log plugin module provides access to the syslog and libubox ulog APIs.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 4771
+  }, {
+    "name": "ucode-mod-math",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The math plugin provides access to various <math.h> procedures.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 3269
+  }, {
+    "name": "ucode-mod-nl80211",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The nl80211 plugin provides access to the Linux wireless 802.11 netlink API.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 21376
+  }, {
+    "name": "ucode-mod-rtnl",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The rtnl plugin provides access to the Linux routing netlink API.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 25855
+  }, {
+    "name": "ucode-mod-ubus",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The ubus module allows ucode template scripts to enumerate and invoke ubus procedures.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 18644
+  }, {
+    "name": "ucode-mod-uci",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The uci module allows templates to read and modify uci configuration.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 8634
+  }, {
+    "name": "ucode-mod-uloop",
+    "version": "2026.01.16~85922056-r1",
+    "description": "The uloop module allows ucode scripts to interact with OpenWrt uloop event loop implementation.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/utils/ucode",
+    "file-size": 9897
+  }, {
+    "name": "uhttpd",
+    "version": "2026.06.16~7b1bec45-r1",
+    "description": "uHTTPd is a tiny single threaded HTTP server with TLS, CGI and Lua support. It is intended as a drop-in replacement for the Busybox HTTP daemon.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/network/services/uhttpd",
+    "file-size": 31551
+  }, {
+    "name": "uhttpd-mod-ubus",
+    "version": "2026.06.16~7b1bec45-r1",
+    "description": "The ubus plugin adds a HTTP/JSON RPC proxy for ubus and publishes the session.* namespace and procedures.",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/network/services/uhttpd",
+    "file-size": 9121
+  }, {
+    "name": "urandom-seed",
+    "version": "3",
+    "description": "/etc/urandom.seed handling for OpenWrt",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-only",
+    "origin": "feeds/base/system/urandom-seed",
+    "url": "https://openwrt.org/",
+    "file-size": 1423
+  }, {
+    "name": "urngd",
+    "version": "2025.10.03~f17e33d9-r1",
+    "description": "urngd is OpenWrt's micro non-physical true random number generator based on timing jitter. Using the Jitter RNG core, the rngd provides an entropy source that feeds into the Linux /dev/random device if its entropy runs low. It updates the /dev/random entropy estimator such that the newly provided entropy unblocks /dev/random. The seeding of /dev/random also ensures that /dev/urandom benefits from entropy. Especially during boot time, when the entropy of Linux is low, the Jitter RNGd provides a source of suf",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0 BSD-3-Clause",
+    "origin": "feeds/base/system/urngd",
+    "file-size": 8359
+  }, {
+    "name": "usbids",
+    "version": "0.407-r1",
+    "description": "USB ID list",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/utils/hwdata",
+    "url": "https://github.com/vcrhonek/hwdata",
+    "file-size": 255379
+  }, {
+    "name": "usbutils",
+    "version": "019-r1",
+    "description": "USB devices listing utilities",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-only",
+    "origin": "feeds/packages/feeds/packages/utils/usbutils",
+    "url": "http://www.linux-usb.org/",
+    "file-size": 55950
+  }, {
+    "name": "usign",
+    "version": "2025.10.03~c4c72b1b-r1",
+    "description": "OpenWrt signature verification utility",
+    "arch": "aarch64_cortex-a53",
+    "license": "ISC",
+    "origin": "feeds/base/system/usign",
+    "file-size": 10936
+  }, {
+    "name": "ustreamer",
+    "version": "6.52-r1",
+    "description": "uStreamer is a lightweight and very quick server to stream MJPEG video from any V4L2 device to the net. All new browsers have native support of this video format, as well as most video players such as mplayer, VLC etc. uStreamer is a part of the PiKVM project designed to stream VGA and HDMI screencast hardware data with the highest resolution and FPS possible.",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-3.0",
+    "origin": "feeds/packages/feeds/packages/multimedia/ustreamer",
+    "url": "https://github.com/pikvm/ustreamer",
+    "file-size": 167859
+  }, {
+    "name": "v4l-utils",
+    "version": "1.30.1-r1",
+    "description": "libv4l is a collection of libraries which adds a thin abstraction layer on top of video4linux2 devices. The purpose of this (thin) layer is to make it easy for application writers to support a wide variety of devices without having to write separate code for different devices in the same class. libv4l consists of 3 different libraries: libv4lconvert, libv4l1 and libv4l2. libv4l1 offers the (deprecated) v4l1 API on top of v4l2 devices, independent of the drivers for those devices supporting v4l1 compatibilit",
+    "arch": "aarch64_cortex-a53",
+    "license": "GPL-2.0-or-later",
+    "origin": "feeds/packages/feeds/packages/libs/v4l-utils",
+    "url": "https://www.linuxtv.org/",
+    "file-size": 710534
+  }, {
+    "name": "wayland-protocols",
+    "version": "1.45-r1",
+    "description": "wayland-protocols",
+    "arch": "noarch",
+    "license": "MIT",
+    "origin": "feeds/video/feeds/video/frameworks/wayland-protocols",
+    "url": "https://wayland.freedesktop.org/",
+    "file-size": 171160
+  }, {
+    "name": "wifi-scripts",
+    "version": "1.0-r1",
+    "description": "A set of scripts that handle setup and configuration of Wi-Fi devices.",
+    "arch": "noarch",
+    "license": "GPL-2.0",
+    "origin": "feeds/base/network/config/wifi-scripts",
+    "file-size": 70379
+  }, {
+    "name": "wireless-regdb",
+    "version": "2026.05.30-r1",
+    "description": "Wireless Regulatory Database",
+    "arch": "noarch",
+    "license": "ISC",
+    "origin": "feeds/base/firmware/wireless-regdb",
+    "url": "https://git.kernel.org/pub/scm/linux/kernel/git/wens/wireless-regdb.git/",
+    "file-size": 3326
+  }, {
+    "name": "wpad-basic-mbedtls",
+    "version": "2025.08.26~ca266cc2-r2",
+    "description": "This package contains a basic IEEE 802.1x/WPA Authenticator and Supplicant with WPA-PSK, SAE (WPA3-Personal), 802.11r and 802.11w support.",
+    "arch": "aarch64_cortex-a53",
+    "license": "BSD-3-Clause",
+    "origin": "feeds/base/network/services/hostapd",
+    "url": "https://w1.fi/",
+    "file-size": 564397
+  }, {
+    "name": "zlib",
+    "version": "1.3.1-r1",
+    "description": "zlib is a lossless data-compression library. This package includes the shared library.",
+    "arch": "aarch64_cortex-a53",
+    "license": "Zlib",
+    "origin": "feeds/base/libs/zlib",
+    "url": "http://www.zlib.net/",
+    "file-size": 36438
+  }
+]

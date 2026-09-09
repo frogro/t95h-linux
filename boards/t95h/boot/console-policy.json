@@ -1,0 +1,9 @@
+{
+  "default": "dual",
+  "choices": ["dual", "uart", "hdmi"],
+  "transformer": "tools/configure-boot-console.py",
+  "dual_kernel_consoles": ["ttyS0,115200", "tty0"],
+  "userspace_primary": "HDMI in dual mode; UART in uart mode",
+  "login_ttys": ["ttyS0", "tty1"],
+  "status": "transformer tested; image pipeline integration and SD hardware test pending"
+}

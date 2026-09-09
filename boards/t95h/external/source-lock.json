@@ -1,0 +1,21 @@
+{
+  "status": "sources match final assembly; rebuild with each profile kernel required",
+  "files": {
+    "regulator/t95h_aldo2.c": {
+      "source_sha256": "09d7e0924e2882521e9a0fa1d1097ca08c2f785cff69ec28d33a3b8a9eb0e229",
+      "origin": "sources/board/t95h-cpu-gpu/t95h_aldo2.c",
+      "profile": "base"
+    },
+    "ana/t95h_ana_provider.c": {
+      "source_sha256": "261aa2c1d42b63621043e964f12a4efd857e655799af89a84f67b3559e8c5390",
+      "origin": "outputs/ana-provider-test/A/t95h_ana_provider.c",
+      "profile": "B"
+    },
+    "display/t95h-fd655.c": {
+      "source_sha256": "836b0105fc453d48716cfd0b2d68d02dd33b810888e8ae9858127e516cf2207d",
+      "origin": "outputs/pmic-bus-test/tools/t95h-fd655.c",
+      "profile": "base"
+    }
+  },
+  "fd655_reference_binary_sha256": "1359743e14e07681ea2de39f0916b2ce188052a42ac0c223eb9d00e6850499bd"
+}

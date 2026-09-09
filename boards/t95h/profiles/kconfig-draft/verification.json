@@ -1,0 +1,2360 @@
+{
+  "base": {
+    "sha256": "bfcf5534e91ab229ad72a32623251bbe0f64736701537db25a7678372bc1e421",
+    "requested_changes": {
+      "USB_NET_NET1080": "n",
+      "USB_NET_DRIVERS": "n",
+      "MT76_CONNAC_LIB": "n",
+      "RTW88_8821C": "n",
+      "USB_NET_CDC_SUBSET_ENABLE": "n",
+      "MT792x_LIB": "n",
+      "MT76_LEDS": "n",
+      "USB_NET_CDC_SUBSET": "n",
+      "MT76x0_COMMON": "n",
+      "MT76x2U": "n",
+      "USB_ACM": "n",
+      "MT76x02_LIB": "n",
+      "RTW88_8821CU": "n",
+      "RTW88_USB": "n",
+      "RTW88": "n",
+      "USB_NET_CDCETHER": "n",
+      "MT76x0U": "n",
+      "USB_SERIAL_WWAN": "n",
+      "RTW88_CORE": "n",
+      "MT7921_COMMON": "n",
+      "USB_NET_CDC_MBIM": "n",
+      "USB_SERIAL_OPTION": "n",
+      "MT76_CORE": "n",
+      "USB_SERIAL": "n",
+      "USB_NET_CDC_NCM": "n",
+      "RTW88_LEDS": "n",
+      "USB_NET_AX88179_178A": "n",
+      "MT76_USB": "n",
+      "MT76x2_COMMON": "n",
+      "MT76x02_USB": "n",
+      "USB_NET_QMI_WWAN": "n",
+      "USB_NET_AX8817X": "n",
+      "USB_NET_RNDIS_HOST": "n",
+      "MT7921U": "n",
+      "USB_NET_ZAURUS": "n",
+      "MT792x_USB": "n",
+      "DRM_PANFROST": "n",
+      "VIDEO_SUNXI_CEDRUS": "n",
+      "MEDIA_USB_SUPPORT": "n",
+      "MEDIA_CAMERA_SUPPORT": "n",
+      "USB_VIDEO_CLASS": "n",
+      "PCI": "n",
+      "NVME_CORE": "n",
+      "BLK_DEV_NVME": "n",
+      "MHI_BUS": "n",
+      "MHI_BUS_PCI_GENERIC": "n",
+      "USB_RTL8152": "n"
+    },
+    "unmet_requests": {},
+    "base_requirements_missing": {},
+    "differences_from_full_reference": {
+      "DEV_COREDUMP": {
+        "before": "y",
+        "after": "absent"
+      },
+      "DRM_GEM_SHMEM_HELPER": {
+        "before": "y",
+        "after": "absent"
+      },
+      "DRM_PANFROST": {
+        "before": "y",
+        "after": "n"
+      },
+      "DRM_SCHED": {
+        "before": "y",
+        "after": "absent"
+      },
+      "EXTRA_FIRMWARE": {
+        "before": "\"mediatek/WIFI_MT7961_patch_mcu_1_2_hdr.bin mediatek/WIFI_RAM_CODE_MT7961_1.bin mediatek/mt7610u.bin mt7662.bin mt7662_rom_patch.bin regulatory.db regulatory.db.5 regulatory.db.p7s xr819/boot_xr819.bin xr819/fw_xr819.bin xr819/sdd_xr819.bin\"",
+        "after": "\"regulatory.db regulatory.db.5 regulatory.db.p7s xr819/boot_xr819.bin xr819/fw_xr819.bin xr819/sdd_xr819.bin\""
+      },
+      "FB_SYSMEM_HELPERS": {
+        "before": "y",
+        "after": "absent"
+      },
+      "FB_SYSMEM_HELPERS_DEFERRED": {
+        "before": "y",
+        "after": "absent"
+      },
+      "MT76_CONNAC_LIB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76_CORE": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76_LEDS": {
+        "before": "y",
+        "after": "absent"
+      },
+      "MT76_USB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76x02_LIB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76x02_USB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76x0U": {
+        "before": "m",
+        "after": "n"
+      },
+      "MT76x0_COMMON": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76x2U": {
+        "before": "m",
+        "after": "n"
+      },
+      "MT76x2_COMMON": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT7921U": {
+        "before": "m",
+        "after": "n"
+      },
+      "MT7921_COMMON": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT792x_LIB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT792x_USB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "RTW88": {
+        "before": "m",
+        "after": "n"
+      },
+      "RTW88_8723CS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8723DS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8723DU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8812AU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8814AU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8821AU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8821C": {
+        "before": "m",
+        "after": "absent"
+      },
+      "RTW88_8821CS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8821CU": {
+        "before": "m",
+        "after": "absent"
+      },
+      "RTW88_8822BS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8822BU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8822CS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8822CU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_CORE": {
+        "before": "m",
+        "after": "absent"
+      },
+      "RTW88_DEBUG": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_DEBUGFS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_LEDS": {
+        "before": "y",
+        "after": "absent"
+      },
+      "RTW88_USB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "USB_ACM": {
+        "before": "y",
+        "after": "n"
+      },
+      "USB_ALI_M5632": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_AN2720": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_ARMLINUX": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_BELKIN": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_CATC": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_EPSON2888": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_HSO": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_IPHETH": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_KAWETH": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_KC2190": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_LAN78XX": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_AQC111": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_AX88179_178A": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_AX8817X": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDCETHER": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDC_EEM": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_CDC_MBIM": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDC_NCM": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDC_SUBSET": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDC_SUBSET_ENABLE": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CH9200": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_CX82310_ETH": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_DM9601": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_DRIVERS": {
+        "before": "y",
+        "after": "n"
+      },
+      "USB_NET_GL620A": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_HUAWEI_CDC_NCM": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_INT51X1": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_KALMIA": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_MCS7830": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_NET1080": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_PLUSB": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_QMI_WWAN": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_RNDIS_HOST": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_SMSC75XX": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_SMSC95XX": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_SR9700": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_SR9800": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_ZAURUS": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_PEGASUS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_RTL8150": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_RTL8152": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_RTL8153_ECM": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_SERIAL": {
+        "before": "y",
+        "after": "n"
+      },
+      "USB_SERIAL_AIRCABLE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_ARK3116": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_BELKIN": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CH341": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CONSOLE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CP210X": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CYBERJACK": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CYPRESS_M8": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_DEBUG": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_DIGI_ACCELEPORT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_EDGEPORT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_EDGEPORT_TI": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_EMPEG": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_F81232": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_F8153X": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_FTDI_SIO": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_GARMIN": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_GENERIC": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_IPAQ": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_IPW": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_IR": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_IUU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_KEYSPAN": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_KEYSPAN_PDA": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_KLSI": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_KOBIL_SCT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_MCT_U232": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_METRO": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_MOS7720": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_MOS7840": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_MXUPORT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_NAVMAN": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_OMNINET": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_OPTICON": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_OPTION": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_SERIAL_OTI6858": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_PL2303": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_QCAUX": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_QT2": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_QUALCOMM": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SAFE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SIERRAWIRELESS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SIMPLE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SPCP8X5": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SSU100": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SYMBOL": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_TI": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_UPD78F0730": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_VISOR": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_WHITEHEAT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_WISHBONE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_WWAN": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_SERIAL_XR": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_XSENS_MT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SIERRA_NET": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_USBNET": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_VL600": {
+        "before": "n",
+        "after": "absent"
+      },
+      "V4L2_MEM2MEM_DEV": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEOBUF2_CORE": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEOBUF2_DMA_CONTIG": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEOBUF2_MEMOPS": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEOBUF2_V4L2": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEO_SUNXI_CEDRUS": {
+        "before": "m",
+        "after": "n"
+      },
+      "WANT_DEV_COREDUMP": {
+        "before": "y",
+        "after": "absent"
+      }
+    },
+    "extra_firmware": [
+      "regulatory.db",
+      "regulatory.db.5",
+      "regulatory.db.p7s",
+      "xr819/boot_xr819.bin",
+      "xr819/fw_xr819.bin",
+      "xr819/sdd_xr819.bin"
+    ],
+    "kernel_compiled": false
+  },
+  "base-A": {
+    "sha256": "f636d823627309ddd1415f7d45cf59bd6eef6f4efb8def988cdaf2d745fcbc5d",
+    "requested_changes": {
+      "USB_NET_NET1080": "y",
+      "USB_NET_DRIVERS": "y",
+      "MT76_CONNAC_LIB": "m",
+      "RTW88_8821C": "m",
+      "USB_NET_CDC_SUBSET_ENABLE": "y",
+      "MT792x_LIB": "m",
+      "MT76_LEDS": "y",
+      "USB_NET_CDC_SUBSET": "y",
+      "MT76x0_COMMON": "m",
+      "MT76x2U": "m",
+      "USB_ACM": "y",
+      "MT76x02_LIB": "m",
+      "RTW88_8821CU": "m",
+      "RTW88_USB": "m",
+      "RTW88": "m",
+      "USB_NET_CDCETHER": "y",
+      "MT76x0U": "m",
+      "USB_SERIAL_WWAN": "y",
+      "RTW88_CORE": "m",
+      "MT7921_COMMON": "m",
+      "USB_NET_CDC_MBIM": "y",
+      "USB_SERIAL_OPTION": "y",
+      "MT76_CORE": "m",
+      "USB_SERIAL": "y",
+      "USB_NET_CDC_NCM": "y",
+      "RTW88_LEDS": "y",
+      "USB_NET_AX88179_178A": "y",
+      "MT76_USB": "m",
+      "MT76x2_COMMON": "m",
+      "MT76x02_USB": "m",
+      "USB_NET_QMI_WWAN": "y",
+      "USB_NET_AX8817X": "y",
+      "USB_NET_RNDIS_HOST": "y",
+      "MT7921U": "m",
+      "USB_NET_ZAURUS": "y",
+      "MT792x_USB": "m",
+      "DRM_PANFROST": "n",
+      "VIDEO_SUNXI_CEDRUS": "n",
+      "MEDIA_USB_SUPPORT": "n",
+      "MEDIA_CAMERA_SUPPORT": "n",
+      "USB_VIDEO_CLASS": "n",
+      "PCI": "n",
+      "NVME_CORE": "n",
+      "BLK_DEV_NVME": "n",
+      "MHI_BUS": "n",
+      "MHI_BUS_PCI_GENERIC": "n",
+      "USB_RTL8152": "m"
+    },
+    "unmet_requests": {},
+    "base_requirements_missing": {},
+    "differences_from_full_reference": {
+      "DRM_GEM_SHMEM_HELPER": {
+        "before": "y",
+        "after": "absent"
+      },
+      "DRM_PANFROST": {
+        "before": "y",
+        "after": "n"
+      },
+      "DRM_SCHED": {
+        "before": "y",
+        "after": "absent"
+      },
+      "FB_SYSMEM_HELPERS": {
+        "before": "y",
+        "after": "absent"
+      },
+      "FB_SYSMEM_HELPERS_DEFERRED": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_RTL8152": {
+        "before": "n",
+        "after": "m"
+      },
+      "USB_RTL8153_ECM": {
+        "before": "y",
+        "after": "m"
+      },
+      "V4L2_MEM2MEM_DEV": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEOBUF2_CORE": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEOBUF2_DMA_CONTIG": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEOBUF2_MEMOPS": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEOBUF2_V4L2": {
+        "before": "m",
+        "after": "absent"
+      },
+      "VIDEO_SUNXI_CEDRUS": {
+        "before": "m",
+        "after": "n"
+      }
+    },
+    "extra_firmware": [
+      "mediatek/WIFI_MT7961_patch_mcu_1_2_hdr.bin",
+      "mediatek/WIFI_RAM_CODE_MT7961_1.bin",
+      "mediatek/mt7610u.bin",
+      "mt7662.bin",
+      "mt7662_rom_patch.bin",
+      "regulatory.db",
+      "regulatory.db.5",
+      "regulatory.db.p7s",
+      "xr819/boot_xr819.bin",
+      "xr819/fw_xr819.bin",
+      "xr819/sdd_xr819.bin"
+    ],
+    "kernel_compiled": false
+  },
+  "base-B": {
+    "sha256": "5f7b5f5ea62020b0bc8568411680321f880389827a8156b0a880d8afb960d426",
+    "requested_changes": {
+      "USB_NET_NET1080": "n",
+      "USB_NET_DRIVERS": "n",
+      "MT76_CONNAC_LIB": "n",
+      "RTW88_8821C": "n",
+      "USB_NET_CDC_SUBSET_ENABLE": "n",
+      "MT792x_LIB": "n",
+      "MT76_LEDS": "n",
+      "USB_NET_CDC_SUBSET": "n",
+      "MT76x0_COMMON": "n",
+      "MT76x2U": "n",
+      "USB_ACM": "n",
+      "MT76x02_LIB": "n",
+      "RTW88_8821CU": "n",
+      "RTW88_USB": "n",
+      "RTW88": "n",
+      "USB_NET_CDCETHER": "n",
+      "MT76x0U": "n",
+      "USB_SERIAL_WWAN": "n",
+      "RTW88_CORE": "n",
+      "MT7921_COMMON": "n",
+      "USB_NET_CDC_MBIM": "n",
+      "USB_SERIAL_OPTION": "n",
+      "MT76_CORE": "n",
+      "USB_SERIAL": "n",
+      "USB_NET_CDC_NCM": "n",
+      "RTW88_LEDS": "n",
+      "USB_NET_AX88179_178A": "n",
+      "MT76_USB": "n",
+      "MT76x2_COMMON": "n",
+      "MT76x02_USB": "n",
+      "USB_NET_QMI_WWAN": "n",
+      "USB_NET_AX8817X": "n",
+      "USB_NET_RNDIS_HOST": "n",
+      "MT7921U": "n",
+      "USB_NET_ZAURUS": "n",
+      "MT792x_USB": "n",
+      "DRM_PANFROST": "y",
+      "VIDEO_SUNXI_CEDRUS": "m",
+      "MEDIA_USB_SUPPORT": "y",
+      "MEDIA_CAMERA_SUPPORT": "y",
+      "USB_VIDEO_CLASS": "m",
+      "PCI": "n",
+      "NVME_CORE": "n",
+      "BLK_DEV_NVME": "n",
+      "MHI_BUS": "n",
+      "MHI_BUS_PCI_GENERIC": "n",
+      "USB_RTL8152": "n"
+    },
+    "unmet_requests": {},
+    "base_requirements_missing": {},
+    "differences_from_full_reference": {
+      "EXTRA_FIRMWARE": {
+        "before": "\"mediatek/WIFI_MT7961_patch_mcu_1_2_hdr.bin mediatek/WIFI_RAM_CODE_MT7961_1.bin mediatek/mt7610u.bin mt7662.bin mt7662_rom_patch.bin regulatory.db regulatory.db.5 regulatory.db.p7s xr819/boot_xr819.bin xr819/fw_xr819.bin xr819/sdd_xr819.bin\"",
+        "after": "\"regulatory.db regulatory.db.5 regulatory.db.p7s xr819/boot_xr819.bin xr819/fw_xr819.bin xr819/sdd_xr819.bin\""
+      },
+      "MEDIA_CAMERA_SUPPORT": {
+        "before": "n",
+        "after": "y"
+      },
+      "MEDIA_USB_SUPPORT": {
+        "before": "n",
+        "after": "y"
+      },
+      "MT76_CONNAC_LIB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76_CORE": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76_LEDS": {
+        "before": "y",
+        "after": "absent"
+      },
+      "MT76_USB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76x02_LIB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76x02_USB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76x0U": {
+        "before": "m",
+        "after": "n"
+      },
+      "MT76x0_COMMON": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT76x2U": {
+        "before": "m",
+        "after": "n"
+      },
+      "MT76x2_COMMON": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT7921U": {
+        "before": "m",
+        "after": "n"
+      },
+      "MT7921_COMMON": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT792x_LIB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "MT792x_USB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "RTW88": {
+        "before": "m",
+        "after": "n"
+      },
+      "RTW88_8723CS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8723DS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8723DU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8812AU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8814AU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8821AU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8821C": {
+        "before": "m",
+        "after": "absent"
+      },
+      "RTW88_8821CS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8821CU": {
+        "before": "m",
+        "after": "absent"
+      },
+      "RTW88_8822BS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8822BU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8822CS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_8822CU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_CORE": {
+        "before": "m",
+        "after": "absent"
+      },
+      "RTW88_DEBUG": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_DEBUGFS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "RTW88_LEDS": {
+        "before": "y",
+        "after": "absent"
+      },
+      "RTW88_USB": {
+        "before": "m",
+        "after": "absent"
+      },
+      "TOUCHSCREEN_SUR40": {
+        "before": "absent",
+        "after": "n"
+      },
+      "USB_ACM": {
+        "before": "y",
+        "after": "n"
+      },
+      "USB_ALI_M5632": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_AN2720": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_ARMLINUX": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_BELKIN": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_CATC": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_EPSON2888": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_GSPCA": {
+        "before": "absent",
+        "after": "n"
+      },
+      "USB_HSO": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_IPHETH": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_KAWETH": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_KC2190": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_LAN78XX": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_AQC111": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_AX88179_178A": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_AX8817X": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDCETHER": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDC_EEM": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_CDC_MBIM": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDC_NCM": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDC_SUBSET": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CDC_SUBSET_ENABLE": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_CH9200": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_CX82310_ETH": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_DM9601": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_DRIVERS": {
+        "before": "y",
+        "after": "n"
+      },
+      "USB_NET_GL620A": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_HUAWEI_CDC_NCM": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_INT51X1": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_KALMIA": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_MCS7830": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_NET1080": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_PLUSB": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_QMI_WWAN": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_RNDIS_HOST": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_NET_SMSC75XX": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_SMSC95XX": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_SR9700": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_SR9800": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_NET_ZAURUS": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_PEGASUS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_PWC": {
+        "before": "absent",
+        "after": "n"
+      },
+      "USB_RTL8150": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_RTL8152": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_RTL8153_ECM": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_S2255": {
+        "before": "absent",
+        "after": "n"
+      },
+      "USB_SERIAL": {
+        "before": "y",
+        "after": "n"
+      },
+      "USB_SERIAL_AIRCABLE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_ARK3116": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_BELKIN": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CH341": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CONSOLE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CP210X": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CYBERJACK": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_CYPRESS_M8": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_DEBUG": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_DIGI_ACCELEPORT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_EDGEPORT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_EDGEPORT_TI": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_EMPEG": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_F81232": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_F8153X": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_FTDI_SIO": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_GARMIN": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_GENERIC": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_IPAQ": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_IPW": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_IR": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_IUU": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_KEYSPAN": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_KEYSPAN_PDA": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_KLSI": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_KOBIL_SCT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_MCT_U232": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_METRO": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_MOS7720": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_MOS7840": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_MXUPORT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_NAVMAN": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_OMNINET": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_OPTICON": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_OPTION": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_SERIAL_OTI6858": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_PL2303": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_QCAUX": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_QT2": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_QUALCOMM": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SAFE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SIERRAWIRELESS": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SIMPLE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SPCP8X5": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SSU100": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_SYMBOL": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_TI": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_UPD78F0730": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_VISOR": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_WHITEHEAT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_WISHBONE": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_WWAN": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_SERIAL_XR": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SERIAL_XSENS_MT": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_SIERRA_NET": {
+        "before": "n",
+        "after": "absent"
+      },
+      "USB_USBNET": {
+        "before": "y",
+        "after": "absent"
+      },
+      "USB_VIDEO_CLASS": {
+        "before": "absent",
+        "after": "m"
+      },
+      "USB_VIDEO_CLASS_INPUT_EVDEV": {
+        "before": "absent",
+        "after": "y"
+      },
+      "USB_VL600": {
+        "before": "n",
+        "after": "absent"
+      },
+      "UVC_COMMON": {
+        "before": "absent",
+        "after": "m"
+      },
+      "V4L2_ASYNC": {
+        "before": "absent",
+        "after": "y"
+      },
+      "V4L2_FWNODE": {
+        "before": "absent",
+        "after": "y"
+      },
+      "VIDEOBUF2_VMALLOC": {
+        "before": "absent",
+        "after": "m"
+      },
+      "VIDEO_AD5820": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_ADP1653": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_AK7375": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_ALVIUM_CSI2": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_AR0521": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_CAMERA_LENS": {
+        "before": "absent",
+        "after": "y"
+      },
+      "VIDEO_CAMERA_SENSOR": {
+        "before": "absent",
+        "after": "y"
+      },
+      "VIDEO_CCS": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_DW9714": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_DW9719": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_DW9768": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_DW9807_VCM": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_EM28XX": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_ET8EK8": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC0308": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC0310": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC05A2": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC08A3": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC2145": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_HI556": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_HI846": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_HI847": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX111": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX208": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX214": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX219": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX258": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX274": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX283": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX290": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX296": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX319": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX334": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX335": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX355": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX412": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX415": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_LM3560": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_LM3646": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9M001": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9M111": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9M114": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9P031": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9T112": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9V011": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9V032": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9V111": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OG01A1B": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OG0VE1B": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OS05B10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV01A10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV02A10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV02C10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV02E10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV08D10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV08X40": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV13858": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV13B10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2640": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2659": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2680": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2685": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2732": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2735": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV4689": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5640": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5645": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5647": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5648": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5670": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5675": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5693": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5695": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV6211": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV64A40": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV7251": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV7640": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV7670": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV772X": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV7740": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV8856": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV8858": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV8865": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV9282": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV9640": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV9650": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_RDACM20": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_RDACM21": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_RJ54N1": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5C73M3": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5K3M5": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5K5BAF": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5K6A3": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5KJN1": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_THP7312": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_USBTV": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_V4L2_SUBDEV_API": {
+        "before": "absent",
+        "after": "y"
+      },
+      "VIDEO_VD55G1": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_VD56G3": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_VGXY61": {
+        "before": "absent",
+        "after": "n"
+      }
+    },
+    "extra_firmware": [
+      "regulatory.db",
+      "regulatory.db.5",
+      "regulatory.db.p7s",
+      "xr819/boot_xr819.bin",
+      "xr819/fw_xr819.bin",
+      "xr819/sdd_xr819.bin"
+    ],
+    "kernel_compiled": false
+  },
+  "base-A-B": {
+    "sha256": "fa8e4949ef3cb8e9b842eee4fe1e430729796bf2ce8b3648ae404e656637379f",
+    "requested_changes": {
+      "USB_NET_NET1080": "y",
+      "USB_NET_DRIVERS": "y",
+      "MT76_CONNAC_LIB": "m",
+      "RTW88_8821C": "m",
+      "USB_NET_CDC_SUBSET_ENABLE": "y",
+      "MT792x_LIB": "m",
+      "MT76_LEDS": "y",
+      "USB_NET_CDC_SUBSET": "y",
+      "MT76x0_COMMON": "m",
+      "MT76x2U": "m",
+      "USB_ACM": "y",
+      "MT76x02_LIB": "m",
+      "RTW88_8821CU": "m",
+      "RTW88_USB": "m",
+      "RTW88": "m",
+      "USB_NET_CDCETHER": "y",
+      "MT76x0U": "m",
+      "USB_SERIAL_WWAN": "y",
+      "RTW88_CORE": "m",
+      "MT7921_COMMON": "m",
+      "USB_NET_CDC_MBIM": "y",
+      "USB_SERIAL_OPTION": "y",
+      "MT76_CORE": "m",
+      "USB_SERIAL": "y",
+      "USB_NET_CDC_NCM": "y",
+      "RTW88_LEDS": "y",
+      "USB_NET_AX88179_178A": "y",
+      "MT76_USB": "m",
+      "MT76x2_COMMON": "m",
+      "MT76x02_USB": "m",
+      "USB_NET_QMI_WWAN": "y",
+      "USB_NET_AX8817X": "y",
+      "USB_NET_RNDIS_HOST": "y",
+      "MT7921U": "m",
+      "USB_NET_ZAURUS": "y",
+      "MT792x_USB": "m",
+      "DRM_PANFROST": "y",
+      "VIDEO_SUNXI_CEDRUS": "m",
+      "MEDIA_USB_SUPPORT": "y",
+      "MEDIA_CAMERA_SUPPORT": "y",
+      "USB_VIDEO_CLASS": "m",
+      "PCI": "n",
+      "NVME_CORE": "n",
+      "BLK_DEV_NVME": "n",
+      "MHI_BUS": "n",
+      "MHI_BUS_PCI_GENERIC": "n",
+      "USB_RTL8152": "m"
+    },
+    "unmet_requests": {},
+    "base_requirements_missing": {},
+    "differences_from_full_reference": {
+      "MEDIA_CAMERA_SUPPORT": {
+        "before": "n",
+        "after": "y"
+      },
+      "MEDIA_USB_SUPPORT": {
+        "before": "n",
+        "after": "y"
+      },
+      "TOUCHSCREEN_SUR40": {
+        "before": "absent",
+        "after": "n"
+      },
+      "USB_GSPCA": {
+        "before": "absent",
+        "after": "n"
+      },
+      "USB_PWC": {
+        "before": "absent",
+        "after": "n"
+      },
+      "USB_RTL8152": {
+        "before": "n",
+        "after": "m"
+      },
+      "USB_RTL8153_ECM": {
+        "before": "y",
+        "after": "m"
+      },
+      "USB_S2255": {
+        "before": "absent",
+        "after": "n"
+      },
+      "USB_VIDEO_CLASS": {
+        "before": "absent",
+        "after": "m"
+      },
+      "USB_VIDEO_CLASS_INPUT_EVDEV": {
+        "before": "absent",
+        "after": "y"
+      },
+      "UVC_COMMON": {
+        "before": "absent",
+        "after": "m"
+      },
+      "V4L2_ASYNC": {
+        "before": "absent",
+        "after": "y"
+      },
+      "V4L2_FWNODE": {
+        "before": "absent",
+        "after": "y"
+      },
+      "VIDEOBUF2_VMALLOC": {
+        "before": "absent",
+        "after": "m"
+      },
+      "VIDEO_AD5820": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_ADP1653": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_AK7375": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_ALVIUM_CSI2": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_AR0521": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_CAMERA_LENS": {
+        "before": "absent",
+        "after": "y"
+      },
+      "VIDEO_CAMERA_SENSOR": {
+        "before": "absent",
+        "after": "y"
+      },
+      "VIDEO_CCS": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_DW9714": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_DW9719": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_DW9768": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_DW9807_VCM": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_EM28XX": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_ET8EK8": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC0308": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC0310": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC05A2": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC08A3": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_GC2145": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_HI556": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_HI846": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_HI847": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX111": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX208": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX214": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX219": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX258": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX274": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX283": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX290": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX296": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX319": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX334": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX335": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX355": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX412": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_IMX415": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_LM3560": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_LM3646": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9M001": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9M111": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9M114": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9P031": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9T112": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9V011": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9V032": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_MT9V111": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OG01A1B": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OG0VE1B": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OS05B10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV01A10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV02A10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV02C10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV02E10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV08D10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV08X40": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV13858": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV13B10": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2640": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2659": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2680": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2685": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2732": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV2735": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV4689": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5640": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5645": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5647": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5648": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5670": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5675": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5693": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV5695": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV6211": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV64A40": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV7251": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV7640": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV7670": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV772X": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV7740": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV8856": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV8858": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV8865": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV9282": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV9640": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_OV9650": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_RDACM20": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_RDACM21": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_RJ54N1": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5C73M3": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5K3M5": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5K5BAF": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5K6A3": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_S5KJN1": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_THP7312": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_USBTV": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_V4L2_SUBDEV_API": {
+        "before": "absent",
+        "after": "y"
+      },
+      "VIDEO_VD55G1": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_VD56G3": {
+        "before": "absent",
+        "after": "n"
+      },
+      "VIDEO_VGXY61": {
+        "before": "absent",
+        "after": "n"
+      }
+    },
+    "extra_firmware": [
+      "mediatek/WIFI_MT7961_patch_mcu_1_2_hdr.bin",
+      "mediatek/WIFI_RAM_CODE_MT7961_1.bin",
+      "mediatek/mt7610u.bin",
+      "mt7662.bin",
+      "mt7662_rom_patch.bin",
+      "regulatory.db",
+      "regulatory.db.5",
+      "regulatory.db.p7s",
+      "xr819/boot_xr819.bin",
+      "xr819/fw_xr819.bin",
+      "xr819/sdd_xr819.bin"
+    ],
+    "kernel_compiled": false
+  }
+}

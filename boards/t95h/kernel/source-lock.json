@@ -1,0 +1,888 @@
+{
+  "status": "source replay only; no clean kernel build or profile validation yet",
+  "archive": "linux-7.2.3.tar.xz",
+  "archive_sha256": "8ba259e8e7b13ec6ef0941c8a39ad90b24bd4a4d6c0010ba6bafb794550ecd03",
+  "patch": "tested-kernel-source.patch",
+  "patch_sha256": "1c49fe023ac3040cb6c8310c166cbd2976410b560067ee7c5a877028fdb6d87c",
+  "files": [
+    {
+      "path": "Documentation/devicetree/bindings/arm/sunxi.yaml",
+      "sha256": "89ad1efa1f7e147f4ccd4b8ff57ee6b7858e1382425f953d31b81aedc5005fae",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/bus/allwinner,sun50i-a64-de2.yaml",
+      "sha256": "0405eeb9fe27064a8b0fb9d1210b0cc665854b884f8a28c8344d09565576f126",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/display/allwinner,sun4i-a10-display-engine.yaml",
+      "sha256": "cd2b21086a2fe930ec538c6a34028d52a963579cfc5780aef9c9061a6cb1e9d4",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml",
+      "sha256": "0020d764db22ee39bc4dacab5e1ac50a57dbfe49fcdd767ec3fe2a9f71552734",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-de2-mixer.yaml",
+      "sha256": "63a8a5dc9c12dfe642407680915c56f56c10c43c45f9f83203e7124801fbfeab",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml",
+      "sha256": "7444f8b8574b8a34224308bb6424a2678543b92b2663c31723a22a6cf6a2d0df",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-hdmi-phy.yaml",
+      "sha256": "d6c2fad1dba92bc5d6fa25d59c5b1d598a64428753466bdf17d1f1fc224ba8a8",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/display/allwinner,sun8i-r40-tcon-top.yaml",
+      "sha256": "95bf7f00e27bf7b6e86f32700907b2db4107643e0e063dbed9e8a9490651c5e8",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/media/allwinner,sun4i-a10-video-engine.yaml",
+      "sha256": "eb30c52ca973248fc158bf6b89404b93f06387711fbaa2300f7be8a49044494d",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml",
+      "sha256": "fbf8b294f690e4c78457ac1d4c9cdc5114f912e15b47a9ad3fabf73515fdf0d9",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/net/snps,dwmac.yaml",
+      "sha256": "b62cfb6043cc50721e2420b45e41e11012615c97408843a55fcd8eac94343f75",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/pwm/allwinner,sun4i-a10-pwm.yaml",
+      "sha256": "ee4728463bd97e655128f13299b90a70f0dac7c399c625ed61cb814ebcf5abdf",
+      "kind": "modified"
+    },
+    {
+      "path": "MAINTAINERS",
+      "sha256": "ea2599374a72d701e82456dca0f1aa872d6faf8f5841768a8771af0169fa77e6",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/Makefile",
+      "sha256": "27291bedf40571286a6fad9b72c865a1860d001d67ed405af49d02a89309ef60",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h313-tanix-tx1.dts",
+      "sha256": "f7f71ffd3a5518a02c19e07b20cf95bcb6690cd129fe65f43cc02ba5632bfcdf",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi",
+      "sha256": "2753ac52547796a681b7eb0e6feed3e69a0c5f3578178a3b8993805903e04297",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi",
+      "sha256": "fac2cae4f7f30377034273f206863bd3ff876d719c8393544ec5712c3c7c3738",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts",
+      "sha256": "d1cf872c206446cd094ba33f9d0ee8d2309b5045eb2061b5f9f94274050200ee",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h616-x96-mate.dts",
+      "sha256": "c2b8cffa6f73760eee6b846aba62597fbc40c37e64d2f9a2c922218d95aba4de",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi",
+      "sha256": "f31c4d13183a40f1e959475c4f22841a985cfd8a45dcec91f493579344ff804b",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts",
+      "sha256": "a456ced402f8442c8609aa28bb135ae840e7fc39ad08ea35e8aebe21a5823d70",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h618-transpeed-8k618-t.dts",
+      "sha256": "1662d7ca3cbce2ff00fafc191b533d1bb1246cdeca9ae7d4ac8f30d7577d56d8",
+      "kind": "modified"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h618-yuzukihd-chameleon.dts",
+      "sha256": "91986343876191f9068729c2d07f1d4ef1ff4b466ba54222ca82d63723714365",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/auxdisplay/Kconfig",
+      "sha256": "48535cb499c6f44faaa00d2888de03c2694f6d088294ff3bf98403b25597213c",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/auxdisplay/Makefile",
+      "sha256": "23434fc276d135304f9166dc39993068cc6461dc2562575762d363cadcaa519e",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/clk/sunxi-ng/ccu-sun50i-h616.c",
+      "sha256": "fb0cf26819bd8e158dc2068508774c93151c6c191af179f130c2922a410bd653",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/clk/sunxi-ng/ccu-sun50i-h616.h",
+      "sha256": "440237dcf56aaeb9ed4196a16ec1733a5cee028521ad4eb28cdfd16f7d9e7d12",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/clk/sunxi-ng/ccu-sun8i-de2.c",
+      "sha256": "3a44dd3c432e3391a88f041b59f13dce775591b865faf33849b01a12dfb312eb",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/Makefile",
+      "sha256": "784c6b150a28ed06ab2df910aaa1bf4baf9dcfff18938c75f0a88733071d8a4a",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun4i_drv.c",
+      "sha256": "e4d2a5d47e5e2e0abf8bebcff35bbaefd0c67fd41c9caa174c28aad12458cd07",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun4i_tcon.c",
+      "sha256": "b3af75c5de7868185f3d0e3f2ae7cc586d6c0f9da60b6eee69a61d02181e3c18",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun4i_tcon.h",
+      "sha256": "ec1e50b5cca08951a36001a79016f08aa3dc7b03674b7476def82853a538567e",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun8i_csc.c",
+      "sha256": "77a0075530274f0e3b300003bed7575e452b14c674ee8e2c887ec2c334bde463",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun8i_csc.h",
+      "sha256": "24139a74f6e1609b1f040d604bb79cb11399d23331c0ac526a5f48b4b486c2a0",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c",
+      "sha256": "c88aa8d454fc482b61f4a6814d36ab39b27c9ec9970221a61aa6464d6c4ba405",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun8i_mixer.c",
+      "sha256": "7da4c2fe90ab81065236d67b26882a3bc36bd66fab88272538a6f3c50c40cbfe",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun8i_mixer.h",
+      "sha256": "8afeaff21878196633c0f984aefeff9c8a5f1b8dd99c25393084aff91db3c006",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun8i_tcon_top.c",
+      "sha256": "5ce184d696e4b85b41511d33f59ee847ce49fa8f32d96d0cfb9b6404802981c9",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun8i_vi_layer.c",
+      "sha256": "7ad43e36b78d847fe8959901dca7295fe29c82966dbd6a1c75f39e605e1f77a6",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/mfd/Kconfig",
+      "sha256": "e2258c2db22c481fbda53426a74f7329016fb8564da328e00f8f8a9e1287a731",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/mfd/Makefile",
+      "sha256": "ad20d4d934e4a7b750c978c72ed8db480054f2eedf1a5747be44449f149dd453",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/mmc/core/pwrseq_simple.c",
+      "sha256": "3353381f6648d2cea12a87cdb586f34b1d154ab84a8eac7849d601d78d7e448f",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/mmc/core/sdio.c",
+      "sha256": "2b33358eb1fdb476cb89a7e74e9cb5b1b73fbd4e5c890dfe2950686e775d2f76",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/mmc/host/sunxi-mmc.c",
+      "sha256": "bb6ef978e361e7e5f7b52ec333631fb7ae51e720174d1e4854d06e5b807fe4b2",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c",
+      "sha256": "c9f9eb5d9919e3e8b8137661ca5b28e6b3f5d6d997d2587ece39d0e8ee449d6f",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/net/phy/Kconfig",
+      "sha256": "ef8f897543047e44966eba52ba8ec6deb8322c11e741cfc6484a9edf389e77cc",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/net/phy/Makefile",
+      "sha256": "60858cb5bf271de90e76e6b8b42f946bcaefd6269dd46dc554b7bd8c316b6cfb",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/net/wireless/Kconfig",
+      "sha256": "94636e6129be5ac6a9f7870824b78f3379181096f631b3db803bb5cbab505ba4",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/net/wireless/Makefile",
+      "sha256": "af5b1770733ce861671cbf7199bf9bf488eb9edfede262648baf6ffeb613c649",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/pwm/Kconfig",
+      "sha256": "8e326a6314ce95de74a721ae9f421f5e7091f16fcef6f88a0de04a18d73dd8ae",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/pwm/Makefile",
+      "sha256": "d732311783f0c101b69cd47b4e29dd2475242b2882966bf7a2930cb37cc94c83",
+      "kind": "modified"
+    },
+    {
+      "path": "drivers/staging/media/sunxi/cedrus/cedrus.c",
+      "sha256": "04edc19e718feae9e0885d74ad1b6b5dbbbeff8c843c7a82ef746a5581010b2d",
+      "kind": "modified"
+    },
+    {
+      "path": "include/dt-bindings/clock/sun50i-h616-ccu.h",
+      "sha256": "ac10c4d46fd7ce8fba70cc40f903e216ec6ace954b2ebd7482feb45fb61dca16",
+      "kind": "modified"
+    },
+    {
+      "path": "sound/soc/Kconfig",
+      "sha256": "e192eafacc68abe272691dde09b6ccf6015e137a3f2a22c802c74bc53925103e",
+      "kind": "modified"
+    },
+    {
+      "path": "sound/soc/Makefile",
+      "sha256": "5d2990b38c1a6ad5e7bc714956a521c627c886cd9a43dd5cf99da5dddbfb6a9d",
+      "kind": "modified"
+    },
+    {
+      "path": "sound/soc/sunxi/sun4i-codec.c",
+      "sha256": "2a5c66b325cd0f8b1c16dfee9540eb93e0017deacf4668992487208417b017dc",
+      "kind": "modified"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/display/allwinner,sun50i-h616-de33-planes.yaml",
+      "sha256": "6482f032f7c5c0cf7d9d16286a3e37d9870fc4eeb351b56c7f771c3de529e339",
+      "kind": "added"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/mfd/x-powers,ac200.yaml",
+      "sha256": "2d4f35c8574e95a3f1c8607c8c6d55e85b46c36677145291c373073369b18c05",
+      "kind": "added"
+    },
+    {
+      "path": "Documentation/devicetree/bindings/net/x-powers,acx00-ephy-package.yaml",
+      "sha256": "31e1c43ca40a8d94f230b030e9df7af93efafa6197a5dc4cef52761f8d2c28ae",
+      "kind": "added"
+    },
+    {
+      "path": "arch/arm64/boot/dts/allwinner/sun50i-h616-t95h.dts",
+      "sha256": "0cb5fba6c13c870cf9855f5cdd18fb52c0795b27bcdc926f08e075831840abae",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/auxdisplay/tm16xx.h",
+      "sha256": "2d57e4b3c2664224a52059e042ff873fd7fa84e07603f0f55518bd08a3b38ba8",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/auxdisplay/tm16xx_compat.h",
+      "sha256": "fcc899773d0b69eb57b910ec12db9c3471d65d6c9e81b7019deb56f5b5f1c0e1",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/auxdisplay/tm16xx_core.c",
+      "sha256": "644d847ac25c55dd5d8ecdaafd2be65bd1b2cdb14491109683b41d97e4bfe066",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/auxdisplay/tm16xx_i2c.c",
+      "sha256": "e11bc16fdfea0982ff3e7151ec6008a5a3b61d08dc8cfe0f695f903c915cdfa4",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/auxdisplay/tm16xx_keypad.c",
+      "sha256": "0f1335b5911e9eaf0d2500c8a691fd6a5f0195b82f9f63e1ad653bd430ffca9e",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/auxdisplay/tm16xx_spi.c",
+      "sha256": "105dea8bddeb98893e255f57a7bd433913f7464eceb3bdc0572fd8d710267783",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun50i_planes.c",
+      "sha256": "71f35e59e1aab4cbd3c3248f816e8c2073aeace71b3d26c159fe6960559e7f3f",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/gpu/drm/sun4i/sun50i_planes.h",
+      "sha256": "8ff31e29df49ed5663cc813714bc957f0a0aae2456f04b94be53d6961d6e0d5c",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/mfd/ac200.c",
+      "sha256": "4948caf4ff6fb69e7889e2d304ab39931bfe9416f17198d7cdd31bfdec739f0c",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/phy/xpowers/Makefile",
+      "sha256": "1f8181a7661029edc2d74f171903872c13bb69d2b553c608910e97f6fb255930",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/phy/xpowers/ac200.c",
+      "sha256": "19b806edec2f63451f39b9cceab01176439bbf4a5b14c6f64b598ad2b68460c3",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/phy/xpowers/ac300.c",
+      "sha256": "4245cfff36eb032c0603fb29be3196da65b69c7582bb8cd1028a126a3b266991",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/phy/xpowers/acx00.c",
+      "sha256": "6104e9da021f69c15f4b607b575199967f608de8f0e2771f38b8eb50110ca003",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/phy/xpowers/acx00.h",
+      "sha256": "d119d45ef4b4eb14f7774f0483ab3f65ac6276f2edd5a102c9a49be3415cd368",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/.gitignore",
+      "sha256": "27eda0cae487926457c726c3cb21e87e3ce16fd98f124fcf8fecb22ed6da3ac5",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/Kconfig",
+      "sha256": "695253884b8fa1d5f90f3b5a693f4d1cf085271ec589dd2f611f51cf8d9f0ef8",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/LICENSE",
+      "sha256": "db296f2f7f35bca3a174efb0eb392b3b17bd94b341851429a3dff411b1c2fc73",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/Makefile",
+      "sha256": "d6e4401893e93ce62688279218ec36f1e11473342a98b244501d6c2b3da4bb71",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/README.md",
+      "sha256": "ffb255f4ae60d66435ac8d68ce842dae5aef5494990e5c383e378a8f406874e1",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/ap.c",
+      "sha256": "b821d7b37e799db4db77f3428a73e43f2d2d50df200ca3d11560cdac66016aa5",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/ap.h",
+      "sha256": "1d7191e43bb04158859dc69d25d10394f2228f6ed6db3c9f5e61200f435a94c1",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/bh.c",
+      "sha256": "a0d8ebc57fd8e5f88ff66357c14d9f9fab9c327865be98baf0573846e217f74d",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/bh.h",
+      "sha256": "c25e11a129ab452896dedf28a1c6cb01f43d32485664ab39a72785fcbd5422f3",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/common.h",
+      "sha256": "f97b303c610ec1f3e56948cd400768c3e674cc924fe575602e61f38988a79c41",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/debug.h",
+      "sha256": "a3ba37d248cd0b66efe870b6b75cfcf924a19313c5b8a740e987ea964a2b9cb8",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/fwio.c",
+      "sha256": "fcca63e77f36668ea8dda29abb483041ef4b89bbf9e923f4f67dd836a4213d87",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/fwio.h",
+      "sha256": "94a2e6f310caa2a5097e29d34f90902af6d5e4a2e5adbb8e951dabb3639150d2",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/ht.c",
+      "sha256": "6f5ad6374968a326c56acc70b2ad2b20edec973c0ed445ce37143aad7fbff194",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/ht.h",
+      "sha256": "e28e95b659eb64b4af0ca0509f3e4e005305824f11bd7b8fac0a9e508d4317c2",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/hwio.c",
+      "sha256": "b95daa16ee1dbabb80863d782a2f48fa37e88a19ed2c968c8ffa4f1426a07a97",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/hwio.h",
+      "sha256": "83004b67afd50a2e1522bcba66160e71b4ee65befc88b861c45060bb02f955ff",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/keys.c",
+      "sha256": "eb34a2ad27b4e42dfa219811188fff1782a2f9aa5be7afd7d3f3c73572660d60",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/keys.h",
+      "sha256": "dfdd40a64f70f02a81f94142e2bc02a57660261874115a43b9129ce3143a6f1c",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/main.c",
+      "sha256": "56d059bdecc106650d39fedd1b6af6905996a2cdc7e4fb045b98be4f04a22958",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/main.h",
+      "sha256": "921b7b97bc38662d834bf45b5185a1ea2e70430e3e9a6425255586677ffad398",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/module.c",
+      "sha256": "d3c1305f06e7b3eee24c3acf6a3a287f4fe1c8c8460f751686c70506df6895df",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/p2p.c",
+      "sha256": "288319cafaea5579a2c0d6b014fc1bec42992b2d404e126e1362ae63ec5c692a",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/p2p.h",
+      "sha256": "443e958b8eba751f2b32a83f4dd54e6e14155a478f92ca0553208552c50d8657",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/pm.c",
+      "sha256": "be500214481c0f60c78a1b063920eadc0513c4dbf381e4056d65845575d51b20",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/pm.h",
+      "sha256": "de6cdf7f73a7c49a5fd862bacb1498b894e21e69c021b448fd9d4295e93b8959",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/queue.c",
+      "sha256": "51c2d0c2ee8a7fa9e92401ec7494fb3bc311f167039691dfdc322b96f13a17bd",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/queue.h",
+      "sha256": "74fd2474a5d5b7887451e52c7b62c19f867aa1a68c1b233fdfb6ad01be7e5ae0",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/rx.c",
+      "sha256": "a13c17502d48aaa295173190dfa8fd9595022dd986163f46360d7e8c20d364cb",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/rx.h",
+      "sha256": "96b314cd6bd6f307c8cc746bff748e92011e5abc2f4c359174f9dda2bd3dc086",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/scan.c",
+      "sha256": "f80cf77df36149f7d1ef4e44e5bc91050169784bb6d3706050cf12065c916efa",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/scan.h",
+      "sha256": "6fae8f9ede07ab1ad66eb7d23b2d0f80e376261f6400c54df3c4c408bf8a8f6a",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/sdio.c",
+      "sha256": "d97a4656fdd65ba48cfae60ac820e95fa255d0a44854e871a9ea012032ed27d6",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/sdio.h",
+      "sha256": "cc8c60542e334ad7fa25ab6ba46a319f24c19530d59f85ecf68fe1e31443818b",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/sta.c",
+      "sha256": "fde05e634692fb8c1ad98eb87cb32def1d85006aca48f271f447751982a9bbaa",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/sta.h",
+      "sha256": "205ee6464d1b6c62aba933cdd069bafaf6d80c2819fbeed6e20ace4264c11523",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/sun8i-h2-plus-orangepi-zero.dts",
+      "sha256": "72b235280c6be96fa449f5da2cc1c50cce94829dddc978b6cb195e961d2f3eb1",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/tx.c",
+      "sha256": "dabb2054f666f7734771ffb03a7096eea5ab4da68cbc59086e142bb66f20b2fe",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/tx.h",
+      "sha256": "8db7d38dcc15cf1aec4e20d6660c28d4105ee35dbca091660a56c1127e20efe8",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/wsm.c",
+      "sha256": "4465eca72c37740b85b65b01c2445414097de7780e7a268290c69e604f7da076",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/wsm.h",
+      "sha256": "3b92665aa13d9bf103244e060ce44d2e0ff231ada53bba62121f0325402892d2",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/net/wireless/xradio/xradio.h",
+      "sha256": "2e5d995a64d3f434025cc669a24319b7aa512cc23278b7dd6caa7c0ebfccf3fc",
+      "kind": "added"
+    },
+    {
+      "path": "drivers/pwm/pwm-sun8i.c",
+      "sha256": "87209e5c6559772918c2d2e29e48cb2b224420a3f9a7627e2719ddde17426dac",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/Kconfig",
+      "sha256": "c292723097b622c80187f369e4c47bdf5ed57835a9c806aec1d319684805a65a",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/Makefile",
+      "sha256": "b5f8678346d720748c3400834c829e20ec828ccb9835bdc5c06fee730b97b650",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/drv_hdmi.h",
+      "sha256": "27ba98b007557b2fe9638d85c83903e7472a26f7ac1ccec6a2d65a78d8f3a9c2",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_ahub.c",
+      "sha256": "cadc2c82aba8b13b067ca2906d68b2b11e5aa66bbfb0944ba19cf8d9ec4372c0",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_ahub.h",
+      "sha256": "0c348c4bf0f10cfb7550b3211b480080372cd8dfbc7c8b225c356c5c411cdb74",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_ahub_dam.c",
+      "sha256": "33b85355592d590b6f21f101dc8f423c257d341dcceb02b6963730ce853dda5c",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_ahub_dam.h",
+      "sha256": "87a134fa6bc1c4604a0af04668c173687d74a2019601b53bb496eaae92f17d32",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_common.c",
+      "sha256": "8889665c6c3ba580677f1d619df6a1c8c5d48cb8d64fc3426bdb5eba0e2a17ef",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_common.h",
+      "sha256": "ff24b8f85b6f6e0c4109a865e19b880225703957df216e16e57344e2c7f97f56",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_log.h",
+      "sha256": "46b347804b9970274cf592aafbcf654d3f557fb7fff07d21e704b9292e81bbf9",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_mach.c",
+      "sha256": "bc5f4f7e59c988aabc4fea48cd8ae914634a6139e60a1d56c7fe1f6ad12588d5",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_mach.h",
+      "sha256": "3b61d09d5e509500118ac501e3d1635f1abb7b998070afd9609aab5400028c9c",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_mach_utils.c",
+      "sha256": "2230ed2e58cfc1d052de2a3978ab5c6d35d045891b5d1b3b8e674f3d08ca5745",
+      "kind": "added"
+    },
+    {
+      "path": "sound/soc/sunxi_v2/snd_sunxi_mach_utils.h",
+      "sha256": "a995918d5cf5fda5d98829efe2dd5a42e7dcb2d96304c4ca4332c428573cd550",
+      "kind": "added"
+    }
+  ],
+  "excluded_generated_candidates": [
+    "arch/arm64/kernel/vdso/vdso.lds",
+    "arch/arm64/kernel/vmlinux.lds",
+    "crypto/asymmetric_keys/pkcs7.asn1.c",
+    "crypto/asymmetric_keys/pkcs7.asn1.h",
+    "crypto/asymmetric_keys/x509.asn1.c",
+    "crypto/asymmetric_keys/x509.asn1.h",
+    "crypto/asymmetric_keys/x509_akid.asn1.c",
+    "crypto/asymmetric_keys/x509_akid.asn1.h",
+    "crypto/rsaprivkey.asn1.c",
+    "crypto/rsaprivkey.asn1.h",
+    "crypto/rsapubkey.asn1.c",
+    "crypto/rsapubkey.asn1.h",
+    "drivers/base/firmware_loader/builtin/mediatek/WIFI_MT7961_patch_mcu_1_2_hdr.bin.gen.S",
+    "drivers/base/firmware_loader/builtin/mediatek/WIFI_RAM_CODE_MT7961_1.bin.gen.S",
+    "drivers/base/firmware_loader/builtin/mediatek/mt7610u.bin.gen.S",
+    "drivers/base/firmware_loader/builtin/mt7662.bin.gen.S",
+    "drivers/base/firmware_loader/builtin/mt7662_rom_patch.bin.gen.S",
+    "drivers/base/firmware_loader/builtin/regulatory.db.5.gen.S",
+    "drivers/base/firmware_loader/builtin/regulatory.db.gen.S",
+    "drivers/base/firmware_loader/builtin/regulatory.db.p7s.gen.S",
+    "drivers/base/firmware_loader/builtin/xr819/boot_xr819.bin.gen.S",
+    "drivers/base/firmware_loader/builtin/xr819/fw_xr819.bin.gen.S",
+    "drivers/base/firmware_loader/builtin/xr819/sdd_xr819.bin.gen.S",
+    "drivers/media/common/videobuf2/videobuf2-common.mod.c",
+    "drivers/media/common/videobuf2/videobuf2-dma-contig.mod.c",
+    "drivers/media/common/videobuf2/videobuf2-memops.mod.c",
+    "drivers/media/common/videobuf2/videobuf2-v4l2.mod.c",
+    "drivers/media/i2c/ir-kbd-i2c.mod.c",
+    "drivers/media/rc/keymaps/rc-adstech-dvb-t-pci.mod.c",
+    "drivers/media/rc/keymaps/rc-alink-dtu-m.mod.c",
+    "drivers/media/rc/keymaps/rc-anysee.mod.c",
+    "drivers/media/rc/keymaps/rc-apac-viewcomp.mod.c",
+    "drivers/media/rc/keymaps/rc-astrometa-t2hybrid.mod.c",
+    "drivers/media/rc/keymaps/rc-asus-pc39.mod.c",
+    "drivers/media/rc/keymaps/rc-asus-ps3-100.mod.c",
+    "drivers/media/rc/keymaps/rc-ati-tv-wonder-hd-600.mod.c",
+    "drivers/media/rc/keymaps/rc-ati-x10.mod.c",
+    "drivers/media/rc/keymaps/rc-avermedia-a16d.mod.c",
+    "drivers/media/rc/keymaps/rc-avermedia-cardbus.mod.c",
+    "drivers/media/rc/keymaps/rc-avermedia-dvbt.mod.c",
+    "drivers/media/rc/keymaps/rc-avermedia-m135a.mod.c",
+    "drivers/media/rc/keymaps/rc-avermedia-m733a-rm-k6.mod.c",
+    "drivers/media/rc/keymaps/rc-avermedia-rm-ks.mod.c",
+    "drivers/media/rc/keymaps/rc-avermedia.mod.c",
+    "drivers/media/rc/keymaps/rc-avertv-303.mod.c",
+    "drivers/media/rc/keymaps/rc-azurewave-ad-tu700.mod.c",
+    "drivers/media/rc/keymaps/rc-beelink-gs1.mod.c",
+    "drivers/media/rc/keymaps/rc-beelink-mxiii.mod.c",
+    "drivers/media/rc/keymaps/rc-behold-columbus.mod.c",
+    "drivers/media/rc/keymaps/rc-behold.mod.c",
+    "drivers/media/rc/keymaps/rc-budget-ci-old.mod.c",
+    "drivers/media/rc/keymaps/rc-cinergy-1400.mod.c",
+    "drivers/media/rc/keymaps/rc-cinergy.mod.c",
+    "drivers/media/rc/keymaps/rc-ct-90405.mod.c",
+    "drivers/media/rc/keymaps/rc-d680-dmb.mod.c",
+    "drivers/media/rc/keymaps/rc-delock-61959.mod.c",
+    "drivers/media/rc/keymaps/rc-dib0700-nec.mod.c",
+    "drivers/media/rc/keymaps/rc-dib0700-rc5.mod.c",
+    "drivers/media/rc/keymaps/rc-digitalnow-tinytwin.mod.c",
+    "drivers/media/rc/keymaps/rc-digittrade.mod.c",
+    "drivers/media/rc/keymaps/rc-dm1105-nec.mod.c",
+    "drivers/media/rc/keymaps/rc-dntv-live-dvb-t.mod.c",
+    "drivers/media/rc/keymaps/rc-dntv-live-dvbt-pro.mod.c",
+    "drivers/media/rc/keymaps/rc-dreambox.mod.c",
+    "drivers/media/rc/keymaps/rc-dtt200u.mod.c",
+    "drivers/media/rc/keymaps/rc-dvbsky.mod.c",
+    "drivers/media/rc/keymaps/rc-dvico-mce.mod.c",
+    "drivers/media/rc/keymaps/rc-dvico-portable.mod.c",
+    "drivers/media/rc/keymaps/rc-em-terratec.mod.c",
+    "drivers/media/rc/keymaps/rc-encore-enltv-fm53.mod.c",
+    "drivers/media/rc/keymaps/rc-encore-enltv.mod.c",
+    "drivers/media/rc/keymaps/rc-encore-enltv2.mod.c",
+    "drivers/media/rc/keymaps/rc-evga-indtube.mod.c",
+    "drivers/media/rc/keymaps/rc-eztv.mod.c",
+    "drivers/media/rc/keymaps/rc-flydvb.mod.c",
+    "drivers/media/rc/keymaps/rc-flyvideo.mod.c",
+    "drivers/media/rc/keymaps/rc-fusionhdtv-mce.mod.c",
+    "drivers/media/rc/keymaps/rc-gadmei-rm008z.mod.c",
+    "drivers/media/rc/keymaps/rc-geekbox.mod.c",
+    "drivers/media/rc/keymaps/rc-genius-tvgo-a11mce.mod.c",
+    "drivers/media/rc/keymaps/rc-gotview7135.mod.c",
+    "drivers/media/rc/keymaps/rc-hauppauge.mod.c",
+    "drivers/media/rc/keymaps/rc-hisi-poplar.mod.c",
+    "drivers/media/rc/keymaps/rc-hisi-tv-demo.mod.c",
+    "drivers/media/rc/keymaps/rc-imon-mce.mod.c",
+    "drivers/media/rc/keymaps/rc-imon-pad.mod.c",
+    "drivers/media/rc/keymaps/rc-imon-rsc.mod.c",
+    "drivers/media/rc/keymaps/rc-iodata-bctv7e.mod.c",
+    "drivers/media/rc/keymaps/rc-it913x-v1.mod.c",
+    "drivers/media/rc/keymaps/rc-it913x-v2.mod.c",
+    "drivers/media/rc/keymaps/rc-kaiomy.mod.c",
+    "drivers/media/rc/keymaps/rc-khadas.mod.c",
+    "drivers/media/rc/keymaps/rc-khamsin.mod.c",
+    "drivers/media/rc/keymaps/rc-kworld-315u.mod.c",
+    "drivers/media/rc/keymaps/rc-kworld-pc150u.mod.c",
+    "drivers/media/rc/keymaps/rc-kworld-plus-tv-analog.mod.c",
+    "drivers/media/rc/keymaps/rc-leadtek-y04g0051.mod.c",
+    "drivers/media/rc/keymaps/rc-lme2510.mod.c",
+    "drivers/media/rc/keymaps/rc-manli.mod.c",
+    "drivers/media/rc/keymaps/rc-mecool-kii-pro.mod.c",
+    "drivers/media/rc/keymaps/rc-mecool-kiii-pro.mod.c",
+    "drivers/media/rc/keymaps/rc-medion-x10-digitainer.mod.c",
+    "drivers/media/rc/keymaps/rc-medion-x10-or2x.mod.c",
+    "drivers/media/rc/keymaps/rc-medion-x10.mod.c",
+    "drivers/media/rc/keymaps/rc-minix-neo.mod.c",
+    "drivers/media/rc/keymaps/rc-msi-digivox-ii.mod.c",
+    "drivers/media/rc/keymaps/rc-msi-digivox-iii.mod.c",
+    "drivers/media/rc/keymaps/rc-msi-tvanywhere-plus.mod.c",
+    "drivers/media/rc/keymaps/rc-msi-tvanywhere.mod.c",
+    "drivers/media/rc/keymaps/rc-mygica-utv3.mod.c",
+    "drivers/media/rc/keymaps/rc-nebula.mod.c",
+    "drivers/media/rc/keymaps/rc-nec-terratec-cinergy-xs.mod.c",
+    "drivers/media/rc/keymaps/rc-norwood.mod.c",
+    "drivers/media/rc/keymaps/rc-npgtech.mod.c",
+    "drivers/media/rc/keymaps/rc-odroid.mod.c",
+    "drivers/media/rc/keymaps/rc-pctv-sedna.mod.c",
+    "drivers/media/rc/keymaps/rc-pine64.mod.c",
+    "drivers/media/rc/keymaps/rc-pinnacle-color.mod.c",
+    "drivers/media/rc/keymaps/rc-pinnacle-grey.mod.c",
+    "drivers/media/rc/keymaps/rc-pinnacle-pctv-hd.mod.c",
+    "drivers/media/rc/keymaps/rc-pixelview-002t.mod.c",
+    "drivers/media/rc/keymaps/rc-pixelview-mk12.mod.c",
+    "drivers/media/rc/keymaps/rc-pixelview-new.mod.c",
+    "drivers/media/rc/keymaps/rc-pixelview.mod.c",
+    "drivers/media/rc/keymaps/rc-powercolor-real-angel.mod.c",
+    "drivers/media/rc/keymaps/rc-proteus-2309.mod.c",
+    "drivers/media/rc/keymaps/rc-purpletv.mod.c",
+    "drivers/media/rc/keymaps/rc-pv951.mod.c",
+    "drivers/media/rc/keymaps/rc-rc6-mce.mod.c",
+    "drivers/media/rc/keymaps/rc-real-audio-220-32-keys.mod.c",
+    "drivers/media/rc/keymaps/rc-reddo.mod.c",
+    "drivers/media/rc/keymaps/rc-siemens-gigaset-rc20.mod.c",
+    "drivers/media/rc/keymaps/rc-snapstream-firefly.mod.c",
+    "drivers/media/rc/keymaps/rc-streamzap.mod.c",
+    "drivers/media/rc/keymaps/rc-su3000.mod.c",
+    "drivers/media/rc/keymaps/rc-tanix-tx3mini.mod.c",
+    "drivers/media/rc/keymaps/rc-tanix-tx5max.mod.c",
+    "drivers/media/rc/keymaps/rc-tbs-nec.mod.c",
+    "drivers/media/rc/keymaps/rc-technisat-ts35.mod.c",
+    "drivers/media/rc/keymaps/rc-technisat-usb2.mod.c",
+    "drivers/media/rc/keymaps/rc-terratec-cinergy-c-pci.mod.c",
+    "drivers/media/rc/keymaps/rc-terratec-cinergy-s2-hd.mod.c",
+    "drivers/media/rc/keymaps/rc-terratec-cinergy-xs.mod.c",
+    "drivers/media/rc/keymaps/rc-terratec-slim-2.mod.c",
+    "drivers/media/rc/keymaps/rc-terratec-slim.mod.c",
+    "drivers/media/rc/keymaps/rc-tevii-nec.mod.c",
+    "drivers/media/rc/keymaps/rc-tivo.mod.c",
+    "drivers/media/rc/keymaps/rc-total-media-in-hand-02.mod.c",
+    "drivers/media/rc/keymaps/rc-total-media-in-hand.mod.c",
+    "drivers/media/rc/keymaps/rc-trekstor.mod.c",
+    "drivers/media/rc/keymaps/rc-tt-1500.mod.c",
+    "drivers/media/rc/keymaps/rc-twinhan-dtv-cab-ci.mod.c",
+    "drivers/media/rc/keymaps/rc-twinhan1027.mod.c",
+    "drivers/media/rc/keymaps/rc-vega-s9x.mod.c",
+    "drivers/media/rc/keymaps/rc-videomate-m1f.mod.c",
+    "drivers/media/rc/keymaps/rc-videomate-s350.mod.c",
+    "drivers/media/rc/keymaps/rc-videomate-tv-pvr.mod.c",
+    "drivers/media/rc/keymaps/rc-videostrong-kii-pro.mod.c",
+    "drivers/media/rc/keymaps/rc-wetek-hub.mod.c",
+    "drivers/media/rc/keymaps/rc-wetek-play2.mod.c",
+    "drivers/media/rc/keymaps/rc-winfast-usbii-deluxe.mod.c",
+    "drivers/media/rc/keymaps/rc-winfast.mod.c",
+    "drivers/media/rc/keymaps/rc-x96max.mod.c",
+    "drivers/media/rc/keymaps/rc-xbox-360.mod.c",
+    "drivers/media/rc/keymaps/rc-xbox-dvd.mod.c",
+    "drivers/media/rc/keymaps/rc-zx-irdec.mod.c",
+    "drivers/media/rc/rc-core.mod.c",
+    "drivers/media/rc/sunxi-cir.mod.c",
+    "drivers/media/v4l2-core/v4l2-mem2mem.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76-connac-lib.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76-usb.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76x0/mt76x0-common.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76x0/mt76x0u.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76x02-lib.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76x02-usb.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76x2/mt76x2-common.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt76x2/mt76x2u.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt7921/mt7921-common.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt7921/mt7921u.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt792x-lib.mod.c",
+    "drivers/net/wireless/mediatek/mt76/mt792x-usb.mod.c",
+    "drivers/net/wireless/realtek/rtw88/rtw88_8821c.mod.c",
+    "drivers/net/wireless/realtek/rtw88/rtw88_8821cu.mod.c",
+    "drivers/net/wireless/realtek/rtw88/rtw88_core.mod.c",
+    "drivers/net/wireless/realtek/rtw88/rtw88_usb.mod.c",
+    "drivers/of/empty_root.dtb.S",
+    "drivers/scsi/scsi_devinfo_tbl.c",
+    "drivers/staging/media/sunxi/cedrus/sunxi-cedrus.mod.c",
+    "drivers/tty/vt/consolemap_deftbl.c",
+    "drivers/tty/vt/defkeymap.c",
+    "drivers/tty/vt/ucs_fallback_table.h",
+    "drivers/tty/vt/ucs_recompose_table.h",
+    "drivers/tty/vt/ucs_width_table.h",
+    "drivers/video/logo/logo_linux_clut224.c",
+    "drivers/video/logo/logo_linux_mono.c",
+    "drivers/video/logo/logo_linux_vga16.c",
+    "init/utsversion-tmp.h",
+    "lib/crc/crc32table.h",
+    "lib/crypto/arm64/sha256-core.S",
+    "lib/crypto/arm64/sha512-core.S",
+    "lib/oid_registry_data.c",
+    "net/netfilter/nft_hash.mod.c",
+    "net/netfilter/nft_numgen.mod.c",
+    "net/netfilter/nft_quota.mod.c",
+    "net/wireless/shipped-certs.c",
+    "scripts/dtc/dtc-lexer.lex.c",
+    "scripts/dtc/dtc-parser.tab.c",
+    "scripts/dtc/dtc-parser.tab.h",
+    "scripts/kconfig/lexer.lex.c",
+    "scripts/kconfig/parser.tab.c",
+    "scripts/kconfig/parser.tab.h",
+    "scripts/mod/devicetable-offsets.h",
+    "scripts/mod/elfconfig.h",
+    "scripts/module.lds"
+  ],
+  "scope_exclusions": [
+    "external ANA and regulator modules",
+    "firmware and final Kconfig",
+    "assembled shipping DTB",
+    "bootchain",
+    "OpenWrt rootfs and runtime services"
+  ]
+}

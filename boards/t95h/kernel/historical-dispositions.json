@@ -1,0 +1,154 @@
+[
+  {
+    "patch": "patches/audio/Sound-for-H616-H618-Allwinner-SOCs.patch",
+    "disposition": "Selectively imported AHUB sunxi_v2 sources and AHUB DT nodes, as explicitly implemented in scripts/prepare_candidate3.py. Mainline ASoC core and analog sun4i-codec retained; vendor sun50iw9-codec and old core changes NOT imported. Followed by API adaptation, coordinated clock rate locking and T95H-only BCLK correction. Replayed source and final DT property audit passed.",
+    "final_files": [
+      "arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi",
+      "arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi",
+      "drivers/clk/sunxi-ng/ccu-sun50i-h616.c",
+      "include/sound/soc-dai.h",
+      "sound/soc/Kconfig",
+      "sound/soc/Makefile",
+      "sound/soc/soc-core.c",
+      "sound/soc/sunxi/Kconfig",
+      "sound/soc/sunxi/Makefile",
+      "sound/soc/sunxi/sun50iw9-codec.c",
+      "sound/soc/sunxi_v2/Kconfig",
+      "sound/soc/sunxi_v2/Makefile",
+      "sound/soc/sunxi_v2/drv_hdmi.h",
+      "sound/soc/sunxi_v2/snd_sunxi_ahub.c",
+      "sound/soc/sunxi_v2/snd_sunxi_ahub.h",
+      "sound/soc/sunxi_v2/snd_sunxi_ahub_dam.c",
+      "sound/soc/sunxi_v2/snd_sunxi_ahub_dam.h",
+      "sound/soc/sunxi_v2/snd_sunxi_common.c",
+      "sound/soc/sunxi_v2/snd_sunxi_common.h",
+      "sound/soc/sunxi_v2/snd_sunxi_log.h",
+      "sound/soc/sunxi_v2/snd_sunxi_mach.c",
+      "sound/soc/sunxi_v2/snd_sunxi_mach.h",
+      "sound/soc/sunxi_v2/snd_sunxi_mach_utils.c",
+      "sound/soc/sunxi_v2/snd_sunxi_mach_utils.h"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "patches/audio/sun50i-h616-Add-the-missing-digital-audio-nodes.patch",
+    "disposition": "NOT imported: optional ahub_dam_mach and ahub_i2s1/2/3 vendor daudio nodes and extra pins absent from final source and shipped DTB. Existing selected AHUB1 machine/platform supplies HDMI audio; no missing required part of current analog/HDMI route. Do not reapply this separate digital-audio expansion as a dependency.",
+    "final_files": [
+      "arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "patches/ethernet-reset-after-phy.patch",
+    "disposition": "Reset helper and DMA-reset placement retained with rewritten local declarations/comments",
+    "final_files": [
+      "drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "patches/hdmi/03-76ce87ca5063.patch",
+    "disposition": "Historical TMDS set_rate quirk is NOT present; final sun8i_dw_hdmi.c/.h match pristine archive and set TMDS rate unconditionally. Do not describe this historical patch as retained or reapply without separate review.",
+    "final_files": [
+      "drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c",
+      "drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "patches/hdmi/05-8efc1645583b.patch",
+    "disposition": "Overlapping versions of the same display-pipeline series. Final kernel dtsi still has the earlier mixer@100000 layout; the shipped DTB obtains planes@100000, mixer@280000 registers/plane references and DE33 compatible from prepare-display-dtb.py, plus mixer IOMMU from Cedrus fix. Those final properties are now preserved and verified in the independent canonical full DTS. Neither historical patch is reapplied on top of that canonical tree.",
+    "final_files": [
+      "arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "patches/historical13/04-a71d1c1edb4c.patch",
+    "disposition": "AC200 implementation retained with volatile-register handling and reset-settle/coldstart adaptations",
+    "final_files": [
+      "drivers/mfd/ac200.c"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "patches/historical13/09-04a32ad41076.patch",
+    "disposition": "Superseded by PWM v8; final source SHA256 matches saved v8 exactly",
+    "final_files": [
+      "drivers/pwm/pwm-sun8i.c"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "patches/historical13/13-12e71d6d001f.patch",
+    "disposition": "Historical board DTS is superseded by the experimental T95H DTS plus subsequent CPU/WLAN/GPU/audio/display edits. Kernel source replay preserves the evolved DTS; the actual shipping device tree is separately locked as t95h-tested-full.dts. Do not restore original compatible, regulators, storage or Ethernet properties from the historical 129-line board patch.",
+    "final_files": [
+      "arch/arm64/boot/dts/allwinner/sun50i-h616-t95h.dts"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "outputs/next-cedrus/upstream/01.patch",
+    "disposition": "Combined final VE schema retains both IOMMU ports and both SRAM references, each requiring minItems=2 for H6 and H616; later H616 enum additions change isolated reverse context.",
+    "final_files": [
+      "Documentation/devicetree/bindings/media/allwinner,sun4i-a10-video-engine.yaml"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "outputs/next-cedrus/upstream/02.patch",
+    "disposition": "Combined final VE schema retains both IOMMU ports and both SRAM references, each requiring minItems=2 for H6 and H616; later H616 enum additions change isolated reverse context.",
+    "final_files": [
+      "Documentation/devicetree/bindings/media/allwinner,sun4i-a10-video-engine.yaml"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "outputs/next-cedrus/upstream/05.patch",
+    "disposition": "Dual SRAM reference present in H6 video node; surrounding source differs",
+    "final_files": [
+      "arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "outputs/next-fat-pwm8/upstream/display-patches/03-108c1752c71502b151622ba565f286f6e2f862bc.patch",
+    "disposition": "Required const data and SRAM claim reference counting already present in pristine kernel archive; final sunxi_sram.c is byte-identical to archive. No separate patch replay needed.",
+    "final_files": [
+      "drivers/soc/sunxi/sunxi_sram.c"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "outputs/next-fat-pwm8/upstream/display-patches/04-17858b65991da66d94bfd9fc61db101f16c733cf.patch",
+    "disposition": "Required const data and SRAM claim reference counting already present in pristine kernel archive; final sunxi_sram.c is byte-identical to archive. No separate patch replay needed.",
+    "final_files": [
+      "drivers/soc/sunxi/sunxi_sram.c"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "outputs/next-fat-pwm8/upstream/display-patches/08-86c4842add30c3f0959302e3a3b110c02998e814.patch",
+    "disposition": "DE33 gates at 0x04, bus gate at 0x08, resets at 0x00 and H616-specific descriptor retained in final source; surrounding declarations differ.",
+    "final_files": [
+      "drivers/clk/sunxi-ng/ccu-sun8i-de2.c"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "outputs/next-fat-pwm8/upstream/display-patches/22-bd00b7a5e82d4242123caf869c885c5bb0a63a92.patch",
+    "disposition": "Overlapping versions of the same display-pipeline series. Final kernel dtsi still has the earlier mixer@100000 layout; the shipped DTB obtains planes@100000, mixer@280000 registers/plane references and DE33 compatible from prepare-display-dtb.py, plus mixer IOMMU from Cedrus fix. Those final properties are now preserved and verified in the independent canonical full DTS. Neither historical patch is reapplied on top of that canonical tree.",
+    "final_files": [
+      "arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi"
+    ],
+    "semantic_review_complete": true
+  },
+  {
+    "patch": "sources/board/t95h-ppu-fix/0001-power-on-required-domains-before-genpd-init.patch",
+    "disposition": "Rejected experiment NOT integrated: no always-on power-on/poll block in final PPU driver",
+    "final_files": [
+      "drivers/pmdomain/sunxi/sun50i-h6-prcm-ppu.c"
+    ],
+    "semantic_review_complete": true
+  }
+]

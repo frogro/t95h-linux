@@ -1,0 +1,17 @@
+private/
+secrets/
+build/
+outputs/
+__pycache__/
+*.pyc
+*.key
+*.pem
+*.img
+*.bin
+*.ko
+*.apk
+*.so
+*.tar
+*.tar.*
+*.zip
+.env

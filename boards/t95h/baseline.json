@@ -1,0 +1,28 @@
+{
+  "id": "t95h-7.2.3-conservative-r1",
+  "kernel": "7.2.3",
+  "kernel_policy": "pinned; no automatic kernel update",
+  "boot_chain_policy": "retain tested chain; standalone source recipe still required",
+  "openwrt_policy": "resolve stable once for each new job; no fallback",
+  "default_profile": "base-A-B",
+  "profiles": ["base", "base-A", "base-B", "base-A-B"],
+  "consoles": ["dual", "hdmi", "uart"],
+  "comparison_build": false,
+  "wlan": {
+    "driver": "xradio from consolidated source lock plus isolated u32 read-size fix",
+    "firmware_policy": "retain baseline .58; do not import Android .65 experiment",
+    "sdio_bus_width": 4,
+    "experimental_overrides": false,
+    "known_issue": "Intermittent SDIO CRC/data errors and missed interrupts; no stability fix demonstrated",
+    "incremental_patch": "kernel/incremental/0001-xradio-fix-32bit-read-lengths.patch",
+    "incremental_patch_sha256": "92fac98cae2975413a29c80f3920ccd056018343f8cd08c90e29b92b4c6869a0"
+  },
+  "full_image_build_ready": false,
+  "remaining": [
+    "Replace local previous-image dependency with fresh OpenWrt rootfs assembly",
+    "Lock and supply boot-chain sources, toolchain, firmware and licenses",
+    "Connect per-profile DTS, external modules, services and kernel package providers",
+    "Resolve selected packages against the current OpenWrt release",
+    "Build and verify install/sysupgrade pair for selected profile"
+  ]
+}

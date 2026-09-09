@@ -1,0 +1,95 @@
+{
+  "status": "package names and dependency expressions verified in local ImageBuilder source metadata; APK solver/build validation pending",
+  "reference_openwrt": "25.12.5",
+  "metadata_sha256": "53194a027634dcf00b304215a4e94c26b788837dc5f0433b43a314104a779526",
+  "profile": "B",
+  "extra_seeds": [
+    "v4l-utils",
+    "gstreamer1-utils",
+    "gst1-mod-video4linux2",
+    "gst1-mod-alsa",
+    "gst1-mod-jpeg",
+    "gst1-mod-videoparsersbad",
+    "gst1-mod-rtp",
+    "gst1-mod-rtpmanager",
+    "gst1-mod-udp",
+    "ustreamer"
+  ],
+  "packages": [
+    {
+      "Package": "v4l-utils",
+      "Version": "1.30.1-r1",
+      "Depends": "+libc +libudev +libv4l +libstdcpp +BUILD_NLS:libiconv-full +BUILD_NLS:libintl-full",
+      "Title": "Video 4 Linux utilities"
+    },
+    {
+      "Package": "gstreamer1-utils",
+      "Version": "1.26.4-r2",
+      "Depends": "+libc +BUILD_NLS:libiconv-full +BUILD_NLS:libintl-full +libgstreamer1 +gstreamer1-libs",
+      "Title": "GStreamer utilities"
+    },
+    {
+      "Package": "gst1-mod-video4linux2",
+      "Version": "1.26.4-r1",
+      "Depends": "+libc +libgstreamer1 +libgst1pbutils +BUILD_NLS:libiconv-full +libgst1video +libgst1allocators +libv4l",
+      "Title": "GStreamer video4linux2 support plugin (good)"
+    },
+    {
+      "Package": "gst1-mod-alsa",
+      "Version": "1.26.4-r1",
+      "Depends": "+libc +libgstreamer1 +BUILD_NLS:libiconv-full +libgst1audio +libgst1tag +alsa-lib",
+      "Title": "GStreamer ALSA audio source/sink plugin (base)"
+    },
+    {
+      "Package": "gst1-mod-jpeg",
+      "Version": "1.26.4-r1",
+      "Depends": "+libc +libgstreamer1 +libgst1pbutils +BUILD_NLS:libiconv-full +libgst1video +libjpeg",
+      "Title": "GStreamer jpeg support plugin (good)"
+    },
+    {
+      "Package": "gst1-mod-videoparsersbad",
+      "Version": "1.26.4-r1",
+      "Depends": "+libc +gst1-plugins-base +libgstreamer1 +libgst1pbutils +BUILD_NLS:libiconv-full +libgst1codecparsers",
+      "Title": "GStreamer videoparsersbad support plugin (bad)"
+    },
+    {
+      "Package": "gst1-mod-rtp",
+      "Version": "1.26.4-r1",
+      "Depends": "+libc +libgstreamer1 +libgst1pbutils +BUILD_NLS:libiconv-full +libgst1audio +libgst1rtp +libgst1tag +libgst1pbutils +libgst1video",
+      "Title": "GStreamer RTP plugin (good)"
+    },
+    {
+      "Package": "gst1-mod-rtpmanager",
+      "Version": "1.26.4-r1",
+      "Depends": "+libc +libgstreamer1 +libgst1pbutils +BUILD_NLS:libiconv-full +libgst1audio +libgst1net +libgst1rtp +libgst1tag +libgst1pbutils +libgst1video",
+      "Title": "GStreamer RTP manager plugin (good)"
+    },
+    {
+      "Package": "gst1-mod-udp",
+      "Version": "1.26.4-r1",
+      "Depends": "+libc +libgstreamer1 +libgst1pbutils +BUILD_NLS:libiconv-full +libgst1net",
+      "Title": "GStreamer UDP plugin (good)"
+    },
+    {
+      "Package": "ustreamer",
+      "Version": "6.52-r1",
+      "Depends": "+libc +libatomic +libjpeg +libevent2 +libevent2-pthreads",
+      "Title": "Lightweight and fast MJPEG-HTTP streamer"
+    }
+  ],
+  "service_policy": {
+    "ustreamer": "installed but disabled by default; explicit configuration required",
+    "firewall": "no additional inbound rules",
+    "streaming": "no automatic publishing"
+  },
+  "scope": [
+    "UVC/V4L2 inspection and capture",
+    "MJPEG-over-HTTP for compatible inputs",
+    "GStreamer capture, parsing and RTP/UDP plumbing"
+  ],
+  "not_claimed": [
+    "all capture dongles supported",
+    "hardware encoding",
+    "working arbitrary format/protocol combinations without device-specific pipeline tests"
+  ]
+}

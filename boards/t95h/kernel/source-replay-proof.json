@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "verified_modified_or_added_files": 131,
+  "unchanged_original_files_verified": 94699,
+  "patch_sha256": "1c49fe023ac3040cb6c8310c166cbd2976410b560067ee7c5a877028fdb6d87c",
+  "tree": "/mnt/entwicklung/projekte/T95H/linux/openwrt/build/work/source-replay-verification/linux-7.2.3",
+  "kernel_compiled": false,
+  "shipping_dtb_rebuilt": false
+}

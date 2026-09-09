@@ -1,0 +1,39 @@
+name: Prepare OpenWrt profile (no image build yet)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: T95H profile
+        type: choice
+        options: [base, base-A, base-B, base-A-B]
+        default: base-A-B
+      console:
+        description: Boot console
+        type: choice
+        options: [dual, hdmi, uart]
+        default: dual
+permissions:
+  contents: read
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify local locks and WLAN regression
+        run: |
+          python3 tools/check-repository.py --output build/repository-check.json
+          python3 -m unittest discover -s tests -v
+      - name: Resolve current stable OpenWrt with pinned kernel
+        env:
+          PROFILE: ${{ inputs.profile || 'base-A-B' }}
+          CONSOLE: ${{ inputs.console || 'dual' }}
+        run: |
+          python3 tools/resolve-stable-versions.py --profile "$PROFILE" --console "$CONSOLE" --output build/request.json
+          printf '## Preparation only\nSource checks and release resolution finished. No install image or sysupgrade was built.\n' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-build-preparation
+          path: build/*.json
+          if-no-files-found: error

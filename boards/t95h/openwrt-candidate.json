@@ -1,0 +1,131 @@
+{
+  "baseline_image_sha256": "1c69e7e9b6f2b2d06c7181df7f9a6508f1df5e0f16449e31a26ca26b709b92bd",
+  "kernel_base": "7.2.0-rc7",
+  "preserve": [
+    "TOC0/SPL/BL31/U-Boot",
+    "boot.scr",
+    "boot.scm",
+    "partition layout",
+    "markers",
+    "historical Ethernet patch series",
+    "coldstart fixes",
+    "USB host support",
+    "Ethernet DHCP client"
+  ],
+  "login": {
+    "user": "root",
+    "password": "openwrt",
+    "ssh_password_auth": true,
+    "ssh_authorized_keys": [],
+    "ssh_public_key_login_expected": false,
+    "luci_password": "openwrt"
+  },
+  "wifi": {
+    "mode": "ap",
+    "band": "2g",
+    "ssid": "openwrt",
+    "encryption": "psk2",
+    "password": "openwrtopenwrt",
+    "address": "192.168.50.1",
+    "dhcp_server": true
+  },
+  "required_fixes": [
+    "SDIO voltage/OCR negotiation based on evidence",
+    "XR819 firmware and signed regulatory.db available before SD root mount",
+    "wifi-scripts board/PHY discovery",
+    "matching kernel module tree and builtin metadata",
+    "od userspace command"
+  ],
+  "verification": [
+    "independent complete A/B image builds",
+    "SHA256 and full cmp",
+    "password login success and public-key login rejection",
+    "coldstart Ethernet USB regression test",
+    "WLAN enumeration AP association DHCP and SSH/LuCI over AP"
+  ],
+  "display": {
+    "requested": true,
+    "goal": "HDMI Linux text console and password login",
+    "baseline_evidence": "outputs/next72-usb-xr819-A/kernel.config: CONFIG_DRM unset; generated t95h.dts has no HDMI/display pipeline",
+    "required_work": [
+      "Enable matching H616 DRM/display/HDMI drivers and console support in custom 7.2 kernel",
+      "Derive and enable complete board display graph, clocks, resets and supplies from verified sources",
+      "Configure tty console and authenticated login without replacing preserved boot scripts",
+      "Verify HDMI coldboot alongside Ethernet, USB and WLAN"
+    ],
+    "hardware_verified": false,
+    "hdmi_audio": "Separate capability, not implied by video output"
+  },
+  "package_review": {
+    "scope": "USB dongles only; preserve onboard XR819 and Ethernet",
+    "userspace_candidates": [
+      "luci-ssl",
+      "luci-app-ttyd",
+      "luci-proto-modemmanager",
+      "luci-proto-mbim",
+      "luci-proto-qmi",
+      "dnsmasq-full",
+      "firewall4",
+      "modemmanager",
+      "modemmanager-rpcd",
+      "libmbim",
+      "mbim-utils",
+      "umbim",
+      "uqmi",
+      "usb-modeswitch",
+      "iw-full",
+      "ip-full",
+      "iputils-ping",
+      "curl",
+      "nano",
+      "htop",
+      "usbutils",
+      "ca-bundle",
+      "e2fsprogs",
+      "block-mount",
+      "lm-sensors",
+      "socat"
+    ],
+    "driver_targets": [
+      "kmod-usb-net",
+      "kmod-usb-net-cdc-mbim",
+      "kmod-usb-net-qmi-wwan",
+      "kmod-usb-acm",
+      "kmod-usb-serial-option",
+      "kmod-mt76x0u",
+      "kmod-mt76x2u",
+      "kmod-mt7921u"
+    ],
+    "excluded": [
+      "kmod-mhi-bus",
+      "kmod-mhi-pci-generic",
+      "kmod-mhi-net",
+      "kmod-mhi-wwan-ctrl",
+      "kmod-mhi-wwan-mbim",
+      "kmod-r8169",
+      "kmod-nvme",
+      "kmod-rtw89-8852be",
+      "rtl8852be-firmware",
+      "kmod-mt7921e",
+      "kmod-mt76",
+      "pciutils"
+    ],
+    "deferred": [
+      "luci-app-attendedsysupgrade",
+      "kmod-usb3",
+      "kmod-hwmon-pwmfan",
+      "mt7921bt-firmware"
+    ],
+    "rules": [
+      "Candidate names and dependencies must resolve against pinned release before build",
+      "All drivers/modules must match custom 7.2 kernel; never install stock 6.12 kmods",
+      "Resolve mt76 common/USB dependencies automatically without PCI aggregate",
+      "Include Wi-Fi firmware for each selected USB chipset; mt7921bt-firmware is Bluetooth firmware",
+      "Use one modem control manager per device; ModemManager primary",
+      "dnsmasq-full replaces dnsmasq; iw-full replaces iw; luci-ssl pulls LuCI dependencies",
+      "kmod-wwan only if actual selected driver dependencies require it",
+      "Attended upgrade needs a validated custom image service/profile before activation",
+      "Keep ttyd authenticated; do not expose an unauthenticated root terminal"
+    ]
+  }
+}

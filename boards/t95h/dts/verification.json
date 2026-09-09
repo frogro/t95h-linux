@@ -1,0 +1,31 @@
+{
+  "reference_sha256": "05081841d0d55a8fcd7bfeaec26d75f1f25befed3ee25db8141743ba4850df61",
+  "rebuilt_sha256": "a3d4ed12ab0c8bf4c1a653e52c4d945f128cf73661117407e03034a64d41a934",
+  "binary_equal": false,
+  "all_node_property_bytes_equal": true,
+  "reservation_map_and_boot_cpu_equal": true,
+  "nodes": 234,
+  "properties": 1221,
+  "checks": {
+    "analog_codec_enabled": true,
+    "analog_parent_audio_2x": true,
+    "analog_clock_codec_1x": true,
+    "analog_lineout_route": true,
+    "ahub_pll_4x_and_module_bus": true,
+    "hdmi_pll_fs_2": true,
+    "hdmi_two_32bit_slots": true,
+    "display_iommu_preserved": true,
+    "cedrus_two_iommu_ports": true,
+    "cedrus_two_sram_references": true,
+    "/soc/ahub1_mach/soundcard-mach,cpu DAI resolves": true,
+    "/soc/ahub1_mach/soundcard-mach,codec DAI resolves": true,
+    "board_scoped_bclk_correction_retained": true,
+    "both_paths_exclusive_clock_rate": true,
+    "mainline_analog_driver_h616_match": true,
+    "obsolete_vendor_analog_driver_not_imported": true
+  },
+  "dtc": "Version: DTC 1.7.2",
+  "hearing_test_performed": false,
+  "hardware_access": false,
+  "new_kernel_build": false
+}

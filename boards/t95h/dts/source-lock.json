@@ -1,0 +1,9 @@
+{
+  "status": "full tested configuration, profile derivation pending",
+  "source": "t95h-tested-full.dts",
+  "source_sha256": "a3c4a82eb4bd826eca65d35d3b707f68480a395b1084c13ae79dd5e3da990215",
+  "inventory": "expected-tree.json",
+  "inventory_sha256": "d5cf93079837b0289e0c5596125df83de775474e4f62054f47daf0b15a0923cf",
+  "reference_dtb_sha256": "05081841d0d55a8fcd7bfeaec26d75f1f25befed3ee25db8141743ba4850df61",
+  "hearing_test_required": false
+}

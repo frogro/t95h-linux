@@ -1,0 +1,243 @@
+{
+  "status": "audited draft, not yet a build-ready patch lock",
+  "kernel": "7.2.3-t95h-candidate3",
+  "boot_chain": "pinned tested baseline",
+  "profiles": {
+    "base": [
+      "base"
+    ],
+    "base+A": [
+      "base",
+      "A"
+    ],
+    "base+B": [
+      "base",
+      "B"
+    ],
+    "base+A+B": [
+      "base",
+      "A",
+      "B"
+    ]
+  },
+  "features": [
+    {
+      "id": "boot-chain",
+      "profile": "base",
+      "requires": [],
+      "evidence": [
+        "outputs/cedrus-sysupgrade-v3/release-A/prefix.bin"
+      ],
+      "note": "Pin entire tested TOC0/SPL/BL31/U-Boot prefix; earlier RAM experiments must not become default."
+    },
+    {
+      "id": "soc-regulator-clock-reset",
+      "profile": "base",
+      "requires": [
+        "boot-chain"
+      ],
+      "evidence": [
+        "sources/board/t95h-cpu-gpu/t95h_aldo2.c",
+        "patches/historical13"
+      ],
+      "note": "Shared CPU/WLAN/GPU supply code: keep the base parts when GPU is omitted."
+    },
+    {
+      "id": "ethernet-ac200",
+      "profile": "base",
+      "requires": [
+        "soc-regulator-clock-reset"
+      ],
+      "evidence": [
+        "patches/historical13",
+        "patches/ethernet-reset-after-phy.patch"
+      ],
+      "note": "Reset relocation is present with rewritten context in final dwmac-sun8i.c; not an absent patch."
+    },
+    {
+      "id": "pwm8",
+      "profile": "base",
+      "requires": [
+        "soc-regulator-clock-reset"
+      ],
+      "evidence": [
+        "outputs/next-fat-pwm8/upstream/pwm-sun8i-v8.c"
+      ],
+      "note": "Final driver byte-identical to v8. Historical PWM patch is superseded, not reapplied afterwards."
+    },
+    {
+      "id": "internal-wlan",
+      "profile": "base",
+      "requires": [
+        "soc-regulator-clock-reset"
+      ],
+      "evidence": [
+        "sources/runtime/late-wlan",
+        "patches/xradio-linux72-build.patch"
+      ],
+      "note": "XR819 firmware, MAC80211/CFG80211, SDIO and late ALDO2 registration; no synchronous pre-init hardware operations."
+    },
+    {
+      "id": "shared-sram-iommu",
+      "profile": "base",
+      "requires": [
+        "soc-regulator-clock-reset"
+      ],
+      "evidence": [
+        "outputs/next-cedrus/prepare-dtb.py",
+        "outputs/next-cedrus/fix-display-iommu.py"
+      ],
+      "note": "Display uses IOMMU too. Do not remove shared SRAM/IOMMU merely because Cedrus is disabled."
+    },
+    {
+      "id": "hdmi-console",
+      "profile": "base",
+      "requires": [
+        "shared-sram-iommu"
+      ],
+      "evidence": [
+        "outputs/next-fat-pwm8/upstream/display-patches",
+        "outputs/next-cedrus/fix-display-iommu.py"
+      ],
+      "note": "DE33/display graph/mixer IOMMU remain enabled without Panfrost and Cedrus."
+    },
+    {
+      "id": "audio",
+      "profile": "base",
+      "requires": [
+        "soc-regulator-clock-reset",
+        "hdmi-console"
+      ],
+      "evidence": [
+        "outputs/next-fat-pwm8/audio.patch",
+        "scripts/prepare-hdmi-bclk-correction.py"
+      ],
+      "note": "AHUB/analog codec share PLL; retain coordinated rate locking and HDMI BCLK correction."
+    },
+    {
+      "id": "front-display",
+      "profile": "base",
+      "requires": [
+        "soc-regulator-clock-reset"
+      ],
+      "evidence": [
+        "sources/runtime",
+        "outputs/cedrus-hdmi-fixed/A/root/etc/init.d/t95h-fd655-live"
+      ],
+      "note": "Retain tested FD655 runtime, not obsolete display experiments."
+    },
+    {
+      "id": "ir",
+      "profile": "base",
+      "requires": [
+        "soc-regulator-clock-reset"
+      ],
+      "evidence": [
+        "outputs/next-cedrus/prepare-dtb.py"
+      ],
+      "note": "Proposed built-in hardware allocation; rc-core+sunxi-cir, keep verified configuration."
+    },
+    {
+      "id": "usb-extra-network",
+      "profile": "A",
+      "requires": [
+        "internal-wlan",
+        "soc-regulator-clock-reset"
+      ],
+      "evidence": [
+        "outputs/next-cedrus/usb-required-config.json",
+        "outputs/next-cedrus/firmware-manifest.json"
+      ],
+      "note": "Shared cfg80211/mac80211 and USB core remain base; extra USB drivers and modem userspace only in A."
+    },
+    {
+      "id": "gpu",
+      "profile": "B",
+      "requires": [
+        "soc-regulator-clock-reset",
+        "shared-sram-iommu"
+      ],
+      "evidence": [
+        "outputs/ana-provider-test/A/t95h_ana_provider.c",
+        "outputs/next-cedrus/assemble-next.py"
+      ],
+      "note": "Panfrost is currently built-in. Tested ANA-provider module resides outside /lib/modules. Preserve its BL31/security assumptions; do not substitute failed PPU experiment."
+    },
+    {
+      "id": "cedrus",
+      "profile": "B",
+      "requires": [
+        "shared-sram-iommu"
+      ],
+      "evidence": [
+        "outputs/next-cedrus/upstream/manifest.json",
+        "outputs/next-cedrus/prepare-dtb.py"
+      ],
+      "note": "Seven-patch VE series, DT ports/SRAM, V4L2/videobuf2 and Request-aware userspace required."
+    },
+    {
+      "id": "usb-video-capture",
+      "profile": "B",
+      "requires": [
+        "soc-regulator-clock-reset"
+      ],
+      "evidence": [
+        "outputs/profile-audit/kernel.config",
+        "outputs/profile-audit/installed"
+      ],
+      "note": "Required next profile extension: MEDIA_USB_SUPPORT, VIDEO_DEV and USB_VIDEO_CLASS/UVC including vb2 dependencies. Current tested kernel has MEDIA_USB_SUPPORT disabled. USB audio already belongs to base. Select additional analog grabber drivers (USBTV/STK1160/EM28XX/CX231XX) by supported device IDs; include required subdrivers/firmware, do not promise every USB grabber."
+    },
+    {
+      "id": "media-streaming",
+      "profile": "B",
+      "requires": [
+        "usb-video-capture"
+      ],
+      "evidence": [
+        "outputs/profile-audit/installed"
+      ],
+      "note": "Resolve capture-to-network userspace per OS: V4L2 capture, audio capture, parsers, muxers and chosen network sink/protocol; software encoder only where needed. Current GStreamer base set does not prove a complete streaming pipeline. Prefer passthrough of device-encoded video where supported. Does not require profile A or Cedrus hardware encoding; H616 hardware encoder is not integrated. No automatic streaming service, firewall opening or publishing."
+    }
+  ],
+  "release_requires": [
+    "install image",
+    "matching sysupgrade artifact"
+  ],
+  "blockers": [
+    "Reconcile historical and incremental source changes into a clean replayable patch series.",
+    "Validate fresh Kconfig dependency closure for four profiles.",
+    "Regenerate per-profile t95h-kernel provides from actual builtins/modules.",
+    "Fill missing applicable OpenWrt default packages.",
+    "Reconcile stale embedded build-profile metadata.",
+    "Resolve B USB capture Kconfig and concrete streaming package/plugin dependencies; validate updates include these selections."
+  ],
+  "portability_contract": {
+    "hardware_layer": "distribution-independent",
+    "base_plus_B_requires_A": false,
+    "distribution_adapter_required": true,
+    "other_distributions_hardware_validated": false
+  },
+  "upgrade_selection_contract": {
+    "preserve_installer_selected_packages": true,
+    "resolve_dependencies_and_firmware": true,
+    "missing_selection": "fail build with explanation",
+    "kernel_modules": "must match built kernel ABI",
+    "same_selection_for_install_and_upgrade": true
+  },
+  "future_profiles": {
+    "C": {
+      "purpose": "optional encoder bonus",
+      "status": "deferred; not selectable or required by base/A/B",
+      "enable_only_after": "working implementation and separate validation"
+    }
+  },
+  "implementation_scope": {
+    "current_os": "OpenWrt",
+    "other_os_adapters": "deferred to a concrete later example",
+    "possible_later_family": [
+      "Debian",
+      "Ubuntu"
+    ],
+    "second_os_required_for_current_openwrt_completion": false
+  }
+}

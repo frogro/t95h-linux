@@ -1,0 +1,48 @@
+name: Package locked T95H OpenWrt install and upgrade pair
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        description: Artifact from the verified T95H base-image build in this run
+        required: true
+        type: string
+      image_sha256:
+        required: true
+        type: string
+      source_date_epoch:
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ${{ inputs.artifact }}
+          path: locked-input
+      - name: Install filesystem tools
+        run: sudo apt-get update && sudo apt-get install -y e2fsprogs busybox
+      - name: Package once from locked input
+        env:
+          SOURCE_DATE_EPOCH: ${{ inputs.source_date_epoch }}
+          IMAGE_SHA256: ${{ inputs.image_sha256 }}
+        run: |
+          chmod +x locked-input/host-tools/fwtool
+          python3 tools/package-openwrt-upgrade.py \
+            --image locked-input/t95h-base.img --sha256 "$IMAGE_SHA256" \
+            --fwtool locked-input/host-tools/fwtool --output out/A
+          python3 tools/test-openwrt-upgrade.py --build out/A
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-openwrt-install-and-upgrade-test
+          path: |
+            out/A/*-install.img
+            out/A/*-sysupgrade.bin
+            out/A/SHA256SUMS
+            out/A/build-proof.json
+            out/A/platform.sh
+            out/A/t95h-keep
+            out/A/upgrade-test.json
