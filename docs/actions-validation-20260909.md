@@ -32,3 +32,15 @@ compiled in this validation run. No device was flashed or rebooted, and no new
 hardware, audio-listening or stress test was performed. The documented WLAN,
 coldboot, GPU and audio hardware limitations remain. Public source-complete
 redistribution still requires the documented binary-input provenance/license work.
+
+## GPU startup follow-up
+
+The first upgraded boot exposed an OpenWrt shell compatibility issue:
+`IPKG_INSTROOT: parameter not set` while sourcing `/lib/functions.sh` under
+`set -u`. This stopped the late GPU worker before provider registration.
+The runtime now evaluates the radio policy in a subshell with nounset disabled;
+the parent worker retains strict checks. The regression test includes an unset
+OpenWrt helper variable. The 15 consecutive readiness samples now overlap the
+120-second minimum uptime instead of following it. The minimum uptime and all
+network, regulator and driver checks remain enforced. This changes only the
+runtime script, not the kernel or power settings.

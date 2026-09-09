@@ -18,6 +18,9 @@ gpu_ok() {
 step=prechecks
 trap 'rc=$?; if [ "$rc" -ne 0 ]; then log "STOP: step=$step rc=$rc"; fi' EXIT
 radio_required() {
+ (
+ # OpenWrt shell helpers use optional unset variables. Isolate nounset relaxation.
+ set +u
  # Hardware supplies and the WLAN worker are checked separately below.
  # Only demand an active radio when an enabled interface actually uses it.
  . /lib/functions.sh
@@ -35,6 +38,7 @@ radio_required() {
  }
  config_foreach t95h_check_iface wifi-iface
  [ "$t95h_radio_required" = 1 ]
+ )
 }
 ready() {
  pidof dropbear >/dev/null 2>&1 || return 1
@@ -76,12 +80,12 @@ if gpu_ok; then log 'PASS: standard Panfrost already bound with matching render 
 # No writes to hardware before readiness. Allow initial boot activity to settle.
 umask 077
 printf 'boot_id=%s\n' "$(cat /proc/sys/kernel/random/boot_id)" > "$LOG"
-log 'Waiting: minimum uptime 120s plus 15 consecutive ready samples'
+log 'Waiting: minimum uptime 120s and 15 consecutive ready samples (overlapping)'
 n=0; stable=0
 while [ "$n" -lt 240 ]; do
  age=$(cut -d . -f1 /proc/uptime)
- if [ "$age" -ge 120 ] && ready; then stable=$((stable+1)); else stable=0; fi
- [ "$stable" -ge 15 ] && break
+ if ready; then stable=$((stable+1)); else stable=0; fi
+ [ "$age" -ge 120 ] && [ "$stable" -ge 15 ] && break
  n=$((n+1)); sleep 1
 done
 [ "$stable" -ge 15 ] || { log 'STOP: readiness timeout; no GPU probe'; exit 1; }

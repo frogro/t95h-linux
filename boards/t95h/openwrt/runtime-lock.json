@@ -6,7 +6,7 @@
       "profile": "A"
     },
     "openwrt/runtime/B/usr/sbin/t95h-gpu-start": {
-      "sha256": "5f22e7368b1453ebd8201e8e3296c4aa8bd6844b589661467d0788a1b59a2392",
+      "sha256": "1b21b1287d1b35ad5e7acb2c65f5f007f48fcbd11c2322d45f071fa966a09675",
       "mode": "0o755",
       "profile": "B"
     },
