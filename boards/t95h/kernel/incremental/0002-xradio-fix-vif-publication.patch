@@ -1,0 +1,30 @@
+--- a/drivers/net/wireless/xradio/sta.c
++++ b/drivers/net/wireless/xradio/sta.c
+@@ -183,7 +183,6 @@
+ 	int ret;
+ 	struct xradio_common *hw_priv = dev->priv;
+ 	struct xradio_vif *priv;
+-	struct xradio_vif **drv_priv = (void *)vif->drv_priv;
+ 	int i;
+ 	if (atomic_read(&hw_priv->num_vifs) >= XRWL_MAX_VIFS)
+ 		return -EOPNOTSUPP;
+@@ -201,7 +200,9 @@
+ 	priv = xrwl_get_vif_from_ieee80211(vif);
+ 	atomic_set(&priv->enabled, 0);
+ 
+-	*drv_priv = priv;
++	/* drv_priv embeds xradio_vif; it is not a pointer slot.
++	 * Initialize the lock before publishing vif_list to the BH. */
++	spin_lock_init(&priv->vif_lock);
+ 	/* __le32 auto_calibration_mode = __cpu_to_le32(1); */
+ 
+ 	mutex_lock(&hw_priv->conf_mutex);
+@@ -1832,7 +1833,7 @@
+ 	//reset channel change flag, yangfh 2015-5-15 17:12:14
+ 	hw_priv->channel_changed  = 0;
+ 	/* Setup per vif workitems and locks */
+-	spin_lock_init(&priv->vif_lock);
++	/* vif_lock is initialized before vif_list publication. */
+ 	INIT_WORK(&priv->join_work, xradio_join_work);
+ 	INIT_DELAYED_WORK(&priv->join_timeout, xradio_join_timeout);
+ 	INIT_WORK(&priv->unjoin_work, xradio_unjoin_work);

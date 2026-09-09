@@ -24,7 +24,16 @@
     "experimental_overrides": false,
     "known_issue": "Intermittent SDIO CRC/data errors and missed interrupts; no stability fix demonstrated",
     "incremental_patch": "kernel/incremental/0001-xradio-fix-32bit-read-lengths.patch",
-    "incremental_patch_sha256": "92fac98cae2975413a29c80f3920ccd056018343f8cd08c90e29b92b4c6869a0"
+    "incremental_patch_sha256": "92fac98cae2975413a29c80f3920ccd056018343f8cd08c90e29b92b4c6869a0",
+    "followup_patches": [
+      {
+        "path": "kernel/incremental/0002-xradio-fix-vif-publication.patch",
+        "sha256": "ef26172aecb1184d21c06285607edfd690785d448bf71b9fcf201457e605e78e",
+        "files": [
+          "drivers/net/wireless/xradio/sta.c"
+        ]
+      }
+    ]
   },
   "full_image_build_ready": true,
   "remaining": [

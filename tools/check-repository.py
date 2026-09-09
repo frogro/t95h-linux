@@ -14,6 +14,8 @@ def check():
     assert digest(board/'kernel'/k['patch'])==k['patch_sha256'], 'Kernel patch hash mismatch'
     w=baseline['wlan']
     assert digest(board/w['incremental_patch'])==w['incremental_patch_sha256'], 'WLAN patch hash mismatch'
+    for e in w.get('followup_patches',[]):
+        assert digest(board/e['path'])==e['sha256'], 'WLAN follow-up patch hash mismatch'
     dt=json.loads((board/'dts/source-lock.json').read_text())
     for key in ['source','inventory']:
         assert digest(board/'dts'/dt[key])==dt[key+'_sha256'], 'DT lock mismatch'

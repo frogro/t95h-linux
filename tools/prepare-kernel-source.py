@@ -25,6 +25,7 @@ def main():
  if sha(archive)!=lock['archive_sha256']:raise ValueError('Kernel archive hash mismatch')
  patches=[(board/'kernel'/lock['patch'],lock['patch_sha256']),
           (board/w['incremental_patch'],w['incremental_patch_sha256'])]
+ patches.extend((board/e['path'],e['sha256']) for e in w.get('followup_patches',[]))
  for path,digest in patches:
   if sha(path)!=digest:raise ValueError('Patch hash mismatch: '+str(path))
  out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -45,6 +46,7 @@ def main():
      if sha(path)!=entry['sha256']:raise ValueError('Consolidated replay differs: '+entry['path'])
  # The incremental patch changes exactly the two reviewed source files.
  changed={'drivers/net/wireless/xradio/hwio.c','drivers/net/wireless/xradio/hwio.h'}
+ changed.update(name for e in w.get('followup_patches',[]) for name in e['files'])
  for entry in lock['files']:
   if entry['path'] not in changed and sha(tree/entry['path'])!=entry['sha256']:
    raise ValueError('Unexpected incremental change: '+entry['path'])
