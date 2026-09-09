@@ -1,0 +1,130 @@
+#!/bin/sh
+# Explicit local installation from the dedicated SD. No unattended erase.
+set -eu
+set -o pipefail
+fail() { echo "STOP: $*" >&2; exit 1; }
+[ "$(id -u)" = 0 ] || fail 'Als root starten.'
+[ -t 0 ] || fail 'Lokale interaktive Bestätigung erforderlich.'
+[ "$(tr '\000' '\n' < /proc/device-tree/compatible | head -n 1)" = t95h,h616-tvbox ] || fail 'Falsches Board.'
+rootmm=$(awk '$5=="/" && $0 ~ / - ext4 / {print $3;exit}' /proc/self/mountinfo)
+rootdev=$(basename "$(readlink -f /sys/dev/block/$rootmm)")
+case "$rootdev" in mmcblk[0-9]p2) sd=${rootdev%p2};; *) fail 'Root liegt nicht auf SD-Partition 2.';; esac
+[ "$(cat /sys/class/block/$sd/device/type)" = SD ] || fail 'Das laufende Root-Dateisystem muss auf SD liegen.'
+[ "$(cat /sys/class/block/${sd}p3/start)" = 4096000 ] || fail 'Keine passende Installationspartition.'
+mkdir /tmp/t95h-emmc-install.lock 2>/dev/null || fail 'Installationsauftrag existiert bereits; Zustand prüfen.'
+work=/tmp/t95h-emmc-install.lock
+payload=$work/payload
+newroot=$work/newroot
+mkdir "$payload" "$newroot"
+cleanup() {
+ umount "$newroot" 2>/dev/null || :
+ umount "$payload" 2>/dev/null || :
+ if [ -n "${disk:-}" ]; then
+  for n in 0 1; do [ ! -e /sys/class/block/${disk}boot$n/force_ro ] || echo 1 > /sys/class/block/${disk}boot$n/force_ro; done
+ fi
+}
+trap cleanup EXIT
+mount -t ext4 -o ro,noload "/dev/${sd}p3" "$payload"
+(cd "$payload" && sha256sum -c SHA256SUMS) || fail 'Installationspaket beschädigt.'
+RAMFS_COPY_BIN=
+. /usr/lib/t95h-emmc/platform.sh
+image=$payload/emmc-sysupgrade.bin
+UPGRADE_BACKUP=
+export UPGRADE_BACKUP
+# The full decompressed streams are verified before any write.
+t95h_validate_payload "$image" || fail 'Paketprüfung fehlgeschlagen.'
+t95h_manifest "$image" || fail 'Manifest ungültig.'
+[ "$T95H_MEDIA" = MMC ] || fail 'Kein eMMC-Paket.'
+[ "$(wc -c < "$payload/prefix.bin")" = 4194304 ] || fail 'Bootbereichgröße ungültig.'
+[ "$(sha256sum "$payload/prefix.bin" | cut -d ' ' -f1)" = "$T95H_PREFIX" ] || fail 'Bootbereich passt nicht zum Paket.'
+disk=
+for d in /sys/class/block/mmcblk[0-9]; do
+ [ -r "$d/device/type" ] || continue
+ [ "$(cat "$d/device/type")" = MMC ] || continue
+ [ -z "$disk" ] || fail 'Mehrere eMMC-Geräte.'
+ disk=${d##*/}
+done
+[ -n "$disk" ] && [ "$disk" != "$sd" ] || fail 'Kein eindeutiges eMMC-Ziel.'
+cid=$(cat /sys/class/block/$disk/device/cid)
+sectors=$(cat /sys/class/block/$disk/size)
+[ "$sectors" -ge 4096000 ] && [ $((sectors % 2048)) = 0 ] || fail 'Nicht unterstützte eMMC-Größe.'
+target_check() {
+ [ "$(cat /sys/class/block/$disk/device/type)" = MMC ] &&
+ [ "$(cat /sys/class/block/$disk/device/cid)" = "$cid" ] &&
+ [ "$(cat /sys/class/block/$disk/size)" = "$sectors" ] || fail 'Zielidentität geändert.'
+ for d in /sys/class/block/$disk /sys/class/block/${disk}p* /sys/class/block/${disk}boot*; do
+  [ -r "$d/dev" ] || continue
+  mm=$(cat "$d/dev")
+  if awk -v mm="$mm" '$3==mm {found=1} END {exit !found}' /proc/self/mountinfo; then fail 'eMMC ist eingehängt.'; fi
+  [ -z "$(ls -A "$d/holders")" ] || fail 'eMMC wird verwendet.'
+ done
+ if grep -q "/dev/$disk" /proc/swaps; then fail 'eMMC-Swap ist aktiv.'; fi
+}
+/usr/lib/t95h-emmc/check-boot-selection "/dev/$disk" || fail 'eMMC-Bootauswahl nicht unterstützt; nichts geschrieben.'
+target_check
+[ "$(cat /sys/class/block/$disk/ro)" = 0 ] || fail 'eMMC ist schreibgeschützt.'
+for n in 0 1; do
+ b=${disk}boot$n
+ [ -b "/dev/$b" ] && [ -w /sys/class/block/$b/force_ro ] || fail 'eMMC-Bootbereich nicht zugänglich.'
+ size=$(cat /sys/class/block/$b/size)
+ [ "$size" -gt 0 ] && [ $((size % 2048)) = 0 ] || fail 'Bootbereichgröße ungültig.'
+done
+# Preserve access locally. fstab and boot paths are intentionally not copied.
+umask 077
+: > "$work/config.list"
+for f in /etc/config/* /etc/dropbear /etc/passwd /etc/shadow /etc/group /root/.ssh /etc/uhttpd.key /etc/uhttpd.crt /etc/ttyd.key /etc/ttyd.crt /etc/sysupgrade.conf; do
+ [ -e "$f" ] || continue
+ [ "$f" != /etc/config/fstab ] || continue
+ printf '%s\n' "${f#/}" >> "$work/config.list"
+done
+tar -czf "$work/config.tgz" -C / -T "$work/config.list"
+mkdir "$work/config-check"
+tar -xzf "$work/config.tgz" -C "$work/config-check"
+printf '\nZiel: /dev/%s, %s MiB\n' "$disk" "$((sectors / 2048))"
+printf 'ACHTUNG: Das vorhandene Betriebssystem auf der eMMC und alle dort gespeicherten Daten werden gelöscht und durch OpenWrt ersetzt.\n'
+printf 'Die OpenWrt-Zugangseinstellungen dieser SD werden übernommen.\nZum Bestätigen EMMC LOESCHEN eingeben: '
+IFS= read -r answer || fail 'Abgebrochen.'
+[ "$answer" = 'EMMC LOESCHEN' ] || fail 'Abgebrochen; nichts geschrieben.'
+target_check
+# The SD stays untouched. Raw extents do not depend on old Android partitions.
+for member in root boot; do
+ if [ "$member" = root ]; then seek=68; count=1932; expected=$T95H_ROOT_RAW; else seek=4; count=64; expected=$T95H_BOOT_RAW; fi
+ echo "Schreibe $member auf eMMC ..."
+ t95h_stream "$image" "$member.gz" | gzip -dc | dd of="/dev/$disk" bs=1048576 seek="$seek" iflag=fullblock oflag=direct conv=fsync,notrunc
+ actual=$(dd if="/dev/$disk" bs=1048576 skip="$seek" count="$count" iflag=direct | t95h_hash)
+ [ "$actual" = "$expected" ] || fail "$member Rückleseprüfung fehlgeschlagen."
+done
+tail=$((sectors / 2048 - 2000))
+if [ "$tail" -gt 0 ]; then
+ echo 'Lösche verbleibenden eMMC-Nutzbereich ...'
+ dd if=/dev/zero of="/dev/$disk" bs=1048576 seek=2000 count="$tail" oflag=direct conv=fsync,notrunc
+ zero_hash=$(dd if=/dev/zero bs=1048576 count="$tail" 2>/dev/null | t95h_hash)
+ [ "$(dd if="/dev/$disk" bs=1048576 skip=2000 count="$tail" iflag=direct 2>/dev/null | t95h_hash)" = "$zero_hash" ] || fail 'Restbereich-Rückleseprüfung fehlgeschlagen.'
+fi
+# Remove old eMMC hardware boot areas. RPMB/hidden controller storage is not erased.
+for n in 0 1; do
+ b=${disk}boot$n
+ [ -b "/dev/$b" ] || fail 'Erwarteter eMMC-Bootbereich fehlt.'
+ size=$(cat /sys/class/block/$b/size)
+ [ $((size % 2048)) = 0 ] || fail 'Bootbereichgröße ungültig.'
+ echo 0 > /sys/class/block/$b/force_ro
+ dd if=/dev/zero of="/dev/$b" bs=1048576 count="$((size/2048))" oflag=direct conv=fsync
+ zero_hash=$(dd if=/dev/zero bs=1048576 count="$((size/2048))" 2>/dev/null | t95h_hash)
+ [ "$(dd if="/dev/$b" bs=1048576 count="$((size/2048))" iflag=direct 2>/dev/null | t95h_hash)" = "$zero_hash" ] || fail 'Bootbereich-Rückleseprüfung fehlgeschlagen.'
+ echo 1 > /sys/class/block/$b/force_ro
+done
+target_check
+dd if="$payload/prefix.bin" of="/dev/$disk" bs=1048576 count=4 oflag=direct conv=fsync,notrunc
+[ "$(dd if="/dev/$disk" bs=1048576 count=4 iflag=direct 2>/dev/null | t95h_hash)" = "$T95H_PREFIX" ] || fail 'Bootprefix-Rückleseprüfung fehlgeschlagen.'
+/usr/lib/t95h-emmc/reread-partitions "/dev/$disk"
+t95h_target_check "$disk" || fail 'Neues Layout wurde nicht übernommen.'
+mount -t ext4 -o rw,noatime "/dev/${disk}p2" "$newroot"
+tar -xzf "$work/config.tgz" -C "$newroot"
+# Verify contents, links and permissions of restored access data locally.
+/usr/lib/t95h-emmc/check-config "$work/config-check" "$newroot" || fail 'Konfigurationsübernahme fehlgeschlagen.'
+mkdir -p "$newroot/usr/share/t95h"
+printf 'format=T95H-EMMC-INSTALL-1\npartition_readback_verified=1\nconfig_restored=1\n' > "$newroot/usr/share/t95h/emmc-install-receipt"
+sync
+umount "$newroot"
+echo 'PASS: eMMC installiert, rückgelesen und Zugangseinstellungen übernommen.'
+echo 'Jetzt poweroff ausführen, Strom trennen, SD entfernen und die Box neu einschalten.'

@@ -1,5 +1,5 @@
 """Validate downloaded install/sysupgrade checksums before offering a flash step."""
-import hashlib,re
+import hashlib,re,json
 from pathlib import Path
 
 def verify(directory):
@@ -16,4 +16,10 @@ def verify(directory):
   if actual!=match[1]:raise ValueError('Artifact SHA256 mismatch: '+match[2])
   checked.append(path.name)
  if not any(x.endswith('-install.img') for x in checked) or not any(x.endswith('-sysupgrade.bin') for x in checked):raise ValueError('Install/sysupgrade pair missing from manifest')
+ bundle=manifest.parent/'release-set.json'
+ if bundle.exists():
+  info=json.loads(bundle.read_text())
+  roles=info.get('artifacts',{})
+  if info.get('format')!='T95H-RELEASE-SET-1' or set(roles)!={'sd_install','sd_upgrade','emmc_upgrade','sd_emmc_installer'}:raise ValueError('Incomplete four-artifact release')
+  if len(set(roles.values()))!=4 or any(n not in checked for n in roles.values()):raise ValueError('Missing/duplicate release artifact')
  return checked

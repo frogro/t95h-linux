@@ -42,12 +42,28 @@ def main():
  tool('prepare-openwrt-rootfs.py','--packages',o/'packages','--imagebuilder',ib,'--compiler',tc/'bin/aarch64-openwrt-linux-musl-gcc','--output',o/'rootfs','--epoch',epoch)
  tool('assemble-profile-image.py','--rootfs-stage',o/'rootfs','--prefix',prefix,'--imagebuilder',ib,'--output',o/'image','--console',request['console'],'--epoch',epoch)
  img=json.loads((o/'image/image-report.json').read_text())
- tool('package-openwrt-upgrade.py','--image',o/'image/t95h-base.img','--sha256',img['sha256'],'--output',o/'release','--fwtool',ib/'staging_dir/host/bin/fwtool','--profile',request['profile'])
- tool('test-openwrt-upgrade.py','--build',o/'release')
+ tool('package-openwrt-upgrade.py','--image',o/'image/t95h-base.img','--sha256',img['sha256'],'--output',o/'sd-package','--fwtool',ib/'staging_dir/host/bin/fwtool','--profile',request['profile'])
+ sd=json.loads((o/'sd-package/build-proof.json').read_text())
+ tool('emmc/build-test-image.py','--image',o/'sd-package'/sd['install_image'],'--sha256',sd['install_sha256'],'--prefix',o/'sd-package/prefix.bin','--host-tools',ib/'staging_dir/host/bin','--output',o/'emmc-image')
+ emimage=json.loads((o/'emmc-image/report.json').read_text())
+ tool('package-openwrt-upgrade.py','--image',o/'emmc-image/t95h-emmc-test.img','--sha256',emimage['image_sha256'],'--output',o/'emmc-package','--fwtool',ib/'staging_dir/host/bin/fwtool','--profile',request['profile'],'--storage','emmc')
+ em=json.loads((o/'emmc-package/build-proof.json').read_text())
+ for media in ['sd','emmc']:tool('test-openwrt-upgrade.py','--build',o/(media+'-package'))
+ tool('build-emmc-installer-sd.py','--sd-package',o/'sd-package','--emmc-package',o/'emmc-package','--host-tools',ib/'staging_dir/host/bin','--compiler',tc/'bin/aarch64-openwrt-linux-musl-gcc','--output',o/'installer-sd')
+ installer=json.loads((o/'installer-sd/installer-proof.json').read_text())
+ release=o/'release';release.mkdir()
+ artifacts={'sd_install':sd['install_image'],'sd_upgrade':sd['sysupgrade'],'emmc_upgrade':em['sysupgrade'],'sd_emmc_installer':installer['image']}
+ for source in [o/'sd-package'/sd['install_image'],o/'sd-package'/sd['sysupgrade'],o/'emmc-package'/em['sysupgrade'],o/'installer-sd'/installer['image']]:shutil.copyfile(source,release/source.name)
+ for media in ['sd','emmc']:
+  for n in ['build-proof.json','upgrade-test.json']:shutil.copyfile(o/(media+'-package')/n,release/(media+'-'+n))
+ for n in ['build-proof.json','upgrade-test.json','platform.sh','t95h-keep','kernel-providers.json']:shutil.copyfile(o/'sd-package'/n,release/n)
+ shutil.copyfile(o/'installer-sd/installer-proof.json',release/'installer-proof.json')
+ (release/'release-set.json').write_text(json.dumps({'format':'T95H-RELEASE-SET-1','artifacts':artifacts,'hardware_emmc_install_tested':False,'hardware_emmc_upgrade_tested':False},indent=2)+'\n')
+ (release/'SHA256SUMS').write_text(''.join(sha(release/n)+'  '+n+'\n' for n in [*artifacts.values(),'platform.sh']))
  for source,name in [(a.request,'request.json'),(o/'packages/package-lock.json','package-lock.json'),(o/'kernel-package/package-report.json','kernel-package-report.json')]:shutil.copyfile(source,o/'release'/name)
  notes=f'''# T95H {request['profile']}: OpenWrt {version}, Linux {request['kernel']}
 
-SD installation image and matching SD sysupgrade from one build. Console: {request['console']}.
+SD image, SD with offline eMMC installer, and separate SD/eMMC sysupgrade files from one build. Console: {request['console']}.
 Kernel and boot chain remain pinned; OpenWrt stable was resolved once for this run.
 Base includes HDMI console/audio, internal WLAN, Ethernet, IR and frontdisplay.
 {('Profile A adds selected USB network/modem support.' if request['profile'] in ('base-A','base-A-B') else 'Additional network profile A is not selected.')}
@@ -58,13 +74,17 @@ Experimental SD rescan: up to three boot payload load attempts. Two successful
 cold starts were reported after the change; general coldboot reliability is not proven.
 Known WLAN SDIO errors, GPU initialization and audio hardware validation remain
 open/documented. No new hardware, listening or stress tests are implied.
-eMMC standalone boot has separate experimental validation; this SD image pair
-is not an eMMC installation or eMMC upgrade package. The SD reset/FIFO experiment
+eMMC standalone boot has experimental validation. The new local eMMC installer
+and eMMC sysupgrade have software checks but require hardware validation.
+Boot the installation SD, log in as root on HDMI and run t95h-install-emmc.
+WARNING: the existing eMMC operating system and its data will be erased.
+Confirmation: EMMC LOESCHEN. Current SD access settings are retained.
+The installer image is gzip-compressed; decompress it before writing to SD. The SD reset/FIFO experiment
 is not included in this release boot chain pending further validation.
 Default access: root / openwrt; AP openwrt / openwrtopenwrt. Change these credentials.
 Public source-complete redistribution of the binary boot/toolchain/firmware inputs
 requires the remaining provenance/license work. This is an experimental artifact, not a source-completeness certification.
 '''
  (o/'release/RELEASE-NOTES.md').write_text(notes)
- print('PASS: selected-profile install and sysupgrade complete; hardware limitations documented',flush=True)
+ print('PASS: selected-profile four-artifact release complete; hardware limitations documented',flush=True)
 if __name__=='__main__':main()

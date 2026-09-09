@@ -25,7 +25,7 @@ elif a.command=='release-download':
  import re
  if not a.tag or not re.fullmatch(r't95h-[0-9]+-[0-9]+',a.tag):p.error('--tag t95h-RUN_ID-ATTEMPT required')
  destination=ROOT/'build'/'releases'/a.tag
- run(['gh','release','download',a.tag,'--repo',a.repo,'--pattern','*-install.img','--pattern','*-sysupgrade.bin','--pattern','SHA256SUMS','--pattern','platform.sh','--pattern','*.json','--pattern','RELEASE-NOTES.md','--dir',str(destination)],check=True)
+ run(['gh','release','download',a.tag,'--repo',a.repo,'--pattern','*-install.img','--pattern','*.img.gz','--pattern','*-sysupgrade.bin','--pattern','SHA256SUMS','--pattern','platform.sh','--pattern','*.json','--pattern','RELEASE-NOTES.md','--dir',str(destination)],check=True)
  from verify_release import verify
  checked=verify(destination)
  print('PASS: Release-Prüfsummen geprüft:',destination)

@@ -41,27 +41,33 @@ Einstiegsskript. Das Release bleibt während des Uploads als Entwurf verborgen.
 Download und Prüfsummenprüfung laufen über `gh`; ein Prerelease ist keine
 Bestätigung vollständiger Hardwarestabilität.
 
-## eMMC-Installation direkt an der Box (geplant)
+## eMMC-Installation direkt an der Box (experimentell)
 
-Pro Profil sind zwei Installationsvarianten vorgesehen:
+Die neue Build-Kette erzeugt pro Profil vier Ausgaben:
 
 - **SD-Image:** OpenWrt dauerhaft von SD verwenden.
 - **eMMC-Installations-SD:** OpenWrt von SD starten; eine zusätzliche Partition
   enthält das passende eMMC-Abbild und dessen Prüfdaten. Die Installation lässt
   sich ohne Internet, ThinkPad-Verbindung oder SSH-Sitzung an der Box starten.
 
+Zusätzlich gibt es getrennte `…-sd-sysupgrade.bin` und `…-emmc-sysupgrade.bin`.
+Die Installations-SD wird als `…-sd-emmc-installer.img.gz` ausgeliefert: vor dem
+Schreiben mit `gzip -dk DATEI.img.gz` entpacken. Die enthaltene eMMC-Paketprüfung
+ist offline möglich. Nur das experimentelle Image mit dritter Partition enthält
+den Installationsbefehl; das gewöhnliche SD-Image enthält ihn nicht.
+
 Die eMMC-Installations-SD booten, eine USB-Tastatur anschließen und an der
-HDMI-Konsole als `root` anmelden. Der vorgesehene Befehl lautet:
+HDMI-Konsole als `root` anmelden. Der Befehl lautet:
 
 ```sh
 t95h-install-emmc
 ```
 
-**Noch nicht verfügbar:** Dieser Befehl und das Image mit zusätzlicher Partition
-werden erst mit dem fertiggestellten, geprüften eMMC-Installer ausgeliefert.
-Aktuelle Actions-Releases enthalten weiterhin das SD-Imagepaar.
+**Hardwaretest ausstehend:** Der neue Installer und eMMC-Sysupgrade sind
+experimentell. Frühere Releases mit nur zwei Dateien enthalten diesen Installer
+nicht. Softwareprüfungen ersetzen keinen Installationstest auf der Box.
 
-Vor dem ersten Schreibzugriff muss das Skript deutlich anzeigen:
+Vor dem ersten Schreibzugriff zeigt das Skript:
 
 > **ACHTUNG: Das vorhandene Betriebssystem auf der eMMC und alle dort
 > gespeicherten Daten werden gelöscht und durch OpenWrt ersetzt.**
@@ -74,8 +80,7 @@ SD entfernen und wieder einschalten.
 
 ### Einstellungen übernehmen
 
-Der Installer soll die Einstellungen des **laufenden OpenWrt auf der SD**
-übernehmen: Root-Passwort, SSH-Konfiguration einschließlich vorhandener Hostkeys
+Der Installer übernimmt die Einstellungen des **laufenden OpenWrt auf der SD**: Root-Passwort, SSH-Konfiguration einschließlich vorhandener Hostkeys
 und autorisierter Schlüssel, Netzwerk-/AP-Einstellungen und LuCI-Zugang.
 Damit bleiben die bisherigen Zugangsdaten und die SSH-Identität der Box erhalten.
 Android-Einstellungen werden nicht übernommen. Bestehende feste IP-Adressen
@@ -84,8 +89,8 @@ bleiben erhalten; bei DHCP kann der Router eine andere Adresse vergeben.
 Die Übernahme erfolgt lokal auf dem Gerät; persönliche Passwörter und Schlüssel
 gehören nicht in öffentliche Release-Images. Speicherabhängige Einstellungen wie
 Root- und Boot-UUIDs, Mount-Ziele und Bootskripte müssen auf eMMC angepasst werden,
-statt die SD-Konfiguration ungeprüft zu kopieren. Der Installer muss die
-Konfigurationsübernahme prüfen, bevor er Erfolg meldet.
+statt die SD-Konfiguration ungeprüft zu kopieren. Der Installer prüft die
+Konfigurationsübernahme, bevor er Erfolg meldet.
 
 Vor dem Schreiben sind Board, tatsächlich auf SD liegendes Root-Dateisystem,
 eMMC-Identität, Größe, ausgehängte Zielpartitionen und Paketprüfsummen zu prüfen.

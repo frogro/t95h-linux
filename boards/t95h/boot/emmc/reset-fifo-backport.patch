@@ -1,0 +1,77 @@
+From upstream 3e78f8f407a0a0e7b50aa7eaa6f2f579f35e9837
+Author: Jernej Skrabec; adjusted upstream by Andre Przywara
+Subject: [BACKPORT] sunxi: mmc: Improve reset procedure
+
+Old header path retained; no struct layout change needed with register offsets.
+Existing local timing test is not part of this patch.
+
+--- a/drivers/mmc/sunxi_mmc.c
++++ b/drivers/mmc/sunxi_mmc.c
+@@ -443,6 +443,26 @@
+ 	return error;
+ }
+ 
++static void sunxi_mmc_reset(void *regs)
++{
++	/* Reset controller */
++	writel(SUNXI_MMC_GCTRL_RESET, regs + SUNXI_MMC_GCTRL);
++	udelay(1000);
++
++	if (IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)) {
++		/* Reset card */
++		writel(SUNXI_MMC_HWRST_ASSERT, regs + SUNXI_MMC_HWRST);
++		udelay(10);
++		writel(SUNXI_MMC_HWRST_DEASSERT, regs + SUNXI_MMC_HWRST);
++		udelay(300);
++
++		/* Setup FIFO R/W threshold. Needed on H616. */
++		writel(SUNXI_MMC_THLDC_READ_THLD(512) |
++		       SUNXI_MMC_THLDC_WRITE_EN |
++		       SUNXI_MMC_THLDC_READ_EN, regs + SUNXI_MMC_THLDC);
++	}
++}
++
+ /* non-DM code here is used by the (ARM) SPL only */
+ 
+ #if !CONFIG_IS_ENABLED(DM_MMC)
+@@ -490,9 +510,7 @@
+ {
+ 	struct sunxi_mmc_priv *priv = mmc->priv;
+ 
+-	/* Reset controller */
+-	writel(SUNXI_MMC_GCTRL_RESET, &priv->reg->gctrl);
+-	udelay(1000);
++	sunxi_mmc_reset(priv->reg);
+ 
+ 	return 0;
+ }
+@@ -691,9 +709,7 @@
+ 
+ 	upriv->mmc = &plat->mmc;
+ 
+-	/* Reset controller */
+-	writel(SUNXI_MMC_GCTRL_RESET, &priv->reg->gctrl);
+-	udelay(1000);
++	sunxi_mmc_reset(priv->reg);
+ 
+ 	return 0;
+ }
+--- a/arch/arm/include/asm/arch-sunxi/mmc.h
++++ b/arch/arm/include/asm/arch-sunxi/mmc.h
+@@ -5,4 +5,16 @@
+ 
+ struct mmc *sunxi_mmc_init(int sdc_no);
+ 
++
++/* Backported from upstream 3e78f8f407a0: H616 eMMC reset and FIFO setup. */
++#define SUNXI_MMC_GCTRL 0x000
++#define SUNXI_MMC_HWRST 0x078
++#define SUNXI_MMC_HWRST_ASSERT (0x0 << 0)
++#define SUNXI_MMC_HWRST_DEASSERT (0x1 << 0)
++#define SUNXI_MMC_THLDC 0x100
++#define SUNXI_MMC_THLDC_READ_EN (0x1 << 0)
++#define SUNXI_MMC_THLDC_BSY_CLR_INT_EN (0x1 << 1)
++#define SUNXI_MMC_THLDC_WRITE_EN (0x1 << 2)
++#define SUNXI_MMC_THLDC_READ_THLD(x) (((x) & 0xfff) << 16)
++
+ #endif /* _ASM_ARCH_MMC_H_ */

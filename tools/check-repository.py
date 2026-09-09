@@ -9,6 +9,10 @@ def check():
     scripts=board/'boot/scripts'
     for name, sha in json.loads((scripts/'sha256.json').read_text()).items():
         assert digest(scripts/name)==sha, 'Boot script hash mismatch: '+name
+    emmc=board/'boot/emmc'
+    elock=json.loads((emmc/'lock.json').read_text())
+    assert digest(emmc/'spl-reset-fifo.toc0')==elock['spl_sha256'], 'eMMC SPL lock mismatch'
+    assert digest(emmc/'reset-fifo-backport.patch')==elock['reset_fifo_patch_sha256'], 'eMMC patch lock mismatch'
     baseline=json.loads((board/'baseline.json').read_text())
     k=json.loads((board/'kernel/source-lock.json').read_text())
     assert digest(board/'kernel'/k['patch'])==k['patch_sha256'], 'Kernel patch hash mismatch'

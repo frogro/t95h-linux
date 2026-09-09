@@ -22,7 +22,9 @@ The successful experimental combination uses:
 Only the experimental SPL executable contains the reset/FIFO backport;
 the existing U-Boot executable was not rebuilt with it. The complete source
 lineage and reproducible bootloader build are still work in progress.
-The binary experiment remains local and is not promoted into the SD release.
+The locked experimental eMMC SPL is included in eMMC payload generation.
+The ordinary SD boot prefix is not replaced by it. Provenance is recorded in
+boards/t95h/boot/emmc/lock.json; source-complete reproduction remains pending.
 
 A separate SD SPL adaptation of the same reset/FIFO sequence was prepared.
 The user observed boot on the second attempt; waiting time on the first attempt
@@ -35,7 +37,7 @@ Each profile is intended to offer a normal SD image and a second installation-SD
 image with an additional partition containing the matching eMMC payload and its
 verification manifest. Installation runs locally from the SD rootfs, with HDMI
 console and USB keyboard; neither SSH nor an Internet connection is required.
-The planned command is `t95h-install-emmc`, not yet shipped.
+The command is `t95h-install-emmc`, included only in the installation SD.
 
 Before any target write, display:
 
@@ -58,8 +60,15 @@ packages must have separate media checks; SD packages must be rejected on eMMC.
 
 ## Current release boundary
 
-`installer.sh` currently starts SD builds and downloads verified release pairs.
-`emmc-check` is read-only and requires a running SD-root system. The generic eMMC
-installation worker, release-integrated eMMC image, and eMMC-specific sysupgrade
-remain pending. No automatic flashing or destructive eMMC option is exposed by
-the download installer yet. Filesystem journaling and early fsck are deferred.
+The new build pipeline emits a normal SD image, a compressed three-partition
+installation SD, and separate SD/eMMC sysupgrade packages from one kernel/rootfs
+build. Both upgrade copy/validation paths are tested using regular files.
+The installation worker has configuration-preservation and preflight tests;
+a full hardware installation and eMMC sysupgrade test are still required.
+
+The installer supports eMMC user-area boot selection; an unexpected hardware
+boot-partition selection is rejected before writing. It clears remaining user
+area and boot0/boot1, but does not claim erasure of RPMB or hidden flash storage.
+After failed/interrupted installation, remain on SD and inspect the failure;
+do not assume that eMMC is bootable. No automated reboot is performed.
+Filesystem journaling and early fsck remain deferred.

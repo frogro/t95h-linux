@@ -57,6 +57,7 @@ def dump(fs,name,out):
 
 p=argparse.ArgumentParser();p.add_argument('--image',type=Path,required=True);p.add_argument('--sha256',required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--fwtool',type=Path,required=True)
 p.add_argument('--platform',type=Path,help='Explicit validated platform hook; default is repository hook')
+p.add_argument('--storage',choices=['sd','emmc'],default='sd')
 p.add_argument('--profile',choices=['base','base-A','base-B','base-A-B'])
 a=p.parse_args();E=int(os.environ['SOURCE_DATE_EPOCH']);a.image=a.image.resolve();a.output=a.output.resolve();a.fwtool=a.fwtool.resolve()
 assert a.image.stat().st_size==SIZE and sha(a.image)==a.sha256,'Source image checksum/size mismatch'
@@ -65,6 +66,8 @@ with a.image.open('rb') as f:prefix=f.read(4*M)
 assert prefix[510:512]==b'\x55\xaa'
 entries=[struct.unpack('<B3sB3sII',prefix[446+i*16:462+i*16]) for i in range(4)]
 assert [(x[2],x[4],x[5]) for x in entries]==[(14,8192,131072),(131,139264,3956736),(0,0,0),(0,0,0)]
+expected_id=0xc5bddd4c if a.storage=='sd' else 0xe95e0001
+assert struct.unpack_from('<I',prefix,440)[0]==expected_id,'Storage identity mismatch'
 (o/'prefix.bin').write_bytes(prefix)
 extract(a.image,o/'boot.fat',4*M,64*M);extract(a.image,o/'root.ext4',68*M,1932*M)
 dump(o/'root.ext4','/etc/openwrt_release',o/'openwrt_release')
@@ -76,7 +79,7 @@ kernel=json.loads((o/'kernel-providers.json').read_text())['release']
 platform=Path(__file__).resolve().parents[1]/'boards/t95h/openwrt/upgrade/platform.sh'
 if a.platform is not None:platform=a.platform.resolve()
 shutil.copyfile(platform,o/'platform.sh')
-keep='/etc/config/\n/etc/dropbear/\n/etc/passwd\n/etc/shadow\n/etc/group\n/etc/uhttpd.key\n/etc/uhttpd.crt\n/etc/ttyd.key\n/etc/ttyd.crt\n/etc/sysupgrade.conf\n'
+keep='/root/.ssh/\n/etc/config/\n/etc/dropbear/\n/etc/passwd\n/etc/shadow\n/etc/group\n/etc/uhttpd.key\n/etc/uhttpd.crt\n/etc/ttyd.key\n/etc/ttyd.crt\n/etc/sysupgrade.conf\n'
 (o/'t95h-keep').write_text(keep)
 changes=[('/lib/upgrade/platform.sh',o/'platform.sh',0o100644),('/lib/upgrade/keep.d/t95h',o/'t95h-keep',0o100644)]
 commands=[]
@@ -96,6 +99,7 @@ for dst,src,_ in changes:
 # Keep the source kernel/DTB/FAT and entire boot prefix byte-identical.
 name=f"t95h-openwrt-{release['DISTRIB_RELEASE']}-{kernel}"
 if a.profile:name+='-'+a.profile
+name+='-'+a.storage
 install=o/(name+'-install.img')
 install_expected=hashlib.sha256()
 fd=os.open(install,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_DIRECT,0o644)
@@ -113,7 +117,7 @@ flush(install)
 assert install.stat().st_size==SIZE and sha(install)==install_expected.hexdigest()
 print('Install image created; compressing matching partitions',flush=True)
 gz(o/'boot.fat',o/'boot.gz');gz(o/'root.ext4',o/'root.gz')
-manifest='\n'.join(['T95H-SD-UPGRADE-1',sha(o/'prefix.bin'),sha(o/'boot.gz'),sha(o/'root.gz'),sha(o/'boot.fat'),sha(o/'root.ext4'),'67108864 2025848832'])+'\n'
+manifest='\n'.join(['T95H-'+a.storage.upper()+'-UPGRADE-1',sha(o/'prefix.bin'),sha(o/'boot.gz'),sha(o/'root.gz'),sha(o/'boot.fat'),sha(o/'root.ext4'),'67108864 2025848832'])+'\n'
 (o/'manifest').write_text(manifest)
 upgrade=o/(name+'-sysupgrade.bin')
 with tarfile.open(upgrade,'w',format=tarfile.USTAR_FORMAT) as tar:
@@ -130,7 +134,7 @@ with tarfile.open(upgrade) as t:
  assert t.getnames()==['manifest','boot.gz','root.gz']
  for name,raw in [('boot.gz','boot.fat'),('root.gz','root.ext4')]:
   with gzip.GzipFile(fileobj=t.extractfile(name)) as f:assert hashlib.file_digest(f,'sha256').hexdigest()==sha(o/raw)
-proof={'source_image_sha256':a.sha256,'source_date_epoch':E,'openwrt':release,'custom_kernel':kernel,'kernel_rebuilt_in_packaging_step':False,'profile':a.profile,'boot_and_dtb_unchanged':True,'boot_prefix_sha256':sha(o/'prefix.bin'),'boot_sha256':sha(o/'boot.fat'),'rootfs_sha256':sha(o/'root.ext4'),'platform_sha256':sha(o/'platform.sh'),'keep_sha256':sha(o/'t95h-keep'),'install_image':install.name,'install_sha256':sha(install),'sysupgrade':upgrade.name,'sysupgrade_sha256':sha(upgrade),'sysupgrade_bytes':upgrade.stat().st_size,'hardware_upgrade_tested':False,'signed':False,'tools':{'python':os.sys.version.split()[0],'debugfs':subprocess.run(['debugfs','-V'],capture_output=True,text=True).stderr.splitlines()[0],'fwtool_sha256':sha(a.fwtool)}}
+proof={'source_image_sha256':a.sha256,'source_date_epoch':E,'openwrt':release,'custom_kernel':kernel,'kernel_rebuilt_in_packaging_step':False,'profile':a.profile,'storage':a.storage,'boot_and_dtb_unchanged':True,'boot_prefix_sha256':sha(o/'prefix.bin'),'boot_sha256':sha(o/'boot.fat'),'rootfs_sha256':sha(o/'root.ext4'),'platform_sha256':sha(o/'platform.sh'),'keep_sha256':sha(o/'t95h-keep'),'install_image':install.name,'install_sha256':sha(install),'sysupgrade':upgrade.name,'sysupgrade_sha256':sha(upgrade),'sysupgrade_bytes':upgrade.stat().st_size,'hardware_upgrade_tested':False,'signed':False,'tools':{'python':os.sys.version.split()[0],'debugfs':subprocess.run(['debugfs','-V'],capture_output=True,text=True).stderr.splitlines()[0],'fwtool_sha256':sha(a.fwtool)}}
 (o/'build-proof.json').write_text(json.dumps(proof,indent=2)+'\n')
 (o/'SHA256SUMS').write_text(''.join(sha(f)+'  '+f.name+'\n' for f in [install,upgrade,o/'platform.sh']))
 print(json.dumps(proof,indent=2),flush=True)

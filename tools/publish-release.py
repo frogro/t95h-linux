@@ -17,14 +17,23 @@ def assets(directory, profile, console):
     request=json.loads((directory/'request.json').read_text())
     if request['profile']!=profile or request['console']!=console:
         raise ValueError('Requested profile/console does not match build')
-    proof=json.loads((directory/'upgrade-test.json').read_text())
-    images=[x for x in checked if x.endswith('-sysupgrade.bin')]
-    installs=[x for x in checked if x.endswith('-install.img')]
-    if len(images)!=1 or len(installs)!=1:raise ValueError('Expected exactly one image pair')
-    with (directory/images[0]).open('rb') as f:
-        digest=hashlib.file_digest(f,'sha256').hexdigest()
-    if proof.get('passed') is not True or proof.get('sysupgrade_sha256')!=digest:
-        raise ValueError('Upgrade tests do not cover this payload')
+    bundle=directory/'release-set.json'
+    if bundle.exists():
+        roles=json.loads(bundle.read_text())['artifacts']
+        reports=[(directory/'sd-upgrade-test.json',roles['sd_upgrade']),(directory/'emmc-upgrade-test.json',roles['emmc_upgrade'])]
+        installer=json.loads((directory/'installer-proof.json').read_text())
+        with (directory/roles['sd_emmc_installer']).open('rb') as f:digest=hashlib.file_digest(f,'sha256').hexdigest()
+        if installer.get('payload_readback_verified') is not True or installer.get('sha256')!=digest:raise ValueError('Installer verification mismatch')
+    else:
+        images=[x for x in checked if x.endswith('-sysupgrade.bin')]
+        installs=[x for x in checked if x.endswith('-install.img')]
+        if len(images)!=1 or len(installs)!=1:raise ValueError('Expected exactly one image pair')
+        reports=[(directory/'upgrade-test.json',images[0])]
+    for report,image in reports:
+        proof=json.loads(report.read_text())
+        with (directory/image).open('rb') as f:digest=hashlib.file_digest(f,'sha256').hexdigest()
+        if proof.get('passed') is not True or proof.get('sysupgrade_sha256')!=digest:
+            raise ValueError('Upgrade tests do not cover this payload')
     paths={directory/x for x in checked}
     paths.update(directory.glob('*.json'))
     paths.update([directory/'SHA256SUMS',directory/'RELEASE-NOTES.md',directory/'t95h-keep',ROOT/'installer.sh'])

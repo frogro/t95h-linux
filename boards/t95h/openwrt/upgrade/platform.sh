@@ -1,4 +1,4 @@
-# T95H FAT64/ext4 SD sysupgrade v1. No bootloader or partition-table writes.
+# T95H FAT64/ext4 SD and eMMC sysupgrade v1. No bootloader or partition-table writes.
 REQUIRE_IMAGE_METADATA=1
 RAMFS_COPY_BIN="${RAMFS_COPY_BIN} sha256sum readlink dirname wc tr cmp head tee mkfifo mktemp"
 
@@ -57,7 +57,12 @@ t95h_manifest() {
  } <<EOM
 $meta
 EOM
- [ "$magic" = T95H-SD-UPGRADE-1 ] && [ "$extra" = '67108864 2025848832' ] || return 1
+ case "$magic" in
+ T95H-SD-UPGRADE-1) T95H_MEDIA=SD ;;
+ T95H-EMMC-UPGRADE-1) T95H_MEDIA=MMC ;;
+ *) return 1 ;;
+ esac
+ [ "$extra" = '67108864 2025848832' ] || return 1
  for extra in "$T95H_PREFIX" "$T95H_BOOT_GZ" "$T95H_ROOT_GZ" "$T95H_BOOT_RAW" "$T95H_ROOT_RAW"; do
  [ "${#extra}" = 64 ] || return 1
  case "$extra" in *[!0-9a-f]*) return 1;; esac
@@ -115,7 +120,8 @@ t95h_target() {
 t95h_target_check() {
  local d="$1"
  case "$d" in mmcblk[0-9]) ;; *) return 1;; esac
- [ "$(cat /sys/class/block/$d/device/type)" = SD ] || return 1
+ case "$T95H_MEDIA" in SD|MMC) ;; *) return 1;; esac
+ [ "$(cat /sys/class/block/$d/device/type)" = "$T95H_MEDIA" ] || return 1
  [ "$(cat /sys/class/block/${d}p1/start)" = 8192 ] &&
  [ "$(cat /sys/class/block/${d}p1/size)" = 131072 ] &&
  [ "$(cat /sys/class/block/${d}p2/start)" = 139264 ] &&
@@ -129,8 +135,8 @@ platform_check_image() {
  # Validate compressed bytes here; decompress only in the RAM stage child,
  # where upgraded's parent event loop continues servicing the watchdog.
  t95h_validate_archive "$1" || { t95h_error 'Paket/Prüfsummen ungültig'; return 1; }
- t95h_manifest "$1" && t95h_target || { t95h_error 'Board, SD, Bootloader oder Layout passt nicht'; return 1; }
- echo 'T95H: Archiv und laufende SD geprüft; vollständige Rohdatenprüfung folgt im RAM.'
+ t95h_manifest "$1" && t95h_target || { t95h_error 'Board, Speichermedium, Bootloader oder Layout passt nicht'; return 1; }
+ echo 'T95H: Archiv und laufendes Speichermedium geprüft; vollständige Rohdatenprüfung folgt im RAM.'
 }
 platform_pre_upgrade() {
  # Check the exact compressed payload again; full raw validation follows in RAM
@@ -138,6 +144,7 @@ platform_pre_upgrade() {
  t95h_validate_archive "$1" && t95h_manifest "$1" && t95h_target || exit 1
  echo 'T95H: Archiv erneut geprüft; wechsle für die abschließende Prüfung ins RAM.' >&2
  printf '%s\n' "$T95H_DISK" > /tmp/t95h-upgrade-disk
+ cat /sys/class/block/$T95H_DISK/device/cid > /tmp/t95h-upgrade-cid || exit 1
  # Release the FAT mount before switching root. Never force a busy filesystem.
  if awk '$2=="/boot" {found=1} END {exit !found}' /proc/mounts; then
  umount /boot || exit 1
@@ -167,6 +174,7 @@ t95h_write_partitions() (
  local image="$1" disk="$2" member part expected count
  # Revalidate before first write; also protects direct stage2 invocation.
  t95h_validate_payload "$image" && t95h_manifest "$image" && t95h_target_check "$disk" || exit 1
+ [ "$(cat /sys/class/block/$disk/device/cid)" = "$(cat /tmp/t95h-upgrade-cid)" ] || exit 1
  # Writing is only permitted after OpenWrt has pivoted into its RAM root.
  [ "$(awk '$5=="/" {for(i=1;i<=NF;i++) if($i=="-") print $(i+1)}' /proc/self/mountinfo)" = tmpfs ] || exit 1
  local majmin
@@ -216,5 +224,5 @@ platform_do_upgrade() {
  t95h_progress "RAM-STAGE START"
  # Stop do_stage2's success path on failure. The parent upgraded process may
  # still reboot after this exits; a reboot alone never proves upgrade success.
- t95h_write_partitions "$1" "$disk" || { t95h_error 'ABBRUCH: Upgrade unvollständig. SD-Sicherung am ThinkPad wiederherstellen.'; exit 1; }
+ t95h_write_partitions "$1" "$disk" || { t95h_error 'ABBRUCH: Upgrade unvollständig. Geprüfte Sicherung wiederherstellen.'; exit 1; }
 }

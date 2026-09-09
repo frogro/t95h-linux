@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+set -o pipefail
+source=$1
+target=$2
+find "$source" -mindepth 1 -print0 | while IFS= read -r -d '' a; do
+ b=$target/${a#"$source"/}
+ if [ -L "$a" ]; then
+  [ -L "$b" ] && [ "$(readlink "$a")" = "$(readlink "$b")" ] || exit 1
+ elif [ -f "$a" ]; then
+  [ -f "$b" ] && [ ! -L "$b" ] && cmp -s "$a" "$b" || exit 1
+ elif [ -d "$a" ]; then
+  [ -d "$b" ] && [ ! -L "$b" ] || exit 1
+ else exit 1
+ fi
+ [ "$(stat -c '%a:%u:%g' "$a")" = "$(stat -c '%a:%u:%g' "$b")" ] || exit 1
+done
