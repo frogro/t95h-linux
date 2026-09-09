@@ -1,12 +1,19 @@
-echo "T95H: FAT boot / ext4 OpenWrt root"
-if mmc dev 0; then
-    setenv boot_targets mmc0
-    setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio32,0x05000000 loglevel=8 root=PARTUUID=c5bddd4c-02 rootwait init=/sbin/t95h-diag-init rootfstype=ext4 rw net.ifnames=0
-    if load mmc 0:1 0x42000000 /boot/Image; then
-        if load mmc 0:1 0x4fa00000 /boot/t95h.dtb; then
-            booti 0x42000000 - 0x4fa00000
+echo "T95H: SD rescan test, maximum three load attempts"
+sleep 1
+setenv boot_targets mmc0
+setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio32,0x05000000 loglevel=8 root=PARTUUID=c5bddd4c-02 rootwait init=/sbin/t95h-diag-init rootfstype=ext4 rw net.ifnames=0
+for t95h_sd_try in 1 2 3; do
+    echo "T95H: SD load attempt ${t95h_sd_try}/3"
+    if mmc dev 0; then
+        if mmc rescan; then
+            if load mmc 0:1 0x42000000 /boot/Image; then
+                if load mmc 0:1 0x4fa00000 /boot/t95h.dtb; then
+                    booti 0x42000000 - 0x4fa00000
+                fi
+            fi
         fi
     fi
-fi
-echo "T95H: boot failed; stopped"
+    sleep 1
+done
+echo "T95H: three SD attempts failed; stopped"
 while true; do sleep 60; done

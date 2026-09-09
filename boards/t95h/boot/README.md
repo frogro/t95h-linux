@@ -21,3 +21,21 @@ historical `ana-smc-compare/A/boot-prefix.bin` exactly; the FAT/rootfs layout on
 changed the MBR. This is verified local binary provenance, not yet a standalone
 source recipe or a downloadable Actions input. Never replace it with a different
 SPL/BL31 experiment simply because that experiment was created later.
+
+## Experimental SD initialization retry
+
+All profiles use the same `scripts/boot.scm`, with the selected console mode
+applied at assembly. `boot.scm.txt` is the readable source of that legacy U-Boot
+script. After the outer boot.scr has loaded it, it waits one second and makes
+at most three attempts: select MMC 0, rescan, load Image and DTB, and boot.
+A failed attempt is followed by a one-second delay. After three failures the
+script stops in the existing sleep loop. No SD power rail, SPL, BL31, raw boot
+prefix, persistent marker or Linux driver is changed.
+
+On 2026-09-09 the identical dual-console payload installed live was followed by
+two user-reported cold starts succeeding on their first power-on. This is an
+experimental improvement, not proof of a fixed coldboot problem. Neither the
+successful internal attempt number nor whether the delay or rescan helped was
+captured. Failures before this script is loaded cannot be recovered here.
+Both newly assembled install images and their derived sysupgrade packages carry
+this script; previously produced artifacts must be repackaged to include it.

@@ -6,6 +6,9 @@ ROOT=Path(__file__).resolve().parents[1]
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def check():
     board=ROOT/'boards/t95h'
+    scripts=board/'boot/scripts'
+    for name, sha in json.loads((scripts/'sha256.json').read_text()).items():
+        assert digest(scripts/name)==sha, 'Boot script hash mismatch: '+name
     baseline=json.loads((board/'baseline.json').read_text())
     k=json.loads((board/'kernel/source-lock.json').read_text())
     assert digest(board/'kernel'/k['patch'])==k['patch_sha256'], 'Kernel patch hash mismatch'
