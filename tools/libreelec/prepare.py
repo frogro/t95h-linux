@@ -55,6 +55,8 @@ FIRMWARE="misc-firmware wlan-firmware"
     ;;
 ''';pkg.write_text(s.replace(marker,marker+case))
  kodi=le/'packages/mediacenter/kodi/package.mk';ks=kodi.read_text();ks=ks.replace('[ "${PROJECT}" = "Allwinner" -o', '[ "${PROJECT}" = "T95H" -o "${PROJECT}" = "Allwinner" -o');kodi.write_text(ks)
+ # Same GMP archive from GNU; keep upstream version and SHA256 verification.
+ gmp=le/'packages/devel/gmp/package.mk';gs=gmp.read_text();gmp.write_text(gs.replace('https://gmplib.org/download/gmp/', 'https://ftp.gnu.org/gnu/gmp/'))
  stage=le/'t95h-startup';subprocess.run(['/usr/bin/python3',str(ROOT/'tools/stage-startup-fixes.py'),'--profile','base-B','--output',str(stage)],check=True)
  hw=pr/'packages/t95h-hardware';shutil.copytree(board/'libreelec/hardware',hw)
  src=hw/'sources';src.mkdir();shutil.copyfile(board/'external/regulator/t95h_aldo2.c',src/'t95h_aldo2.c');shutil.copyfile(stage/'ana/t95h_ana_provider.c',src/'t95h_ana_provider.c');(src/'Makefile').write_text('obj-m := t95h_aldo2.o t95h_ana_provider.o\n');shutil.copyfile(stage/'t95h.dtb',hw/'t95h.dtb')
