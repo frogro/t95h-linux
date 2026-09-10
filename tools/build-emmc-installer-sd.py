@@ -6,7 +6,11 @@ ROOT=Path(__file__).resolve().parents[1];M=1048576
 
 def sha(p):
  with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
-def run(*a):return subprocess.check_output(list(map(str,a)),stderr=subprocess.STDOUT)
+def run(*a):
+ try:return subprocess.check_output(list(map(str,a)),stderr=subprocess.STDOUT)
+ except subprocess.CalledProcessError as e:
+  print(e.output.decode(errors='replace'),flush=True)
+  raise
 def main():
  p=argparse.ArgumentParser()
  for n in ['sd-package','emmc-package','host-tools','compiler','output']:p.add_argument('--'+n,type=Path,required=True)
@@ -39,6 +43,8 @@ def main():
  for source,dest in files:
   verify=o/('verify-'+Path(dest).name);run('debugfs','-R',f'dump {dest} {verify}',fs)
   if sha(source)!=sha(verify):raise ValueError('Installer rootfs readback mismatch')
+ # debugfs dump preserves bytes, not inode permissions; QEMU requires executable input.
+ (o/'verify-file-metadata').chmod(0o755)
  run('python3',ROOT/'tools/test-emmc-metadata.py',o/'verify-file-metadata')
  payload=o/'payload';payload.mkdir()
  shutil.copyfile(a.emmc_package/em['sysupgrade'],payload/'emmc-sysupgrade.bin')
