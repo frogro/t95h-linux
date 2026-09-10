@@ -1,0 +1,128 @@
+name: LibreELEC resumable build phase
+on:
+  workflow_call:
+    inputs:
+      phase:
+        type: number
+        required: true
+      checkpoint:
+        type: string
+        default: ''
+      resume_run:
+        type: string
+        default: ''
+    outputs:
+      state:
+        value: ${{ jobs.build.outputs.state }}
+permissions:
+  contents: read
+  actions: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    outputs:
+      state: ${{ steps.compile.outputs.state }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Reserve disk for build and checkpoint
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          df -h .
+      - name: Install build tools
+        run: |
+          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" update
+          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" install -y build-essential bc bison flex libssl-dev libelf-dev libncurses-dev device-tree-compiler python3-libfdt kmod rsync cpio xz-utils zstd unzip file gawk gettext swig python3-dev e2fsprogs dosfstools mtools u-boot-tools fakeroot busybox qemu-user-static gperf patchutils lzop xfonts-utils xsltproc default-jre-headless libjson-perl libxml-parser-perl libparse-yapp-perl rdfind golang-go
+      - name: Validate shared hardware sources and tests
+        run: |
+          python3 tools/check-repository.py
+          python3 -m unittest discover -s tests -v
+      - name: Download checkpoint
+        if: inputs.checkpoint != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKPOINT: ${{ inputs.checkpoint }}
+          PREVIOUS_RUN: ${{ inputs.resume_run || github.run_id }}
+        run: gh run download "$PREVIOUS_RUN" --name "$CHECKPOINT" --dir build/checkpoint-in
+      - name: Resolve latest stable LibreELEC once
+        if: inputs.phase == 1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/libreelec/resolve.py --output build/libreelec-request.json
+      - name: Reuse this build's resolved source revision
+        if: inputs.phase != 1
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          from pathlib import Path
+          m=json.loads(Path('build/checkpoint-in/state.json').read_text())
+          Path('build/libreelec-request.json').write_text(json.dumps(m['request']))
+          PYTHON
+      - name: Restore checked build state
+        if: inputs.checkpoint != ''
+        run: |
+          python3 tools/libreelec/checkpoint.py restore build/checkpoint-in
+          rm -rf build/checkpoint-in
+      - name: Fetch source and locked hardware inputs
+        if: inputs.checkpoint == ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,subprocess,hashlib,tarfile
+          from pathlib import Path
+          r=json.loads(Path('build/libreelec-request.json').read_text())
+          subprocess.run(['git','clone','--depth','1','--branch',r['tag'],r['repository'],'build/libreelec'],check=True)
+          lock=json.loads(Path('boards/t95h/build-inputs.json').read_text())
+          subprocess.run(['gh','release','download',lock['tag'],'--repo',lock['repository'],'--pattern',lock['asset'],'--dir','build/dependencies'],check=True)
+          p=Path('build/dependencies')/lock['asset']
+          with p.open('rb') as f: assert hashlib.file_digest(f,'sha256').hexdigest()==lock['sha256']
+          with tarfile.open(p) as t: t.extractall('build/libreelec-inputs',filter='data')
+          PY
+      - name: Prepare isolated T95H project
+        if: inputs.checkpoint == ''
+        run: |
+          python3 tools/libreelec/prepare.py --source build/libreelec --firmware build/libreelec-inputs/firmware --request build/libreelec-request.json
+          python3 tools/libreelec/enable-checkpoint.py build/libreelec
+      - name: Compile until complete or a safe package boundary
+        id: compile
+        run: tools/libreelec/build-phase.sh
+      - name: Save resumable build state
+        if: steps.compile.outputs.state == 'paused'
+        run: python3 tools/libreelec/checkpoint.py save build/checkpoint-out
+      - name: Upload resumable checkpoint
+        if: steps.compile.outputs.state == 'paused'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: libreelec-checkpoint-${{ inputs.phase }}
+          path: build/checkpoint-out/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+      - name: Assemble experimental SD and eMMC candidates
+        if: steps.compile.outputs.state == 'complete'
+        run: python3 tools/libreelec/assemble.py --source build/libreelec --prefix build/libreelec-inputs/prefix.bin --output build/libreelec-images
+      - name: Upload candidates (not hardware-approved releases)
+        if: steps.compile.outputs.state == 'complete'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-libreelec-base-B-candidates
+          path: |
+            build/libreelec-images/*.img.gz
+            build/libreelec-images/SHA256SUMS
+            build/libreelec-images/images.json
+            build/libreelec/t95h-port.json
+            build/libreelec-request.json
+          if-no-files-found: error
+          compression-level: 0
+      - name: Preserve build diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-libreelec-diagnostics-${{ inputs.phase }}
+          path: |
+            build/libreelec-request.json
+            build/libreelec-build.log
+            build/libreelec/t95h-port.json
+            build/libreelec/build.*/.threads/logs/**
+          if-no-files-found: ignore

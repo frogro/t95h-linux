@@ -1,79 +1,47 @@
 name: Build experimental T95H LibreELEC SD and eMMC
 on:
   workflow_dispatch:
+    inputs:
+      resume_run:
+        description: Optional run ID of a saved checkpoint (same commit)
+        type: string
+        default: ''
+      resume_checkpoint:
+        description: Checkpoint artifact name from that run
+        type: string
+        default: ''
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: t95h-libreelec-base-B
   cancel-in-progress: false
 jobs:
-  build:
+  phase1:
+    uses: ./.github/workflows/libreelec-phase.yml
+    with:
+      phase: 1
+      resume_run: ${{ inputs.resume_run }}
+      checkpoint: ${{ inputs.resume_checkpoint }}
+  phase2:
+    needs: phase1
+    if: needs.phase1.outputs.state == 'paused'
+    uses: ./.github/workflows/libreelec-phase.yml
+    with:
+      phase: 2
+      checkpoint: libreelec-checkpoint-1
+  phase3:
+    needs: phase2
+    if: needs.phase2.outputs.state == 'paused'
+    uses: ./.github/workflows/libreelec-phase.yml
+    with:
+      phase: 3
+      checkpoint: libreelec-checkpoint-2
+  incomplete:
+    needs: phase3
+    if: needs.phase3.outputs.state == 'paused'
     runs-on: ubuntu-24.04
-    timeout-minutes: 350
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - name: Install build tools
-        run: |
-          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" update
-          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" install -y build-essential bc bison flex libssl-dev libelf-dev libncurses-dev device-tree-compiler python3-libfdt kmod rsync cpio xz-utils zstd unzip file gawk gettext swig python3-dev e2fsprogs dosfstools mtools u-boot-tools fakeroot busybox qemu-user-static gperf patchutils lzop xfonts-utils xsltproc default-jre-headless libjson-perl libxml-parser-perl libparse-yapp-perl rdfind golang-go
-      - name: Validate shared hardware sources and tests
-        run: |
-          python3 tools/check-repository.py
-          python3 -m unittest discover -s tests -v
-      - name: Resolve latest stable LibreELEC once
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python3 tools/libreelec/resolve.py --output build/libreelec-request.json
-      - name: Fetch source and locked hardware inputs
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 - <<'PY'
-          import json,subprocess,hashlib,tarfile
-          from pathlib import Path
-          r=json.loads(Path('build/libreelec-request.json').read_text())
-          subprocess.run(['git','clone','--depth','1','--branch',r['tag'],r['repository'],'build/libreelec'],check=True)
-          lock=json.loads(Path('boards/t95h/build-inputs.json').read_text())
-          subprocess.run(['gh','release','download',lock['tag'],'--repo',lock['repository'],'--pattern',lock['asset'],'--dir','build/dependencies'],check=True)
-          p=Path('build/dependencies')/lock['asset']
-          with p.open('rb') as f: assert hashlib.file_digest(f,'sha256').hexdigest()==lock['sha256']
-          with tarfile.open(p) as t: t.extractall('build/libreelec-inputs',filter='data')
-          PY
-      - name: Prepare isolated T95H project
-        run: python3 tools/libreelec/prepare.py --source build/libreelec --firmware build/libreelec-inputs/firmware --request build/libreelec-request.json
-      - name: Compile LibreELEC kernel and SYSTEM
-        working-directory: build/libreelec
-        env:
-          PROJECT: T95H
-          ARCH: aarch64
-          LOGCOMBINE: fail
-        run: |
-          set -o pipefail
-          export CONCURRENCY_MAKE_LEVEL="$(nproc)"
-          echo "Compiler parallelism: $CONCURRENCY_MAKE_LEVEL; full per-package logs retained as artifacts"
-          make system 2>&1 | tee ../libreelec-build.log
-      - name: Assemble experimental SD and eMMC candidates
-        run: python3 tools/libreelec/assemble.py --source build/libreelec --prefix build/libreelec-inputs/prefix.bin --output build/libreelec-images
-      - name: Upload candidates (not hardware-approved releases)
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: t95h-libreelec-base-B-candidates
-          path: |
-            build/libreelec-images/*.img.gz
-            build/libreelec-images/SHA256SUMS
-            build/libreelec-images/images.json
-            build/libreelec/t95h-port.json
-            build/libreelec-request.json
-          if-no-files-found: error
-          compression-level: 0
-      - name: Preserve build diagnostics
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: t95h-libreelec-diagnostics
-          path: |
-            build/libreelec-request.json
-            build/libreelec-build.log
-            build/libreelec/t95h-port.json
-            build/libreelec/build.*/.threads/logs/**
-          if-no-files-found: ignore
+      - run: |
+          echo 'Build state preserved as libreelec-checkpoint-3. Dispatch the same commit with resume_run and resume_checkpoint to continue.'
+          exit 1

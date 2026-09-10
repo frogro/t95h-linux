@@ -47,3 +47,32 @@ Die Kernelversion kann gleich bleiben, während die Kernelkonfiguration und ABI
 für LibreELEC angepasst werden. Ein erfolgreicher OpenWrt-Test ersetzt keine
 LibreELEC-Hardwareprüfung. Automatische Speichererweiterung ist derzeit nicht
 Teil dieses Ports.
+
+### Fortsetzbare Actions-Builds
+
+Der Workflow verwendet bis zu drei Jobs mit jeweils eigenem Zeitlimit. Nach
+180 Minuten startet der Paketplaner keine weiteren Pakete; laufende Pakete
+werden beendet. Anschließend werden der vollständige LibreELEC-Baum inklusive
+Toolchain, Quellen, Compiler-Cache, Paketmarkierungen und Hardware-Eingaben als
+`libreelec-checkpoint-N` archiviert (7 Tage Aufbewahrung). Der nächste Job
+übernimmt diesen Stand und ruft denselben inkrementellen Build auf.
+
+Jeder Restore prüft SHA256, Repository-Commit, LibreELEC-Quellstand,
+Runner-Betriebssystem, CPU-Voraussetzungen der Hostwerkzeuge und absoluten
+Arbeitsverzeichnispfad. Rechte und Symlinks bleiben erhalten. Ein neuer Lauf
+prüft weiterhin die neueste stabile LibreELEC-Version; eine Fortsetzung mit
+einem inzwischen veralteten Quellstand wird abgewiesen.
+
+Falls auch der dritte Job regulär pausiert, lässt sich ein neuer Lauf am selben
+Commit mit `resume_run=<Run-ID>` und
+`resume_checkpoint=libreelec-checkpoint-3` starten. Die vorherige Sicherung wird
+übernommen. Bereits vor dieser Änderung gestartete Jobs haben keinen solchen
+Checkpoint und können nicht nachträglich fortgesetzt werden.
+
+Grenzen: Kein Checkpoint wird aus einem abgebrochenen Compilerprozess oder nach
+einem echten Buildfehler erzeugt. Nach 300 Minuten beendet eine Notgrenze den
+Build; ein einzelnes außergewöhnlich langes Paket kann damit weiterhin den
+Job scheitern lassen. Archivierung und Upload benötigen freien Plattenplatz und
+GitHub-Artefaktspeicher. Ein inkompatibler neuer Runner oder geänderte Patches
+führen zu einer expliziten Ablehnung der Sicherung. Die erste vollständige
+Fortsetzung auf GitHub muss noch praktisch bestätigt werden.
