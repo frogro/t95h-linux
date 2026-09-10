@@ -41,6 +41,13 @@ Einstiegsskript. Das Release bleibt während des Uploads als Entwurf verborgen.
 Download und Prüfsummenprüfung laufen über `gh`; ein Prerelease ist keine
 Bestätigung vollständiger Hardwarestabilität.
 
+## Gesamten Speicher nutzen
+
+[SD-/eMMC-Restkapazität als Datenbereich verwenden](docs/storage-capacity.md):
+Layout, Geräteerkennung und Einbindung unter OpenWrt. **Im aktuellen Release
+verhindern Änderungen an der Partitionstabelle das Sysupgrade.** Eine automatisch
+erweiterte, updatefähige Datenpartition ist noch nicht implementiert.
+
 ## eMMC-Installation direkt an der Box (experimentell)
 
 Die neue Build-Kette erzeugt pro Profil vier Ausgaben:
