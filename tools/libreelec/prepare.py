@@ -4,6 +4,9 @@ import argparse, hashlib, json, re, shutil, subprocess
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+def gnu_mirror_urls(text):
+ # ftpmirror recipes use both /package and /gnu/package paths.
+ return re.sub(r'https?://ftpmirror\.gnu\.org/(?:gnu/)?', 'https://ftp.gnu.org/gnu/', text)
 def config(text):
  out={}
  for l in text.splitlines():
@@ -59,7 +62,7 @@ FIRMWARE="misc-firmware wlan-firmware"
   shutil.copytree(board/'libreelec/patches'/package,pr/'patches'/package)
  # Avoid random GNU redirect mirrors; package versions and hashes remain upstream.
  for recipe in (le/'packages').rglob('package.mk'):
-  text=recipe.read_text();fixed=text.replace('http://ftpmirror.gnu.org/', 'https://ftp.gnu.org/gnu/').replace('https://ftpmirror.gnu.org/', 'https://ftp.gnu.org/gnu/')
+  text=recipe.read_text();fixed=gnu_mirror_urls(text)
   if fixed!=text:recipe.write_text(fixed)
  # Same GMP archive from GNU; keep upstream version and SHA256 verification.
  gmp=le/'packages/devel/gmp/package.mk';gs=gmp.read_text();gmp.write_text(gs.replace('https://gmplib.org/download/gmp/', 'https://ftp.gnu.org/gnu/gmp/'))
