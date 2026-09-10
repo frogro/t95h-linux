@@ -158,3 +158,9 @@ Der [Lauf 34363631215](https://github.com/frogro/t95h-linux/actions/runs/3436363
 hat Basis+A+B mit dualer Konsole vollständig gebaut. Download, Image-Prüfsummen,
 Kernel-APK-Signatur und das enthaltene SD-Rescan-Skript wurden anschließend auf
 dem ThinkPad geprüft. [Prüfnachweis](docs/actions-validation-20260909.md).
+
+## Weiteres Betriebssystem: LibreELEC
+
+[Experimenteller LibreELEC-Port](docs/libreelec.md), zunächst Basis+B.
+Ein eigener Actions-Workflow ermittelt pro Lauf die neueste stabile Version.
+Die ersten Ausgaben sind Testartefakte, noch keine hardwaregeprüften Releases.

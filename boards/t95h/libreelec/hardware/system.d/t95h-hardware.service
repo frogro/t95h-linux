@@ -1,0 +1,13 @@
+[Unit]
+Description=T95H late regulator and Panfrost initialization
+After=systemd-udev-trigger.service
+Before=kodi.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/t95h/start-hardware
+TimeoutStartSec=240
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

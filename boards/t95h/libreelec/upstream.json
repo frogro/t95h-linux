@@ -1,0 +1,18 @@
+{
+  "repository": "https://github.com/LibreELEC/LibreELEC.tv.git",
+  "tag": "12.2.1",
+  "commit": "6209f5a3b067c45fbf527286dd84ee483294b46a",
+  "project": "T95H",
+  "arch": "aarch64",
+  "profile": "base-B",
+  "status": "experimental port; not hardware tested",
+  "policy": "resolve latest stable per run; validate adapter source contract; never fall back",
+  "adapter_source_contract": {
+    "projects/Allwinner/options": "706b518b61e1e727ef01f2054eaad6998db26373e11ab8f9d38e825cbcd19095",
+    "projects/Allwinner/devices/H6/options": "19e9b4380ff0ce6ed1e019e7c89b8aa24be12afd3aa3b6ea43065207aeb8fa1d",
+    "projects/Allwinner/linux/linux.aarch64.conf": "15107390b88d70561f0d8e61cc1ed0e96c5a14040f951da64ba9a2540b7982dc",
+    "packages/linux/package.mk": "5853f5d0d8a7afa97be6041c8671bba4c4202832e73cdb1b29373e9f66999d7d",
+    "packages/mediacenter/kodi/package.mk": "323d00bed4124ba8650f86cbb662a41ed371e0fa1f9856cd18f81dc6d8fdeccb",
+    "packages/multimedia/ffmpeg/package.mk": "7c7f2e6dbd7d39e7713548f5c6c803b11bb2220362b1796def05c5c61475b175"
+  }
+}

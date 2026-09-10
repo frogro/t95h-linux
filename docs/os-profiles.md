@@ -37,3 +37,9 @@ Quell- und Abhängigkeitsprüfung, sauberer Build und Artefaktprüfung erfolgen 
 ## Reihenfolge bestätigt 2026-09-07
 
 Die konkrete Umsetzung und Prüfung anderer Betriebssysteme wird auf ein späteres, gemeinsam ausgewähltes Beispiel verschoben, voraussichtlich Debian- oder Ubuntu-basiert. Aktuell werden ausschließlich OpenWrt-Profile, Build und Updateintegration umgesetzt. Die Trennung zwischen Hardwareunterbau und OS-Adapter bleibt Architekturvorgabe; ein zweiter OS-Adapter ist keine Voraussetzung für den Abschluss der jetzigen OpenWrt-Arbeit. Es wird noch keine konkrete Distribution oder Version festgelegt.
+
+## LibreELEC-Port begonnen 2026-09-10
+
+Der Nutzer hat LibreELEC als nächsten OS-Adapter ausgewählt. Der separate
+[LibreELEC-Workflow und Portstatus](libreelec.md) ersetzt für diesen Adapter
+die frühere Zurückstellung. OpenWrt läuft unabhängig weiter.

@@ -1,0 +1,35 @@
+#!/bin/sh
+# Initial LE adapter: network remains independent; no module reload/restart loop.
+set -eu
+[ "$(uname -r)" = 7.2.3-t95h-libreelec ]
+wait_age() { while [ "$(cut -d . -f1 /proc/uptime)" -lt "$1" ]; do sleep 1; done; }
+wait_age 60
+[ -d /sys/module/t95h_aldo2 ] || insmod /usr/lib/t95h/t95h_aldo2.ko
+wait_age 120
+cpu=0; gpu=0; wlan=0
+for r in /sys/class/regulator/regulator.*; do
+ name=$(cat "$r/name" 2>/dev/null) || continue
+ case "$name" in
+ t95h-cpu-dcdca|t95h-gpu-inherited|t95h-aldo2-wlan)
+  [ "$(cat "$r/state")" = enabled ]
+  uv=$(cat "$r/microvolts")
+  case "$name" in
+   t95h-cpu-dcdca) [ "$uv" -ge 900000 ] && [ "$uv" -le 1120000 ]; cpu=1;;
+   t95h-gpu-inherited) [ "$uv" = 960000 ] || [ "$uv" = 1100000 ]; gpu=1;;
+   t95h-aldo2-wlan) [ "$uv" = 3300000 ]; wlan=1;;
+  esac;;
+ esac
+done
+[ "$cpu$gpu$wlan" = 111 ]
+G=/sys/bus/platform/devices/1800000.gpu
+P=/sys/bus/platform/devices/7010250.power-controller
+[ ! -L "$G/driver" ] && [ ! -L "$P/driver" ]
+echo t95h-hold > "$G/driver_override"
+insmod /usr/lib/t95h/t95h_ana_provider.ko
+echo panfrost > "$G/driver_override"
+echo 1800000.gpu > /sys/bus/platform/drivers_probe || true
+n=0
+while [ ! -c /dev/dri/renderD128 ] && [ "$n" -lt 30 ]; do sleep 1; n=$((n+1)); done
+[ "$(readlink -f /sys/class/drm/renderD128/device)" = "$(readlink -f "$G")" ]
+[ "$(basename "$(readlink -f "$G/driver")")" = panfrost ]
+echo 'T95H: Panfrost render node ready; Kodi may start'

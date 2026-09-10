@@ -1,0 +1,49 @@
+# LibreELEC T95H – experimenteller Port
+
+Der zweite OS-Adapter baut ein eigenes `PROJECT=T95H`, zunächst ARM64 Basis+B.
+OpenWrt bleibt unverändert. `build-libreelec.yml` ist separat manuell startbar.
+
+Jeder neue Lauf löst die neueste stabile LibreELEC-GitHub-Veröffentlichung einmal
+auf und speichert Tag und Commit in `libreelec-request.json`. Keine Nightlies,
+kein stiller Rückfall auf ältere Releases. Der Adapter wurde zunächst gegen
+12.2.1 geprüft. Ändern sich relevante Upstream-Builddateien, stoppt die
+Quellvertragsprüfung bis zur bewussten Anpassung an das neue Release.
+
+Kernel 7.2.3, konsolidierte T95H-Patches und beide XR819-Korrekturen bleiben
+fest. Die LibreELEC-H6-Kernelpatches werden nicht blind dazu gemischt.
+LibreELEC baut seinen Kernel mit seiner eigenen Toolchain; Kernelmodule werden
+gegen genau diesen Build gebaut. Keine OpenWrt-APK- oder Fremdkernelmodule.
+Der Adapter aktiviert SquashFS, Initramfs und systemd-Anforderungen. Die
+LibreELEC-FFmpeg-V4L2-Request/DRM-Prime-Pfade bleiben verfügbar; tatsächliches
+Cedrus-Decoding in Kodi ist noch nicht getestet.
+
+Die neuen systemd-Dienste übernehmen die verzögerte Regulator-/GPU-Einbindung.
+UCI, procd, LuCI und OpenWrt-AP-Konfiguration werden nicht kopiert. Netzwerk
+verwaltet LibreELEC; WLAN/AP-Zugang und Dienste müssen separat getestet werden.
+Das bisherige 60-/120-Sekunden-Minimum wird beim ersten Port nicht verkürzt.
+Kodi startet erst nach erfolgreicher GPU-Prüfung; Netzwerk bleibt unabhängig.
+
+Actions baut zunächst KERNEL und SYSTEM, danach zwei komprimierte Rohimages:
+SD und eMMC mit separaten UUIDs. Bootcode wird aus der gesperrten bestehenden
+Kette übernommen; der MBR wird für 1024 MiB FAT und 512 MiB STORAGE angepasst.
+Die eMMC-Variante übernimmt zusätzlich unsere geprüfte eMMC-Bootprefix- und
+DTB-Transformation. Dies sind Dateiartefakte; der Workflow greift auf keine Box zu.
+
+**Stand: Implementierung für ersten Build, nicht hardwaregetestet.** Die Images
+werden zunächst als Actions-Artefakte, nicht als freigegebene GitHub-Releases
+angeboten. Das eMMC-Rohimage ist kein von SD startbarer eMMC-Installer.
+
+Vor einer Veröffentlichung sind noch erforderlich:
+
+- Buildfehler/Kernelkonfigurationsabweichungen beheben; Source-Replay prüfen.
+- Boot von SD, HDMI/Kodi, Netzwerk, Panfrost, Audio, Cedrus und IR testen.
+- Frontdisplay-Dienst und IR-Keymap auf LibreELEC übertragen.
+- Separaten eMMC-Installations-SD-Adapter und passenden LibreELEC-Updateadapter
+  erstellen. OpenWrt-sysupgrade ist ausdrücklich nicht kompatibel.
+- Medienabhängigkeiten der ausgelassenen H6-Patches einzeln bewerten.
+- Abhängigkeiten, Artefaktprüfungen und Lizenz-/Quellnachweise abschließen.
+
+Die Kernelversion kann gleich bleiben, während die Kernelkonfiguration und ABI
+für LibreELEC angepasst werden. Ein erfolgreicher OpenWrt-Test ersetzt keine
+LibreELEC-Hardwareprüfung. Automatische Speichererweiterung ist derzeit nicht
+Teil dieses Ports.
