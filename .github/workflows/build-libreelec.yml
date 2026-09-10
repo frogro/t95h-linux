@@ -46,9 +46,11 @@ jobs:
         env:
           PROJECT: T95H
           ARCH: aarch64
-          CONCURRENCY_MAKE_LEVEL: 2
+          LOGCOMBINE: fail
         run: |
           set -o pipefail
+          export CONCURRENCY_MAKE_LEVEL="$(nproc)"
+          echo "Compiler parallelism: $CONCURRENCY_MAKE_LEVEL; full per-package logs retained as artifacts"
           make system 2>&1 | tee ../libreelec-build.log
       - name: Assemble experimental SD and eMMC candidates
         run: python3 tools/libreelec/assemble.py --source build/libreelec --prefix build/libreelec-inputs/prefix.bin --output build/libreelec-images
