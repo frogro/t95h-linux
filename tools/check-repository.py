@@ -13,6 +13,7 @@ def check():
     elock=json.loads((emmc/'lock.json').read_text())
     assert digest(emmc/'spl-reset-fifo.toc0')==elock['spl_sha256'], 'eMMC SPL lock mismatch'
     assert digest(emmc/'reset-fifo-backport.patch')==elock['reset_fifo_patch_sha256'], 'eMMC patch lock mismatch'
+    assert digest(emmc/'early-gpu-gate.patch')==elock['early_gpu_gate_patch_sha256'], 'eMMC GPU patch lock mismatch'
     baseline=json.loads((board/'baseline.json').read_text())
     k=json.loads((board/'kernel/source-lock.json').read_text())
     assert digest(board/'kernel'/k['patch'])==k['patch_sha256'], 'Kernel patch hash mismatch'

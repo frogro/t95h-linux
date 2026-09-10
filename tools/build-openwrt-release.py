@@ -77,6 +77,12 @@ open/documented. No new hardware, listening or stress tests are implied.
 The previous installer completed on the test box and standalone eMMC boot was reported.
 Its missing-stat permission-check bug is fixed here with a bundled ARM64 helper,
 executed under QEMU after extraction from the image before publication.
+The eMMC installation payload restores the early SPL GPU gate enable missing from
+previous eMMC builds. The corrected SPL passed a warm reboot and manual Panfrost
+probe on the test box; cold power-cycle validation is still pending.
+IMPORTANT: sysupgrade updates FAT/rootfs only and does not replace the SPL.
+Existing eMMC installations need a separate guarded bootloader correction or
+reinstallation to receive this fix. The test box has already received the correction.
 This newly built artifact and eMMC sysupgrade still require hardware validation.
 Boot the installation SD, log in as root on HDMI and run t95h-install-emmc.
 WARNING: the existing eMMC operating system and its data will be erased.

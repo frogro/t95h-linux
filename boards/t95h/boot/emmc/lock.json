@@ -1,8 +1,8 @@
 {
   "source_prefix_sha256": "d8fe417be041dd9cd7e1677fed52414fb81f066656a447c2367d9b0fcbc94b75",
-  "prefix_sha256": "e685de349632a05930388d4e5d3cdadf2053296a216d7d0d9e9734dd839b6d37",
+  "prefix_sha256": "589a5fff38e1510524f89afd5691e7a8bac3437c42bcd3dddeaaf3d7ff4f9c78",
   "bytes": 4194304,
-  "spl_sha256": "79014b3a903be234d41d4cb24e4cb55b2ff026d0a12b53918177ee66d19c2fbe",
+  "spl_sha256": "bea5bfb6d1e518c40d74b5624260dbeba9c0ac993d928d027da8c55abb83d922",
   "upstream_reset_fifo_commit": "3e78f8f407a0a0e7b50aa7eaa6f2f579f35e9837",
   "spl_emmc_max_hz": 25000000,
   "spl_emmc_bus_width": 4,
@@ -13,6 +13,14 @@
   "hardware_standalone_boot_observed": true,
   "hardware_sysupgrade_tested": false,
   "source_complete": false,
-  "provenance": "SPL compiled from reconstructed U-Boot 2024.04 tree with MMC2 enabled, eMMC 25MHz/4-bit legacy settings and upstream reset/FIFO backport. Signed with existing test key; key not distributed. Remaining FIT/BL31/U-Boot code from locked private SD prefix. This is an experimental binary dependency with incomplete source reproduction, not a source-complete release.",
-  "reset_fifo_patch_sha256": "5566ec451dac443d8ef65972fb15e67a3cf0a0f782003c0df29276108d1de287"
+  "provenance": "SPL compiled from reconstructed U-Boot 2024.04 tree with MMC2 enabled, eMMC 25MHz/4-bit legacy settings and upstream reset/FIFO backport. Signed with existing test key; key not distributed. Remaining FIT/BL31/U-Boot code from locked private SD prefix. This is an experimental binary dependency with incomplete source reproduction, not a source-complete release. Restores the early GPU gate enable inherited by the working SD SPL; warm reboot and manual standard Panfrost probe on eMMC verified on 2026-09-10.",
+  "reset_fifo_patch_sha256": "5566ec451dac443d8ef65972fb15e67a3cf0a0f782003c0df29276108d1de287",
+  "early_gpu_gate_patch_sha256": "dac9ec5e01d152b7e788d7986783b29ba46d6d9ba60f417d037a8d15fce5cc52",
+  "early_gpu_gate": {
+    "register": "0x07010254",
+    "value": 0,
+    "barrier": "dsb sy",
+    "hardware_emmc_manual_panfrost_verified": true,
+    "cold_power_cycle_tested": false
+  }
 }
