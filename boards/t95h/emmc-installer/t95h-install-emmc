@@ -80,6 +80,7 @@ done
 tar -czf "$work/config.tgz" -C / -T "$work/config.list"
 mkdir "$work/config-check"
 tar -xzf "$work/config.tgz" -C "$work/config-check"
+/usr/lib/t95h-emmc/check-config "$work/config-check" "$work/config-check" "$work/config.list" || fail 'Konfigurationsprüfung nicht verfügbar; nichts geschrieben.'
 printf '\nZiel: /dev/%s, %s MiB\n' "$disk" "$((sectors / 2048))"
 printf 'ACHTUNG: Das vorhandene Betriebssystem auf der eMMC und alle dort gespeicherten Daten werden gelöscht und durch OpenWrt ersetzt.\n'
 printf 'Die OpenWrt-Zugangseinstellungen dieser SD werden übernommen.\nZum Bestätigen EMMC LOESCHEN eingeben: '
@@ -121,7 +122,7 @@ t95h_target_check "$disk" || fail 'Neues Layout wurde nicht übernommen.'
 mount -t ext4 -o rw,noatime "/dev/${disk}p2" "$newroot"
 tar -xzf "$work/config.tgz" -C "$newroot"
 # Verify contents, links and permissions of restored access data locally.
-/usr/lib/t95h-emmc/check-config "$work/config-check" "$newroot" || fail 'Konfigurationsübernahme fehlgeschlagen.'
+/usr/lib/t95h-emmc/check-config "$work/config-check" "$newroot" "$work/config.list" || fail 'Konfigurationsübernahme fehlgeschlagen.'
 mkdir -p "$newroot/usr/share/t95h"
 printf 'format=T95H-EMMC-INSTALL-1\npartition_readback_verified=1\nconfig_restored=1\n' > "$newroot/usr/share/t95h/emmc-install-receipt"
 sync

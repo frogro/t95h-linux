@@ -72,3 +72,19 @@ area and boot0/boot1, but does not claim erasure of RPMB or hidden flash storage
 After failed/interrupted installation, remain on SD and inspect the failure;
 do not assume that eMMC is bootable. No automated reboot is performed.
 Filesystem journaling and early fsck remain deferred.
+
+
+## Installer-Korrektur nach erstem Release-Test
+
+Das Installer-SD-Image aus `t95h-34413173108-1` enthält eine fehlerhafte
+Metadatenprüfung: `stat` fehlt im Rootfs; zwei fehlgeschlagene Aufrufe wurden
+als gleiche leere Werte verglichen. Ein PASS trotz `stat: not found` ist daher
+kein Nachweis für Dateirechte/Besitzer. Der korrigierte Builder liefert
+`file-metadata` mit, prüft Fehlercodes und testet den Prüfer vor Schreibzugriffen.
+Er vergleicht nur archivierte Einträge, nicht synthetische Elternverzeichnisse.
+Bestehende Release-Dateien werden dadurch nicht nachträglich verändert.
+
+Am 10.09.2026 wurden die bereits installierten Zugangsdaten auf Franks eMMC
+mit dem korrigierten Prüfer einschließlich Inhalt, Links, Rechten und Besitzern
+nur lesend erfolgreich verglichen. Der eigenständige Boot dieser Installation
+steht noch aus. Eine erneute Installation war dafür nicht erforderlich.

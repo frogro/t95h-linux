@@ -1,9 +1,22 @@
 #!/bin/sh
 set -eu
 set -o pipefail
+metadata=${T95H_METADATA_CMD:-/usr/lib/t95h-emmc/file-metadata}
+[ -x "$metadata" ] || { echo "Missing metadata verifier: $metadata" >&2; exit 1; }
 source=$1
 target=$2
-find "$source" -mindepth 1 -print0 | while IFS= read -r -d '' a; do
+# Only archived entries: extraction creates parent directories with temporary umask.
+paths() {
+ if [ "$#" -eq 1 ]; then
+  while IFS= read -r entry; do
+   case "$entry" in ''|/*|..|../*|*/../*|*/..) return 1;; esac
+   find "$source/$entry" -print0 || return 1
+  done < "$1"
+ else
+  find "$source" -mindepth 1 -print0
+ fi
+}
+if [ "$#" -ge 3 ]; then paths "$3"; else paths; fi | while IFS= read -r -d '' a; do
  b=$target/${a#"$source"/}
  if [ -L "$a" ]; then
   [ -L "$b" ] && [ "$(readlink "$a")" = "$(readlink "$b")" ] || exit 1
@@ -13,5 +26,7 @@ find "$source" -mindepth 1 -print0 | while IFS= read -r -d '' a; do
   [ -d "$b" ] && [ ! -L "$b" ] || exit 1
  else exit 1
  fi
- [ "$(stat -c '%a:%u:%g' "$a")" = "$(stat -c '%a:%u:%g' "$b")" ] || exit 1
+ am=$("$metadata" "$a") || exit 1
+ bm=$("$metadata" "$b") || exit 1
+ [ -n "$am" ] && [ "$am" = "$bm" ] || exit 1
 done

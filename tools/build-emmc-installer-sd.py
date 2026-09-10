@@ -29,9 +29,9 @@ def main():
  spec=importlib.util.spec_from_file_location('dt',ROOT/'tools/emmc/prepare-access-dtb.py');dt=importlib.util.module_from_spec(spec);spec.loader.exec_module(dt);dt.prepare(o/'before.dtb',o/'installer.dtb')
  run(host/'mcopy','-o','-i',fat,o/'installer.dtb','::/boot/t95h.dtb')
  src=ROOT/'boards/t95h/emmc-installer'
- for name in ['reread-partitions','check-boot-selection']:
+ for name in ['reread-partitions','check-boot-selection','file-metadata']:
   run(a.compiler,'-Os','-static',src/(name+'.c'),'-o',o/name)
- files=[(src/'t95h-install-emmc','/usr/sbin/t95h-install-emmc'),(src/'check-config','/usr/lib/t95h-emmc/check-config'),(a.emmc_package/'platform.sh','/usr/lib/t95h-emmc/platform.sh')]+[(o/n,'/usr/lib/t95h-emmc/'+n) for n in ['reread-partitions','check-boot-selection']]
+ files=[(src/'t95h-install-emmc','/usr/sbin/t95h-install-emmc'),(src/'check-config','/usr/lib/t95h-emmc/check-config'),(a.emmc_package/'platform.sh','/usr/lib/t95h-emmc/platform.sh')]+[(o/n,'/usr/lib/t95h-emmc/'+n) for n in ['reread-partitions','check-boot-selection','file-metadata']]
  commands=['mkdir /usr/lib/t95h-emmc']
  for source,dest in files:
   commands.extend([f'write {source.resolve()} {dest}',f'set_inode_field {dest} mode 0100755',f'set_inode_field {dest} uid 0',f'set_inode_field {dest} gid 0'])
