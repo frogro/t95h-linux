@@ -58,7 +58,7 @@ FIRMWARE="misc-firmware wlan-firmware"
     ;;
 ''';pkg.write_text(s.replace(marker,marker+case))
  kodi=le/'packages/mediacenter/kodi/package.mk';ks=kodi.read_text();ks=ks.replace('[ "${PROJECT}" = "Allwinner" -o', '[ "${PROJECT}" = "T95H" -o "${PROJECT}" = "Allwinner" -o');kodi.write_text(ks)
- for package in ('glibc','gcc'):
+ for package in ('glibc','gcc','systemd'):
   shutil.copytree(board/'libreelec/patches'/package,pr/'patches'/package)
  # Avoid random GNU redirect mirrors; package versions and hashes remain upstream.
  for recipe in (le/'packages').rglob('package.mk'):

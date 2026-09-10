@@ -120,6 +120,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: t95h-libreelec-diagnostics-${{ inputs.phase }}
+          include-hidden-files: true
           path: |
             build/libreelec-request.json
             build/libreelec-build.log
