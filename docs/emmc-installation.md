@@ -86,5 +86,6 @@ Bestehende Release-Dateien werden dadurch nicht nachträglich verändert.
 
 Am 10.09.2026 wurden die bereits installierten Zugangsdaten auf Franks eMMC
 mit dem korrigierten Prüfer einschließlich Inhalt, Links, Rechten und Besitzern
-nur lesend erfolgreich verglichen. Der eigenständige Boot dieser Installation
-steht noch aus. Eine erneute Installation war dafür nicht erforderlich.
+nur lesend erfolgreich verglichen. Der eigenständige eMMC-Boot dieser Installation wurde anschließend vom Nutzer
+bestätigt. Das ist ein einzelner erfolgreicher Boot, kein Nachweis langfristiger
+Stabilität und kein eMMC-Sysupgrade-Test. Eine erneute Installation war dafür nicht erforderlich.

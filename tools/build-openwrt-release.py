@@ -74,8 +74,10 @@ Experimental SD rescan: up to three boot payload load attempts. Two successful
 cold starts were reported after the change; general coldboot reliability is not proven.
 Known WLAN SDIO errors, GPU initialization and audio hardware validation remain
 open/documented. No new hardware, listening or stress tests are implied.
-eMMC standalone boot has experimental validation. The new local eMMC installer
-and eMMC sysupgrade have software checks but require hardware validation.
+The previous installer completed on the test box and standalone eMMC boot was reported.
+Its missing-stat permission-check bug is fixed here with a bundled ARM64 helper,
+executed under QEMU after extraction from the image before publication.
+This newly built artifact and eMMC sysupgrade still require hardware validation.
 Boot the installation SD, log in as root on HDMI and run t95h-install-emmc.
 WARNING: the existing eMMC operating system and its data will be erased.
 Confirmation: EMMC LOESCHEN. Current SD access settings are retained.

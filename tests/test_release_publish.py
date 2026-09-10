@@ -36,7 +36,7 @@ class FourArtifactRelease(Release):
    for n in ['sample-emmc-sysupgrade.bin','sample-sd-emmc-installer.img.gz']:f.write(hashlib.sha256((p/n).read_bytes()).hexdigest()+'  '+n+'\n')
   (p/'release-set.json').write_text(json.dumps(dict(format='T95H-RELEASE-SET-1',artifacts=roles)))
   for media in ['sd','emmc']:(p/(media+'-upgrade-test.json')).write_text(json.dumps(dict(passed=True,sysupgrade_sha256=hashlib.sha256((p/roles[media+'_upgrade']).read_bytes()).hexdigest())))
-  (p/'installer-proof.json').write_text(json.dumps(dict(payload_readback_verified=True,sha256=hashlib.sha256((p/roles['sd_emmc_installer']).read_bytes()).hexdigest())))
+  (p/'installer-proof.json').write_text(json.dumps(dict(metadata_helper_runtime_verified=True,payload_readback_verified=True,sha256=hashlib.sha256((p/roles['sd_emmc_installer']).read_bytes()).hexdigest())))
  def test_all_four_verified(self):
   with tempfile.TemporaryDirectory() as d:
    p=Path(d);self.stage_four(p);self.assertIn(p/'sample-emmc-sysupgrade.bin',m.assets(p,'base-B','dual'))
@@ -47,4 +47,9 @@ class FourArtifactRelease(Release):
  def test_missing_installer_role_rejected(self):
   with tempfile.TemporaryDirectory() as d:
    p=Path(d);self.stage_four(p);data=json.loads((p/'release-set.json').read_text());del data['artifacts']['sd_emmc_installer'];(p/'release-set.json').write_text(json.dumps(data))
+   with self.assertRaises(ValueError):m.assets(p,'base-B','dual')
+
+ def test_missing_metadata_runtime_proof_rejected(self):
+  with tempfile.TemporaryDirectory() as d:
+   p=Path(d);self.stage_four(p);f=p/'installer-proof.json';data=json.loads(f.read_text());del data['metadata_helper_runtime_verified'];f.write_text(json.dumps(data))
    with self.assertRaises(ValueError):m.assets(p,'base-B','dual')

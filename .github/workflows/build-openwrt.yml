@@ -54,7 +54,7 @@ jobs:
           test -n "$T95H_APK_SIGNING_KEY"
           umask 077
           printf '%s\n' "$T95H_APK_SIGNING_KEY" > "$RUNNER_TEMP/t95h-sign.pem"
-      - name: Compile selected profile and build verified image pair
+      - name: Compile profile and verify all four SD/eMMC artifacts
         run: |
           python3 tools/build-openwrt-release.py --request build/request.json --inputs build/dependencies/t95h-locked-inputs-v1.tar.gz --sign-key "$RUNNER_TEMP/t95h-sign.pem" --output build/full --jobs 2 --revision "$((1000 + GITHUB_RUN_NUMBER))"
       - name: Remove temporary private key

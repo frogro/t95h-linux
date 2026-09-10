@@ -39,6 +39,7 @@ def main():
  for source,dest in files:
   verify=o/('verify-'+Path(dest).name);run('debugfs','-R',f'dump {dest} {verify}',fs)
   if sha(source)!=sha(verify):raise ValueError('Installer rootfs readback mismatch')
+ run('python3',ROOT/'tools/test-emmc-metadata.py',o/'verify-file-metadata')
  payload=o/'payload';payload.mkdir()
  shutil.copyfile(a.emmc_package/em['sysupgrade'],payload/'emmc-sysupgrade.bin')
  shutil.copyfile(a.emmc_package/'prefix.bin',payload/'prefix.bin')
@@ -61,6 +62,6 @@ def main():
  with gzip.open(o/name,'rb') as f:
   if hashlib.file_digest(f,'sha256').hexdigest()!=h.hexdigest():raise ValueError('Compressed installer readback mismatch')
  if count!=2256*M:raise ValueError('Installer size mismatch')
- report=dict(image=name,sha256=sha(o/name),raw_sha256=h.hexdigest(),raw_bytes=count,third_partition_start=4096000,third_partition_sectors=524288,profile=sd['profile'],emmc_sysupgrade_sha256=em['sysupgrade_sha256'],payload_readback_verified=True,hardware_install_tested=False)
+ report=dict(image=name,sha256=sha(o/name),raw_sha256=h.hexdigest(),raw_bytes=count,third_partition_start=4096000,third_partition_sectors=524288,profile=sd['profile'],emmc_sysupgrade_sha256=em['sysupgrade_sha256'],payload_readback_verified=True,metadata_helper_runtime_verified=True,hardware_install_tested=False)
  (o/'installer-proof.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 if __name__=='__main__':main()

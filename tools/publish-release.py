@@ -23,7 +23,7 @@ def assets(directory, profile, console):
         reports=[(directory/'sd-upgrade-test.json',roles['sd_upgrade']),(directory/'emmc-upgrade-test.json',roles['emmc_upgrade'])]
         installer=json.loads((directory/'installer-proof.json').read_text())
         with (directory/roles['sd_emmc_installer']).open('rb') as f:digest=hashlib.file_digest(f,'sha256').hexdigest()
-        if installer.get('payload_readback_verified') is not True or installer.get('sha256')!=digest:raise ValueError('Installer verification mismatch')
+        if installer.get('metadata_helper_runtime_verified') is not True or installer.get('payload_readback_verified') is not True or installer.get('sha256')!=digest:raise ValueError('Installer verification mismatch')
     else:
         images=[x for x in checked if x.endswith('-sysupgrade.bin')]
         installs=[x for x in checked if x.endswith('-install.img')]
