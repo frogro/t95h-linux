@@ -14,6 +14,14 @@ def wireguard_archive(text):
  url='PKG_URL="https://git.zx2c4.com/wireguard-tools/snapshot/wireguard-tools-v${PKG_VERSION}.tar.xz"'
  if text.count(url)!=1:raise ValueError('WireGuard archive recipe changed; review required')
  return text.replace(url,'PKG_URL="https://sources.openwrt.org/wireguard-tools-${PKG_VERSION}.tar.xz"').replace(old,'PKG_SHA256="b6f2628b85b1b23cc06517ec9c74f82d52c4cdbd020f3dd2f00c972a1782950e"')
+def udevil_archive(text):
+ # Deleted alpharde repository; the exact commit survives in the successor fork.
+ version='PKG_VERSION="f2b715d1d821e4b69b2fb0864a5a178dd67877f0"'
+ old='PKG_SHA256="3351d56c553c518cb2ce7b24892a4b62d630ba4f6ebee2c3994c4be9828f0629"'
+ if version not in text or old not in text:return text
+ url='PKG_URL="https://github.com/alpharde/udevil/archive/${PKG_VERSION}.tar.gz"'
+ if text.count(url)!=1:raise ValueError('udevil archive recipe changed; review required')
+ return text.replace(url,'PKG_URL="https://github.com/arnie97/udevil-ng/archive/${PKG_VERSION}.tar.gz"\nPKG_SOURCE_DIR="udevil-ng-${PKG_VERSION}"').replace(old,'PKG_SHA256="9285649d4304e7aac303d67e9ddcc6979602296bbfd80cf984317701de3a46e9"')
 def config(text):
  out={}
  for l in text.splitlines():
@@ -82,6 +90,7 @@ FIRMWARE="misc-firmware wlan-firmware"
  attr=le/'packages/devel/attr/package.mk';ats=attr.read_text()
  attr.write_text(ats.replace('http://download.savannah.nongnu.org/releases/attr/', 'https://download-mirror.savannah.gnu.org/releases/attr/'))
  wg=le/'packages/network/wireguard-tools/package.mk';wg.write_text(wireguard_archive(wg.read_text()))
+ udevil=le/'packages/sysutils/udevil/package.mk';udevil.write_text(udevil_archive(udevil.read_text()))
  # strace supports compiling against its bundled UAPI headers when newer
  # host/target headers change reserved io_uring fields. Keep upstream version/hash.
  strace=le/'packages/debug/strace/package.mk';st=strace.read_text()
