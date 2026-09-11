@@ -7,6 +7,13 @@ def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def gnu_mirror_urls(text):
  # ftpmirror recipes use both /package and /gnu/package paths.
  return re.sub(r'https?://ftpmirror\.gnu\.org/(?:gnu/)?', 'https://ftp.gnu.org/gnu/', text)
+def wireguard_archive(text):
+ # cgit regenerated this snapshot; archived bytes match all 123 tag files/modes.
+ old='PKG_SHA256="6afe492647c3b0b2f68ab6df524e9e4290d03c34c3027e069e5bbc486949960e"'
+ if 'PKG_VERSION="1.0.20250521"' not in text or old not in text:return text
+ url='PKG_URL="https://git.zx2c4.com/wireguard-tools/snapshot/wireguard-tools-v${PKG_VERSION}.tar.xz"'
+ if text.count(url)!=1:raise ValueError('WireGuard archive recipe changed; review required')
+ return text.replace(url,'PKG_URL="https://sources.openwrt.org/wireguard-tools-${PKG_VERSION}.tar.xz"').replace(old,'PKG_SHA256="b6f2628b85b1b23cc06517ec9c74f82d52c4cdbd020f3dd2f00c972a1782950e"')
 def config(text):
  out={}
  for l in text.splitlines():
@@ -74,6 +81,7 @@ FIRMWARE="misc-firmware wlan-firmware"
  # Savannah redirector returns 502 for attr; use its direct archive mirror.
  attr=le/'packages/devel/attr/package.mk';ats=attr.read_text()
  attr.write_text(ats.replace('http://download.savannah.nongnu.org/releases/attr/', 'https://download-mirror.savannah.gnu.org/releases/attr/'))
+ wg=le/'packages/network/wireguard-tools/package.mk';wg.write_text(wireguard_archive(wg.read_text()))
  # Same GMP archive from GNU; keep upstream version and SHA256 verification.
  gmp=le/'packages/devel/gmp/package.mk';gs=gmp.read_text();gmp.write_text(gs.replace('https://gmplib.org/download/gmp/', 'https://ftp.gnu.org/gnu/gmp/'))
  stage=le/'t95h-startup';subprocess.run(['/usr/bin/python3',str(ROOT/'tools/stage-startup-fixes.py'),'--profile','base-B','--output',str(stage)],check=True)
