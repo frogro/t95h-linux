@@ -110,8 +110,20 @@ def main():
     (root/'var/lib/dhcpcd').mkdir(parents=True,exist_ok=True)
     with (root/'etc/fstab').open('a') as f:
         f.write('tmpfs /var/lib/dhcpcd tmpfs mode=0755,nosuid,nodev,size=4m 0 0\n')
+    # A RAM-backed DUID-LLT changes on each boot; DUID-LL uses the stable MAC.
+    dhcp=root/'etc/dhcpcd.conf'
+    dhcp.write_text(re.sub(r'^duid(?:[ \t]+[^\n]*)?$', 'duid ll', dhcp.read_text(), flags=re.M))
+    (root/'var/cache/lightdm').mkdir(parents=True,exist_ok=True)
+    (root/'usr/local/share/polkit-1/rules.d').mkdir(parents=True,exist_ok=True)
+    put(root,'home/pi/.xsession-errors','',0o600)
+    with (root/'etc/fstab').open('a') as f:
+        f.write('tmpfs /var/cache/lightdm tmpfs mode=0755,nosuid,nodev,size=4m 0 0\n')
+    for name in ['prepare-session','wait-network']:
+        put(root,'usr/lib/t95h/'+name,(ROOT/'boards/t95h/anotter/runtime'/name).read_text(),0o755)
+    put(root,'etc/systemd/system/t95h-session-runtime.service',(ROOT/'boards/t95h/anotter/runtime/t95h-session-runtime.service').read_text())
+    put(root,'etc/systemd/system/ntpdate.service.d/t95h-network.conf',(ROOT/'boards/t95h/anotter/runtime/ntp-network.conf').read_text())
     put(root,'etc/chromium/policies/managed/t95h-kiosk.json',json.dumps({'TranslateEnabled':False},indent=2)+'\n')
-    put(root,'usr/bin/t95h-dns-init','#!/bin/sh\nmkdir -p /tmp\nprintf "nameserver 1.1.1.1\\n" > /tmp/resolv.conf\n',0o755)
+    put(root,'usr/bin/t95h-dns-init','#!/bin/sh\nmkdir -p /tmp\ntouch /tmp/resolv.conf\n',0o755)
     put(root,'etc/systemd/system/t95h-dns-init.service','[Unit]\nBefore=networking.service\n[Service]\nType=oneshot\nExecStart=/usr/bin/t95h-dns-init\n[Install]\nWantedBy=multi-user.target\n')
     release=(o/'kernel/include/config/kernel.release').read_text().strip()
     run('rsync','-a',str(o/'modules/root/lib/modules')+'/',str(root/'lib/modules')+'/')
@@ -132,12 +144,12 @@ def main():
     put(root,'etc/systemd/system/t95h-hardware.service',unit)
     put(root,'usr/lib/t95h/public-boot-files',(ROOT/'boards/t95h/anotter/runtime/public-boot-files').read_text(),0o755)
     put(root,'etc/systemd/system/t95h-public-boot.service',(ROOT/'boards/t95h/anotter/runtime/t95h-public-boot.service').read_text())
-    put(root,'etc/systemd/system/lightdm.service.d/t95h.conf','[Unit]\nRequires=t95h-hardware.service t95h-public-boot.service\nAfter=t95h-hardware.service t95h-public-boot.service\n')
+    put(root,'etc/systemd/system/lightdm.service.d/t95h.conf','[Unit]\nRequires=t95h-hardware.service t95h-public-boot.service t95h-session-runtime.service\nAfter=t95h-hardware.service t95h-public-boot.service t95h-session-runtime.service\n')
     put(root,'etc/systemd/system/nginx.service.d/t95h.conf','[Unit]\nRequires=t95h-public-boot.service\nAfter=t95h-public-boot.service\n')
     # Keep Xradio cold during the initial kiosk test; Ethernet/USB input remain available.
     dtb=o/'modules/startup/t95h.dtb'
     run('fdtput','-t','s',dtb,'/soc/mmc@4021000','status','disabled')
-    for unit in ['t95h-hardware','t95h-dns-init','t95h-public-boot']:
+    for unit in ['t95h-hardware','t95h-dns-init','t95h-public-boot','t95h-session-runtime']:
         run('systemctl','--root',root,'enable',unit)
     for f in (root/'etc/ssh').glob('ssh_host_*'): f.unlink()
     put(root,'etc/machine-id','')

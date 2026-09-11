@@ -121,3 +121,22 @@ abgehängt und danach mit t95h-public-boot.service erneut eingerichtet werden.
 Animation, Maus/Touch/Tastatur und eine WebGL-Rendereranzeige. Sie ist kein Lasttest.
 Die Testsitzung verwendet sie über den Original-nginx-Pfad unter www-public;
 die allgemeine Release-Startseite bleibt die von AnotterKiosk vorgegebene URL.
+
+### T95H startup and writable runtime state
+
+The adapter keeps ifupdown as the sole Ethernet manager and selects `duid ll`
+for dhcpcd. Its DHCP identity is derived from the interface MAC instead of a
+new timestamp in the RAM-backed lease directory. This does not force a fixed
+IP address; the router still assigns the lease. Existing DUID files take
+precedence until the next boot clears the runtime directory.
+
+The original ntpdate service and server list remain in use. A bounded preflight
+waits for a default route and working DNS before invoking it; upstream retry
+behavior remains active when offline. No public DNS server is hardcoded.
+
+LightDM cache, greeter data, utmp and the Xsession log are prepared in RAM before
+the display manager starts. The SD root filesystem stays read-only. The original
+kiosk start page, SSH-key provisioning and 120-second hardware startup delay are
+unchanged. The live service test passed; repeated-boot DHCP identity verification
+remains a hardware follow-up. The optional AccountsService warning is not a GPU
+failure and is not hidden by installing another account-management service.

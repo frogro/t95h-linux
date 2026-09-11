@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+# Preserve upstream NTP servers, but wait for DHCP routing and DNS first.
+for attempt in $(seq 1 12); do
+    if { ip -4 route show default; ip -6 route show default; } | grep -q '^default'; then
+        if timeout 4 getent ahosts ptbtime2.ptb.de >/dev/null 2>&1; then
+            exit 0
+        fi
+    fi
+    sleep 2
+done
+echo 'T95H: network/DNS not ready; upstream ntpdate retry remains active.' >&2
+exit 1

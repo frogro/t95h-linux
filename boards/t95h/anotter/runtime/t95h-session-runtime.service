@@ -1,0 +1,10 @@
+[Unit]
+Description=Writable kiosk session state in RAM
+RequiresMountsFor=/var/cache/lightdm /var/lib/lightdm /run
+Before=lightdm.service
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/t95h/prepare-session
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+install -d -m 0755 -o lightdm -g lightdm /var/cache/lightdm
+install -d -m 0700 -o lightdm -g lightdm /var/lib/lightdm/data
+install -d -m 0755 /run/polkit-1/rules.d
+[ -e /run/utmp ] || install -m 0664 -o root -g utmp /dev/null /run/utmp
+# Keep the regular Xsession log writable without making the SD rootfs writable.
+if ! mountpoint -q /home/pi/.xsession-errors; then
+    [ -e /run/t95h-session-errors ] || install -m 0600 -o pi -g pi /dev/null /run/t95h-session-errors
+    mount --bind /run/t95h-session-errors /home/pi/.xsession-errors
+fi
