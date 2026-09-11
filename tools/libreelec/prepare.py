@@ -3,6 +3,7 @@
 import argparse, hashlib, json, re, shutil, subprocess
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
+IWD_KERNEL_CONFIG=['KEYS','KEY_DH_OPERATIONS','CRYPTO_USER_API_HASH','CRYPTO_USER_API_SKCIPHER','CRYPTO_USER_API_AEAD','CRYPTO_USER_API_RNG','CRYPTO_AES','CRYPTO_DES','CRYPTO_ECB','CRYPTO_CBC','CRYPTO_CMAC','CRYPTO_HMAC','CRYPTO_MD5','CRYPTO_SHA1','CRYPTO_SHA256','CRYPTO_SHA512']
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def gnu_mirror_urls(text):
  # ftpmirror recipes use both /package and /gnu/package paths.
@@ -30,6 +31,13 @@ def config(text):
   m=re.fullmatch(r'# (CONFIG_\w+) is not set',l)
   if m: out[m[1]]='n'
  return out
+def ffmpeg_t95h(text):
+ # Cedrus uses the stateless Request API, not the stateful mem2mem decoder.
+ gate='if [ "${PROJECT}" = "Allwinner" -o "${PROJECT}" = "Rockchip"'
+ if text.count(gate)!=1:raise ValueError('FFmpeg V4L2 Request project gate changed; review required')
+ text=text.replace(gate,'if [ "${PROJECT}" = "T95H" -o "${PROJECT}" = "Allwinner" -o "${PROJECT}" = "Rockchip"')
+ if text.count('Allwinner|Rockchip)')!=1:raise ValueError('FFmpeg deinterlace project gate changed; review required')
+ return text.replace('Allwinner|Rockchip)','T95H|Allwinner|Rockchip)')
 def main():
  p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--firmware',type=Path,required=True);p.add_argument('--request',type=Path,required=True);a=p.parse_args()
  le=a.source.resolve();board=ROOT/'boards/t95h';contract=json.loads((board/'libreelec/upstream.json').read_text());lock=json.loads(a.request.read_text())
@@ -55,6 +63,7 @@ FIRMWARE="misc-firmware wlan-firmware"
  cfg=config((board/'profiles/kconfig-draft/base-B.config').read_text())
  # Preserve our hardware settings, add LE userspace requirements explicitly.
  required=['BLK_DEV_INITRD','DEVTMPFS','DEVTMPFS_MOUNT','TMPFS','TMPFS_POSIX_ACL','SQUASHFS','SQUASHFS_ZSTD','SQUASHFS_XZ','CGROUPS','CGROUP_PIDS','CGROUP_FREEZER','CGROUP_DEVICE','NAMESPACES','UTS_NS','IPC_NS','PID_NS','NET_NS','SECCOMP','SECCOMP_FILTER','FHANDLE','INOTIFY_USER','SIGNALFD','TIMERFD','EPOLL','UNIX','UNIX_DIAG','BINFMT_ELF','BINFMT_SCRIPT','BLK_DEV_LOOP','RD_GZIP','RD_ZSTD','ZSTD_DECOMPRESS','AUTOFS_FS','EXT4_FS','VFAT_FS','NLS_CODEPAGE_437','NLS_ISO8859_1']
+ required+=IWD_KERNEL_CONFIG
  for key in required: cfg['CONFIG_'+key]='y'
  cfg.update(CONFIG_EXTRA_FIRMWARE='""',CONFIG_EXTRA_FIRMWARE_DIR='"firmware"',CONFIG_LOCALVERSION='"-t95h-libreelec"',CONFIG_LOCALVERSION_AUTO='n',CONFIG_INITRAMFS_SOURCE='""',CONFIG_INITRAMFS_ROOT_UID='0',CONFIG_INITRAMFS_ROOT_GID='0',CONFIG_INITRAMFS_COMPRESSION_ZSTD='y',CONFIG_INITRAMFS_COMPRESSION_NONE='n',CONFIG_MODULE_COMPRESS='n',CONFIG_MODULE_COMPRESS_XZ='n',CONFIG_MODULE_COMPRESS_ZSTD='n',CONFIG_MODULE_COMPRESS_GZIP='n')
  (pr/'linux').mkdir();(pr/'linux/linux.aarch64.conf').write_text('\n'.join(f'# {k} is not set' if v=='n' else f'{k}={v}' for k,v in sorted(cfg.items()))+'\n')
@@ -73,6 +82,7 @@ FIRMWARE="misc-firmware wlan-firmware"
     ;;
 ''';pkg.write_text(s.replace(marker,marker+case))
  kodi=le/'packages/mediacenter/kodi/package.mk';ks=kodi.read_text();ks=ks.replace('[ "${PROJECT}" = "Allwinner" -o', '[ "${PROJECT}" = "T95H" -o "${PROJECT}" = "Allwinner" -o');kodi.write_text(ks)
+ ffmpeg=le/'packages/multimedia/ffmpeg/package.mk';ffmpeg.write_text(ffmpeg_t95h(ffmpeg.read_text()))
  for package in ('glibc','gcc','systemd'):
   shutil.copytree(board/'libreelec/patches'/package,pr/'patches'/package)
  # Avoid random GNU redirect mirrors; package versions and hashes remain upstream.

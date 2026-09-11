@@ -1,0 +1,12 @@
+[Unit]
+Description=T95H WLAN regulatory database after firmware setup
+After=systemd-modules-load.service
+Before=iwd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/t95h/prepare-regulatory
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

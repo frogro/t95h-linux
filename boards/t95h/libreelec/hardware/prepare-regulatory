@@ -1,0 +1,15 @@
+#!/bin/sh
+# cfg80211 is built in and can request its database before firmware overlays exist.
+set -eu
+base=/usr/lib/kernel-overlays/base/lib/firmware
+runtime=/run/kernel-overlays/firmware
+mkdir -p "$runtime"
+for name in regulatory.db regulatory.db.p7s; do
+  [ -s "$base/$name" ] || { echo "T95H: missing $base/$name" >&2; exit 1; }
+  if [ ! -e "$runtime/$name" ]; then
+    ln -sfn "$base/$name" "$runtime/$name"
+  fi
+done
+# Retain the user's country selection; never hard-code a regulatory domain.
+iw reg reload
+echo 'T95H: regulatory database reload requested after firmware setup'

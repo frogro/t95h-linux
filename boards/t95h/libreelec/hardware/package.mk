@@ -17,7 +17,10 @@ makeinstall_target() {
   cp -a ${PKG_DIR}/firmware/. "${firmware_dir}/"
   cp ${PKG_DIR}/start-hardware ${INSTALL}/usr/lib/t95h/
   chmod 755 ${INSTALL}/usr/lib/t95h/start-hardware
+  cp ${PKG_DIR}/prepare-regulatory ${INSTALL}/usr/lib/t95h/
+  chmod 755 ${INSTALL}/usr/lib/t95h/prepare-regulatory
   cp ${PKG_DIR}/system.d/*.service ${INSTALL}/usr/lib/systemd/system/
   ln -s ../t95h-hardware.service ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants/t95h-hardware.service
+  ln -s ../t95h-regulatory.service ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants/t95h-regulatory.service
   cp ${PKG_DIR}/kodi.conf ${INSTALL}/usr/lib/systemd/system/kodi.service.d/t95h.conf
 }

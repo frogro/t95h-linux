@@ -119,6 +119,7 @@ jobs:
             build/libreelec/t95h-port.json
             build/libreelec-inputs/prefix.bin
             build/libreelec-request.json
+            docs/libreelec-playback-test-build.md
           if-no-files-found: error
           compression-level: 0
           retention-days: 14
