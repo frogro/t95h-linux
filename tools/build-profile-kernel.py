@@ -22,6 +22,7 @@ def main():
  p.add_argument('--toolchain',type=Path,required=True)
  p.add_argument('--firmware-root',type=Path,required=True,help='Directory containing lib/firmware files')
  p.add_argument('--profile',choices=['base','base-A','base-B','base-A-B'],default='base-A-B')
+ p.add_argument('--config',type=Path,help='Explicit OS-specific config; profile still selects firmware')
  p.add_argument('--output',type=Path,required=True);p.add_argument('--jobs',type=int,default=3)
  p.add_argument('--epoch',type=int,required=True)
  a=p.parse_args()
@@ -36,7 +37,7 @@ def main():
  tc=a.toolchain.resolve(strict=True);prefix=tc/'bin/aarch64-openwrt-linux-musl-'
  compiler=Path(str(prefix)+'gcc');version=subprocess.check_output([str(compiler),'--version'],text=True).splitlines()[0]
  out=a.output.resolve();out.mkdir(parents=True,exist_ok=False);(out/'tmp').mkdir()
- config=board/'profiles/kconfig-draft'/(a.profile+'.config');cfg=config.read_text();shutil.copyfile(config,out/'.config')
+ config=a.config.resolve(strict=True) if a.config else board/'profiles/kconfig-draft'/(a.profile+'.config');cfg=config.read_text();shutil.copyfile(config,out/'.config')
  groups={'base'}|set(a.profile.split('-')[1:])
  firmware={item['file']:item for item in json.loads((board/'profiles/integration-draft.json').read_text())['firmware'] if item['profile'] in groups}
  names=re.search(r'^CONFIG_EXTRA_FIRMWARE="(.*)"$',cfg,re.M).group(1).split()

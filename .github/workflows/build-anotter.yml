@@ -1,0 +1,66 @@
+name: Build experimental T95H AnotterKiosk SD
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: t95h-anotter
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Free runner space for kernel and Debian rootfs
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
+          df -h "$GITHUB_WORKSPACE"
+      - name: Install compiler and Debian ARM64 build tools
+        run: |
+          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" update
+          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" install -y build-essential bc bison flex libssl-dev libelf-dev libncurses-dev device-tree-compiler python3-libfdt kmod rsync cpio xz-utils zstd file gawk gettext swig python3-dev e2fsprogs dosfstools mtools u-boot-tools mmdebstrap qemu-user-static binfmt-support debian-archive-keyring
+          sudo update-binfmts --enable qemu-aarch64
+      - name: Validate source tooling
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 tools/check-repository.py
+      - name: Fetch locked T95H dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          p=json.loads(Path('boards/t95h/build-inputs.json').read_text())
+          subprocess.run(['gh','release','download',p['tag'],'--repo',p['repository'],'--pattern',p['asset'],'--dir','build/dependencies'],check=True)
+          PY
+      - name: Compile T95H kernel and assemble Debian kiosk SD
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sudo --preserve-env=GH_TOKEN /usr/bin/python3 tools/anotter/build.py --inputs build/dependencies/t95h-locked-inputs-v1.tar.gz --output build/anotter --jobs 2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-anotter-sd-experimental
+          path: build/anotter/release/*
+          if-no-files-found: error
+          compression-level: 0
+      - name: Publish experimental SD candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "anotter-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" build/anotter/release/* --target "$GITHUB_SHA" --prerelease --title "T95H AnotterKiosk SD test ${GITHUB_RUN_ID}" --notes-file build/anotter/release/RELEASE-NOTES.md
+      - name: Preserve build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-anotter-diagnostics
+          path: |
+            build/anotter/request.json
+            build/anotter/kernel/*.log
+            build/anotter/kernel/build-status.json
+            build/anotter/modules/*.log
+            build/anotter/packages.tsv
+          if-no-files-found: ignore

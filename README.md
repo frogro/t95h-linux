@@ -171,3 +171,8 @@ Beide USB-Buchsen arbeiten als Host, einschließlich USB0 neben dem SD-Kartensch
 USB0 wurde mit dem RTL8821CU-Stick erfolgreich auf Erkennung und WLAN-Scans
 in beiden Frequenzbändern getestet. Weitere Geräte benötigen ihre jeweiligen
 Profil-Treiber; deren Betrieb und Strombedarf sind gerätespezifisch zu prüfen.
+
+## AnotterKiosk (experimenteller SD-Port)
+
+Debian/Chromium-Kiosk mit eigener Actions-Pipeline und SSH-Schlüsselkonfiguration.
+[Build, SD-Installation und SSH-Zugang](docs/anotter-kiosk.md). Hardwaretest steht noch aus.
