@@ -80,7 +80,7 @@ Grafikstart. Die Kiosk-/SSH-Konfiguration verwendet die normale FAT-Dateistruktu
   unter Debian/Chromium ist noch zu testen; ein vorhandener Decoder-Treiber
   beweist keine Browser-Hardwaredecodierung.
 - Panfrost startet nach der bewährten späten Regulatorinitialisierung (frühestens
-  120 Sekunden). LightDM wartet auf den Grafikdienst; LAN und SSH warten nicht.
+  45 Sekunden). LightDM wartet auf den Grafikdienst; LAN und SSH warten nicht.
 - Internes XR819-WLAN ist für den ersten Test im DT deaktiviert. Es wird kein AP
   eingerichtet. Anschluss zunächst per Ethernet. Zusätzliche Profil-A-Treiber
   und ein eigener Frontdisplay-Dienst sind noch nicht Teil dieses Kiosk-Ports.
@@ -136,7 +136,20 @@ behavior remains active when offline. No public DNS server is hardcoded.
 
 LightDM cache, greeter data, utmp and the Xsession log are prepared in RAM before
 the display manager starts. The SD root filesystem stays read-only. The original
-kiosk start page, SSH-key provisioning and 120-second hardware startup delay are
-unchanged. The live service test passed; repeated-boot DHCP identity verification
+kiosk start page, SSH-key provisioning remain unchanged. The hardware startup timing is described below. The live service test passed; repeated-boot DHCP identity verification
 remains a hardware follow-up. The optional AccountsService warning is not a GPU
 failure and is not hidden by installing another account-management service.
+
+
+### Faster Anotter hardware startup, tested 2026-09-11
+
+Anotter now loads the regulator at 30 seconds and the ANA/Panfrost provider at
+45 seconds. Voltage and render-node checks are unchanged. Three completed test
+boots reached GPU readiness at 45.49, 45.38 and 46.14 seconds; LightDM autologin
+followed at approximately 55 seconds. Chromium opened renderD128 on all three.
+The last was a power-cycle test, but required two power-on attempts. The first
+attempt did not consume the one-shot test configuration; its failure point is
+unknown. These results do not prove reliable cold boot or long-term stability.
+The early deferred-probe -110 warning remains before the successful GPU probe.
+OpenWrt and LibreELEC timing is unchanged. Reverting the two Anotter wait_age
+values to 60 and 120 restores the previous startup timing.

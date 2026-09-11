@@ -139,6 +139,8 @@ def main():
         if sha(src)!=entry['sha256']: raise ValueError('Firmware mismatch '+rel)
         dst=root/rel; dst.parent.mkdir(parents=True,exist_ok=True); shutil.copyfile(src,dst)
     start=(ROOT/'boards/t95h/libreelec/hardware/start-hardware').read_text().replace('7.2.3-t95h-libreelec',release).replace('Kodi may start','kiosk may start')
+    # Three live Anotter boots validated this timing; other OS defaults stay unchanged.
+    start=start.replace('wait_age 60\n','wait_age 30\n').replace('wait_age 120\n','wait_age 45\n')
     put(root,'usr/lib/t95h/start-hardware',start,0o755)
     unit=(ROOT/'boards/t95h/libreelec/hardware/system.d/t95h-hardware.service').read_text().replace('kodi.service','lightdm.service')
     put(root,'etc/systemd/system/t95h-hardware.service',unit)
