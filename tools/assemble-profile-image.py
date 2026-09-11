@@ -43,6 +43,10 @@ def main():
  metadata=json.loads((root/'usr/share/t95h/build-profile.json').read_text());release=metadata['kernel']
  if not (root/'lib/modules'/release/'t95h_aldo2.ko').is_file():raise ValueError('Late WLAN regulator path missing')
  if 'B' in proof['profile'].split('-'):
+  # Profile B must ship the guarded late Panfrost service enabled.
+  autostart=root/'etc/rc.d/S99t95h-gpu'
+  if not autostart.is_symlink() or os.readlink(autostart)!='../init.d/t95h-gpu':
+   raise ValueError('Profile B Panfrost autostart missing or incorrect')
   gpu=root/'usr/lib/t95h-gpu'
   if (gpu/'SHA256SUMS').read_text()!=sha(gpu/'t95h_ana_provider.ko')+'  t95h_ana_provider.ko\n':raise ValueError('Late GPU module checksum mismatch')
  for folder in [root,boot.parent]:

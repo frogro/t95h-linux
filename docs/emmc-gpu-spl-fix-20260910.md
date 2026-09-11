@@ -33,3 +33,21 @@ installations. Those require a separate guarded SPL repair or reinstallation.
 The correction does not make bootloader source reproduction complete: the
 existing proprietary/incompletely reproduced binary dependency limitations
 remain recorded in the boot lock.
+
+## Rendering follow-up, 2026-09-11
+
+After a manual power cycle following sysupgrade, the eMMC system initialized
+standard Panfrost successfully using the guarded late service. Mesa 25.2.4
+reported Mali-G31 (Panfrost), OpenGL ES 3.1. An offscreen kmscube smoke test
+completed, followed by `kmscube -D /dev/dri/renderD128 -O -v 1024x768 -g -c 30000`.
+The latter reported 29999 frames in 109.06 seconds (275.07 fps), exit 0.
+SSH and the boot ID remained unchanged; no new GPU faults appeared.
+Existing WLAN missed interrupts and SDIO data errors remain a separate open
+issue; this result does not establish long-term stability or HDMI scanout.
+
+The test box GPU service was re-enabled for subsequent boots. Fresh base-B
+and base-A-B profiles already enable this service; image assembly now rejects
+a missing or incorrect S99t95h-gpu symlink. The existing 120-second minimum
+and readiness checks remain unchanged. Autostart after another reboot has not
+yet been tested in this follow-up. The earlier automatic sysupgrade reboot
+failed to return and required the manual power cycle; that issue remains open.
