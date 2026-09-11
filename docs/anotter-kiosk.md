@@ -88,3 +88,21 @@ Grafikstart. Die Kiosk-/SSH-Konfiguration verwendet die normale FAT-Dateistruktu
   HDMI, Eingabegeräte und eine einfache Chromium-Seite.
 - Bootloader-/Firmware-Provenienz und bekannte T95H-Bootprobleme gelten weiterhin;
   siehe die bestehenden Hardware- und Quellherkunftshinweise im Repository.
+
+### Erster SD-Test und kleine Adapterkorrekturen (11.09.2026)
+
+Der erste Test bestätigt Debian-Boot, LAN/SSH, HDMI, LightDM/Chromium und
+Mesa/Panfrost als beschleunigten GL-Renderer. Chromium lief zunächst trotzdem
+mit `--disable-gpu`: `pi` konnte die FAT-Konfiguration wegen `umask=0077`
+nicht lesen. Die Zugriffsregelung ist noch zu korrigieren; GL-Funktion bedeutet
+nicht automatisch Browser-Hardwarebeschleunigung.
+
+Der Adapter behält den Original-Netzwerkweg über ifupdown bei und maskiert den
+zusätzlichen globalen dhcpcd-Dienst. Andernfalls verwalten zwei Instanzen eth0
+und können zwei DHCP-Adressen beziehen. `/var/lib/dhcpcd` erhält wie die anderen
+flüchtigen Zustandsverzeichnisse ein tmpfs; das Rootfs bleibt schreibgeschützt.
+
+Die Original-Chromium-Startparameter versuchen bereits, Übersetzung auszuschalten.
+Für die getestete Debian-Chromium-Version ergänzt der Adapter ausschließlich
+`TranslateEnabled=false` in `/etc/chromium/policies/managed/t95h-kiosk.json`.
+Browserstart und übrige Optionen bleiben vom Upstream übernommen.

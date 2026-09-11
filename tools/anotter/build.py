@@ -104,6 +104,13 @@ def main():
         (root/'usr/share/X11/xorg.conf.d'/name).unlink(missing_ok=True)
     (root/'etc/X11/xorg.conf.d/99-v3d.conf').unlink(missing_ok=True)
     put(root,'etc/network/interfaces','auto lo\niface lo inet loopback\nallow-hotplug eth0\niface eth0 inet dhcp\n')
+    # ifupdown owns eth0; the global manager would request a second DHCP lease.
+    run('systemctl','--root',root,'disable','dhcpcd.service')
+    run('systemctl','--root',root,'mask','dhcpcd.service')
+    (root/'var/lib/dhcpcd').mkdir(parents=True,exist_ok=True)
+    with (root/'etc/fstab').open('a') as f:
+        f.write('tmpfs /var/lib/dhcpcd tmpfs mode=0755,nosuid,nodev,size=4m 0 0\n')
+    put(root,'etc/chromium/policies/managed/t95h-kiosk.json',json.dumps({'TranslateEnabled':False},indent=2)+'\n')
     put(root,'usr/bin/t95h-dns-init','#!/bin/sh\nmkdir -p /tmp\nprintf "nameserver 1.1.1.1\\n" > /tmp/resolv.conf\n',0o755)
     put(root,'etc/systemd/system/t95h-dns-init.service','[Unit]\nBefore=networking.service\n[Service]\nType=oneshot\nExecStart=/usr/bin/t95h-dns-init\n[Install]\nWantedBy=multi-user.target\n')
     release=(o/'kernel/include/config/kernel.release').read_text().strip()
