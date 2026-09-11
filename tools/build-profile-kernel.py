@@ -13,7 +13,12 @@ import time
 
 ROOT=Path(__file__).resolve().parents[1]
 # Kconfig def_bool probes of host tools, not requested target drivers/features.
-HOST_PROBES={'CONFIG_OPENSSL_SUPPORTS_ML_DSA','CONFIG_PAHOLE_HAS_LANG_EXCLUDE'}
+HOST_PROBES={
+ 'CONFIG_OPENSSL_SUPPORTS_ML_DSA','CONFIG_PAHOLE_HAS_LANG_EXCLUDE',
+ # init/Kconfig def_bool RUSTC_VERSION comparisons, not target features.
+ 'CONFIG_RUSTC_HAS_SPAN_FILE','CONFIG_RUSTC_HAS_UNNECESSARY_TRANSMUTES',
+ 'CONFIG_RUSTC_HAS_FILE_WITH_NUL','CONFIG_RUSTC_HAS_FILE_AS_C_STR',
+}
 def sha(p):
  with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
 def main():

@@ -16,3 +16,11 @@ class AnotterTest(unittest.TestCase):
         self.assertIn('CONFIG_DRM_PANFROST=y',result)
         for symbol in m.REQUIRED:self.assertIn('CONFIG_'+symbol+'=y\n',result)
         self.assertIn('CONFIG_LOCALVERSION="-t95h-anotter"',result)
+
+class KernelProbeTest(unittest.TestCase):
+    def test_only_compiler_probes_are_exempt(self):
+        spec=importlib.util.spec_from_file_location('kernel_builder',ROOT/'tools/build-profile-kernel.py')
+        builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
+        self.assertIn('CONFIG_RUSTC_HAS_FILE_AS_C_STR',builder.HOST_PROBES)
+        for feature in ['CONFIG_RUST','CONFIG_DRM_PANFROST','CONFIG_USER_NS','CONFIG_EXT4_FS']:
+            self.assertNotIn(feature,builder.HOST_PROBES)
