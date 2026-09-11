@@ -1,0 +1,22 @@
+#!/bin/sh
+# Preserve upstream paths while keeping FAT SSH private keys root-only.
+set -eu
+base=/boot/firmware
+cache=/run/t95h-public-boot
+mkdir -p "$cache"
+chmod 755 "$cache"
+for name in kioskbrowser.ini splash.png www-public; do
+    dst="$base/$name"
+    mountpoint -q "$dst" && umount "$dst"
+    [ -e "$dst" ] || continue
+    if [ -d "$dst" ]; then
+        mkdir -p "$cache/$name"
+        cp -R "$dst/." "$cache/$name/"
+        find "$cache/$name" -type d -exec chmod 755 {} +
+        find "$cache/$name" -type f -exec chmod 644 {} +
+    else
+        install -m 644 "$dst" "$cache/$name"
+    fi
+    mount --bind "$cache/$name" "$dst"
+    mount -o remount,bind,ro "$dst"
+done

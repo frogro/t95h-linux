@@ -1,0 +1,12 @@
+[Unit]
+Description=Expose public kiosk boot files with private SSH keys protected
+RequiresMountsFor=/boot/firmware
+Before=lightdm.service nginx.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/t95h/public-boot-files
+
+[Install]
+WantedBy=multi-user.target

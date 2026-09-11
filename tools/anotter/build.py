@@ -82,7 +82,7 @@ def main():
     # policy-rc.d blocks all service startup on the builder.
     put(root,'usr/sbin/policy-rc.d','#!/bin/sh\nexit 101\n',0o755)
     shutil.copytree(o/'upstream/kiosk_skeleton',root/'kiosk_skeleton',symlinks=True)
-    put(root,'etc/fstab',f'PARTUUID={DISK}-02 / ext4 ro,noatime 0 1\nPARTUUID={DISK}-01 /boot/firmware vfat ro,umask=0077 0 2\n')
+    put(root,'etc/fstab',f'PARTUUID={DISK}-02 / ext4 ro,noatime 0 1\nPARTUUID={DISK}-01 /boot/firmware vfat ro,fmask=0177,dmask=0066 0 2\n')
     mounts=[]
     try:
         for typ,dest in [('proc','proc'),('sysfs','sys'),('devtmpfs','dev')]:
@@ -130,11 +130,14 @@ def main():
     put(root,'usr/lib/t95h/start-hardware',start,0o755)
     unit=(ROOT/'boards/t95h/libreelec/hardware/system.d/t95h-hardware.service').read_text().replace('kodi.service','lightdm.service')
     put(root,'etc/systemd/system/t95h-hardware.service',unit)
-    put(root,'etc/systemd/system/lightdm.service.d/t95h.conf','[Unit]\nRequires=t95h-hardware.service\nAfter=t95h-hardware.service\n')
+    put(root,'usr/lib/t95h/public-boot-files',(ROOT/'boards/t95h/anotter/runtime/public-boot-files').read_text(),0o755)
+    put(root,'etc/systemd/system/t95h-public-boot.service',(ROOT/'boards/t95h/anotter/runtime/t95h-public-boot.service').read_text())
+    put(root,'etc/systemd/system/lightdm.service.d/t95h.conf','[Unit]\nRequires=t95h-hardware.service t95h-public-boot.service\nAfter=t95h-hardware.service t95h-public-boot.service\n')
+    put(root,'etc/systemd/system/nginx.service.d/t95h.conf','[Unit]\nRequires=t95h-public-boot.service\nAfter=t95h-public-boot.service\n')
     # Keep Xradio cold during the initial kiosk test; Ethernet/USB input remain available.
     dtb=o/'modules/startup/t95h.dtb'
     run('fdtput','-t','s',dtb,'/soc/mmc@4021000','status','disabled')
-    for unit in ['t95h-hardware','t95h-dns-init']:
+    for unit in ['t95h-hardware','t95h-dns-init','t95h-public-boot']:
         run('systemctl','--root',root,'enable',unit)
     for f in (root/'etc/ssh').glob('ssh_host_*'): f.unlink()
     put(root,'etc/machine-id','')

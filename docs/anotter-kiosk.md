@@ -94,8 +94,9 @@ Grafikstart. Die Kiosk-/SSH-Konfiguration verwendet die normale FAT-Dateistruktu
 Der erste Test bestätigt Debian-Boot, LAN/SSH, HDMI, LightDM/Chromium und
 Mesa/Panfrost als beschleunigten GL-Renderer. Chromium lief zunächst trotzdem
 mit `--disable-gpu`: `pi` konnte die FAT-Konfiguration wegen `umask=0077`
-nicht lesen. Die Zugriffsregelung ist noch zu korrigieren; GL-Funktion bedeutet
-nicht automatisch Browser-Hardwarebeschleunigung.
+nicht lesen. Die Zugriffsregelung wurde anschließend im Adapter korrigiert. Chromium startet
+über das unveränderte Originalskript mit hardware_accel=1 und öffnet den
+Panfrost-Renderknoten. Das ist kein Nachweis für Video-Hardwaredecodierung.
 
 Der Adapter behält den Original-Netzwerkweg über ifupdown bei und maskiert den
 zusätzlichen globalen dhcpcd-Dienst. Andernfalls verwalten zwei Instanzen eth0
@@ -106,3 +107,17 @@ Die Original-Chromium-Startparameter versuchen bereits, Übersetzung auszuschalt
 Für die getestete Debian-Chromium-Version ergänzt der Adapter ausschließlich
 `TranslateEnabled=false` in `/etc/chromium/policies/managed/t95h-kiosk.json`.
 Browserstart und übrige Optionen bleiben vom Upstream übernommen.
+
+Die FAT-Dateien bleiben standardmäßig nur für root lesbar (`fmask=0177`);
+Verzeichnisse sind durchsuchbar (`dmask=0066`). Ein kleiner T95H-Dienst stellt
+nur kioskbrowser.ini, splash.png und optional www-public als lesbare, schreibgeschützte
+RAM-Kopien unter ihren unveränderten Originalpfaden bereit. Private SSH-Schlüssel
+bleiben geschützt; Lesbarkeit für pi und fehlender Schlüsselzugriff wurden live geprüft.
+Änderungen an diesen Dateien auf der SD werden beim nächsten Start übernommen.
+Für Änderungen im laufenden Betrieb müssen die öffentlichen Bind-Mounts zuerst
+abgehängt und danach mit t95h-public-boot.service erneut eingerichtet werden.
+
+`examples/kiosk-test/index.html` enthält eine kleine lokale Testseite für Farben,
+Animation, Maus/Touch/Tastatur und eine WebGL-Rendereranzeige. Sie ist kein Lasttest.
+Die Testsitzung verwendet sie über den Original-nginx-Pfad unter www-public;
+die allgemeine Release-Startseite bleibt die von AnotterKiosk vorgegebene URL.
