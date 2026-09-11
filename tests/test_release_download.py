@@ -1,7 +1,7 @@
 import hashlib,importlib.util,tempfile,unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-spec=importlib.util.spec_from_file_location('verify_release',ROOT/'installer/verify_release.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+spec=importlib.util.spec_from_file_location('verify_release',ROOT/'tools/verify_release.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 class ReleaseDownload(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)

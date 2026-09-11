@@ -76,6 +76,11 @@ def main():
   with gzip.open(o/name,'rb') as src:
    if hashlib.file_digest(src,'sha256').hexdigest()!=h.hexdigest():raise ValueError('Compressed image mismatch')
   reports[media]={'file':name,'sha256':sha(o/name),'raw_sha256':h.hexdigest(),'hardware_tested':False}
+ sd=o/reports['sd']['file'];emmc=o/reports['emmc']['file']
+ run('python3',ROOT/'tools/build-media-installer.py','--sd',sd,'--emmc',emmc,'--os','libreelec','--output',o/'installer-sd')
+ ins=json.loads((o/'installer-sd/installer.json').read_text())
+ shutil.copyfile(o/'installer-sd'/ins['file'],o/ins['file'])
+ reports['sd_emmc_installer']=ins
  (o/'images.json').write_text(json.dumps(reports,indent=2)+'\n');(o/'SHA256SUMS').write_text(''.join(v['sha256']+'  '+v['file']+'\n' for v in reports.values()))
  print('PASS: experimental SD/eMMC images assembled; hardware test and OS update adapter pending')
 if __name__=='__main__':main()

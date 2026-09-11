@@ -29,17 +29,16 @@ Kette übernommen; der MBR wird für 1024 MiB FAT und 512 MiB STORAGE angepasst.
 Die eMMC-Variante übernimmt zusätzlich unsere geprüfte eMMC-Bootprefix- und
 DTB-Transformation. Dies sind Dateiartefakte; der Workflow greift auf keine Box zu.
 
-**Stand: Implementierung für ersten Build, nicht hardwaregetestet.** Die Images
-werden zunächst als Actions-Artefakte, nicht als freigegebene GitHub-Releases
-angeboten. Das eMMC-Rohimage ist kein von SD startbarer eMMC-Installer.
+**Stand: Vollständiger Build erfolgreich, erster Kodi-Hardwaretest ausstehend.** Der vollständige Ausgangsbuild liegt als Actions-Artefakt vor; der Packaging-Workflow
+veröffentlicht daraus Release-Kandidaten samt zusätzlicher Installations-SD.
+Das separate eMMC-Rohimage ist selbst kein von SD startbarer eMMC-Installer.
 
 Vor einer Veröffentlichung sind noch erforderlich:
 
-- Buildfehler/Kernelkonfigurationsabweichungen beheben; Source-Replay prüfen.
 - Boot von SD, HDMI/Kodi, Netzwerk, Panfrost, Audio, Cedrus und IR testen.
 - Frontdisplay-Dienst und IR-Keymap auf LibreELEC übertragen.
-- Separaten eMMC-Installations-SD-Adapter und passenden LibreELEC-Updateadapter
-  erstellen. OpenWrt-sysupgrade ist ausdrücklich nicht kompatibel.
+- Neuen eMMC-Installations-SD-Adapter auf Hardware testen und einen passenden
+  LibreELEC-Updateadapter erstellen. OpenWrt-sysupgrade ist ausdrücklich nicht kompatibel.
 - Medienabhängigkeiten der ausgelassenen H6-Patches einzeln bewerten.
 - Abhängigkeiten, Artefaktprüfungen und Lizenz-/Quellnachweise abschließen.
 
@@ -74,5 +73,15 @@ einem echten Buildfehler erzeugt. Nach 300 Minuten beendet eine Notgrenze den
 Build; ein einzelnes außergewöhnlich langes Paket kann damit weiterhin den
 Job scheitern lassen. Archivierung und Upload benötigen freien Plattenplatz und
 GitHub-Artefaktspeicher. Ein inkompatibler neuer Runner oder geänderte Patches
-führen zu einer expliziten Ablehnung der Sicherung. Die erste vollständige
-Fortsetzung auf GitHub muss noch praktisch bestätigt werden.
+führen zu einer expliziten Ablehnung der Sicherung. Die erfolgreiche Fortsetzung bis zum fertigen Image ist mit Run 34642912252
+belegt. Spätere Packaging-Aufträge können dessen fertige Eingaben nutzen.
+
+## Vollständiger Build und eMMC-Installations-SD
+
+Run 34642912252 hat Kernel, SYSTEM und beide Rohimages erfolgreich gebaut.
+Der separate Packaging-Workflow verwendet diese fertigen Eingaben und ergänzt
+nun die SD mit eMMC-Installationspartition. Kernel und Kodi werden dafür nicht
+neu kompiliert. Die Anotter-DE33-Patches bleiben vorerst getrennt.
+[Installationsanleitung](media-emmc-installation.md).
+Die eMMC-Installation und das neue Paket müssen auf der Box getestet werden;
+der erste Vergleich beginnt mit dem normalen SD-Image.

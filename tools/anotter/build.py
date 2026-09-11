@@ -27,7 +27,7 @@ def config(text):
         m = re.fullmatch(r'# (CONFIG_\w+) is not set', line)
         if m: values[m[1]] = 'n'
     values.update({'CONFIG_'+x: 'y' for x in REQUIRED})
-    values.update(CONFIG_LOCALVERSION='"-t95h-anotter"', CONFIG_LOCALVERSION_AUTO='n', CONFIG_INITRAMFS_SOURCE='""')
+    values.update(CONFIG_LOCALVERSION='"-t95h-anotter-de33"', CONFIG_LOCALVERSION_AUTO='n', CONFIG_INITRAMFS_SOURCE='""')
     return '\n'.join(f'# {k} is not set' if v == 'n' else f'{k}={v}' for k,v in sorted(values.items()))+'\n'
 
 def prefix(data):
@@ -61,6 +61,9 @@ def main():
     def tool(name,*args): run('/usr/bin/python3',ROOT/'tools'/name,*args)
     tool('download-kernel-archive.py','--output',o/'kernel.tar.xz')
     tool('prepare-kernel-source.py','--archive',o/'kernel.tar.xz','--output',o/'source')
+    tool('anotter/display.py','apply',o/'source')
+    request['display_variant']='anotter-de33'
+    request['display_patch_sha256']=sha(ROOT/'boards/t95h/anotter/de33/display.patch')
     put(o,'anotter.config',config((ROOT/'boards/t95h/profiles/kconfig-draft/base-B.config').read_text()))
     tool('build-profile-kernel.py','--source-stage',o/'source','--toolchain',tc,'--firmware-root',fw,'--profile','base-B','--config',o/'anotter.config','--output',o/'kernel','--jobs',a.jobs,'--epoch',lock['epoch'])
     tool('build-profile-modules.py','--kernel-build',o/'kernel','--toolchain',tc,'--output',o/'modules','--jobs',a.jobs,'--epoch',lock['epoch'])
@@ -74,7 +77,7 @@ def main():
             if actual!=fingerprint: raise ValueError('Debian signing key mismatch')
             target.write(subprocess.check_output(['gpg','--batch','--dearmor'],input=(keydir/name).read_bytes()))
     root=o/'root'
-    packages='debian-archive-keyring,systemd-sysv,udev,sudo,locales,dbus-user-session,polkitd,dhcpcd,rsync,ca-certificates,xserver-xorg-core,xserver-xorg-input-libinput,xinit,libgl1-mesa-dri,mesa-utils,alsa-utils,kmod'
+    packages='debian-archive-keyring,systemd-sysv,udev,sudo,locales,dbus-user-session,polkitd,dhcpcd,rsync,ca-certificates,xserver-xorg-core,xserver-xorg-input-libinput,xinit,libgl1-mesa-dri,mesa-utils,alsa-utils,kmod,gstreamer1.0-tools,gstreamer1.0-plugins-base,gstreamer1.0-plugins-good,gstreamer1.0-plugins-bad'
     run('mmdebstrap','--keyring='+str(keyring),'--architectures=arm64','--variant=minbase','--include='+packages,'trixie',root,
         'deb https://deb.debian.org/debian trixie main non-free-firmware',
         'deb https://deb.debian.org/debian trixie-updates main non-free-firmware',
@@ -127,6 +130,7 @@ def main():
     put(root,'etc/systemd/system/t95h-dns-init.service','[Unit]\nBefore=networking.service\n[Service]\nType=oneshot\nExecStart=/usr/bin/t95h-dns-init\n[Install]\nWantedBy=multi-user.target\n')
     release=(o/'kernel/include/config/kernel.release').read_text().strip()
     run('rsync','-a',str(o/'modules/root/lib/modules')+'/',str(root/'lib/modules')+'/')
+    put(root,'usr/bin/t95h-desktop-view',(ROOT/'boards/t95h/anotter/runtime/desktop-view').read_text(),0o755)
     hw=root/'usr/lib/t95h'; hw.mkdir(parents=True,exist_ok=True)
     for name in ['t95h_aldo2.ko','t95h_ana_provider.ko']:
         candidates=list((root/'lib/modules'/release).rglob(name))
@@ -141,6 +145,10 @@ def main():
     start=(ROOT/'boards/t95h/libreelec/hardware/start-hardware').read_text().replace('7.2.3-t95h-libreelec',release).replace('Kodi may start','kiosk may start')
     # Three live Anotter boots validated this timing; other OS defaults stay unchanged.
     start=start.replace('wait_age 60\n','wait_age 30\n').replace('wait_age 120\n','wait_age 45\n')
+    guard=(ROOT/'boards/t95h/anotter/runtime/panfrost-existing.sh').read_text()
+    marker='[ ! -L "$G/driver" ] && [ ! -L "$P/driver" ]'
+    if start.count(marker)!=1: raise ValueError('Hardware startup contract changed')
+    start=start.replace(marker,guard+'\n'+marker)
     put(root,'usr/lib/t95h/start-hardware',start,0o755)
     unit=(ROOT/'boards/t95h/libreelec/hardware/system.d/t95h-hardware.service').read_text().replace('kodi.service','lightdm.service')
     put(root,'etc/systemd/system/t95h-hardware.service',unit)
@@ -150,6 +158,7 @@ def main():
     put(root,'etc/systemd/system/nginx.service.d/t95h.conf','[Unit]\nRequires=t95h-public-boot.service\nAfter=t95h-public-boot.service\n')
     # Keep Xradio cold during the initial kiosk test; Ethernet/USB input remain available.
     dtb=o/'modules/startup/t95h.dtb'
+    tool('anotter/display.py','dtb',dtb)
     run('fdtput','-t','s',dtb,'/soc/mmc@4021000','status','disabled')
     for unit in ['t95h-hardware','t95h-dns-init','t95h-public-boot','t95h-session-runtime']:
         run('systemctl','--root',root,'enable',unit)
@@ -204,7 +213,8 @@ def main():
     request.update(kernel=release,kernel_sha256=sha(o/'kernel/arch/arm64/boot/Image'),dtb_sha256=sha(dtb),image=name,sha256=sha(out/name),raw_sha256=h.hexdigest(),raw_bytes=(4+128+6144)*M)
     put(out,'manifest.json',json.dumps(request,indent=2)+'\n')
     shutil.copyfile(o/'packages.tsv',out/'packages.tsv'); shutil.copyfile(o/'kernel/.config',out/'kernel.config')
-    shutil.copyfile(ROOT/'docs/anotter-kiosk.md',out/'RELEASE-NOTES.md')
+    shutil.copyfile(ROOT/'docs/anotter-release-notes.md',out/'RELEASE-NOTES.md')
+    shutil.copyfile(ROOT/'boards/t95h/anotter/de33/lock.json',out/'display-source-lock.json')
     put(out,'SHA256SUMS',sha(out/name)+'  '+name+'\n')
     print('PASS: experimental SD image assembled; hardware validation pending',flush=True)
 if __name__=='__main__': main()

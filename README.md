@@ -1,178 +1,175 @@
-# T95H Linux / OpenWrt
+# Deine T95H kann mehr
 
-Experimentelles Build-Projekt für die T95H mit H616. Linux 7.2.3,
-Board-Patches und die getestete Bootkette bleiben festgelegt. Jeder neue Auftrag
-ermittelt die aktuelle stabile OpenWrt-Version einmal und baut genau ein Profil.
-Kein A/B-Vergleichsbuild und keine automatischen Hardwaretests.
+**OpenWrt, LibreELEC und AnotterKiosk wurden für die T95H mit Allwinner H616 portiert.**
+Dieses Repository veröffentlicht die passenden Images: herunterladen, auf SD
+schreiben und die Box als Netzwerkgerät, Mediacenter oder Kiosk nutzen.
 
-## Einstieg über installer.sh
+**[→ Images herunterladen](https://github.com/frogro/t95h-linux/releases)** ·
+[Installation auf SD](#image-herunterladen-und-auf-sd-schreiben)
 
-Voraussetzungen auf dem ThinkPad: `git`, `gh`, `python3` und `gh auth login`
-mit Berechtigung zum Workflow-Start. Das Repository ist öffentlich.
-Authentifizierter Download als Alternative zu wget:
+## Welches System passt zu dir?
 
-```sh
-gh api -H 'Accept: application/vnd.github.raw+json' repos/frogro/t95h-linux/contents/installer.sh?ref=main > installer.sh
-sh installer.sh
-```
+| System | Dafür ist es da |
+| --- | --- |
+| [OpenWrt](#openwrt--netzwerk-und-router) | Netzwerk, Router und Access Point mit Weboberfläche. Je nach Profil kommen USB-Netzwerkgeräte, Modems und Multimedia-Treiber hinzu. |
+| [Kodi / LibreELEC](#kodi--libreelec--das-mediacenter) | Filme, Musik und andere Medien am Fernseher. LibreELEC startet direkt die Kodi-Oberfläche. |
+| [AnotterKiosk](#anotterkiosk--webseiten-und-bildschirmübertragung) | Eine Webseite im Vollbild: etwa Dashboard, Haussteuerung oder Infotafel. Mit zusätzlicher Bildschirmübertragung lässt sich auch ein PC auf der Box anzeigen und optional bedienen. |
 
-Direkter Download:
+Nicht jedes Release enthält alle Systeme oder Varianten. Die Releasebeschreibung
+nennt die enthaltene Version, Änderungen und Hinweise zur jeweiligen T95H-Hardware.
+Bitte ausschließlich die Images für **T95H/H616** verwenden.
 
-```sh
-wget -O installer.sh https://raw.githubusercontent.com/frogro/t95h-linux/main/installer.sh
-sh installer.sh
-```
+## Image herunterladen und auf SD schreiben
 
-Das Skript legt einen separaten Checkout unter `~/.local/share/t95h-installer`
-an, fragt Profil und Konsole ab und startet den vollständigen Actions-Build.
-Vorhandene lokale Änderungen werden nicht überschrieben. Es flasht kein Gerät.
-Ohne Dialog und für spätere Downloads:
+1. Unter **Releases → Assets** das gewünschte T95H-Image herunterladen.
+   Für den Start von SD eine Datei mit `sd` beziehungsweise `install.img` im
+   Namen wählen. Eine `sysupgrade.bin` ist nur zum Aktualisieren von OpenWrt.
+2. Eine Datei mit `.img.gz` entpacken, sodass eine `.img` entsteht. Unter Linux
+   geht das mit `gzip -dk DATEINAME.img.gz`, unter Windows etwa mit 7-Zip.
+   Falls vorhanden, die heruntergeladene Datei mit `SHA256SUMS` vergleichen.
+3. SD-Karte am Computer anschließen. Für AnotterKiosk mindestens **8 GB**
+   verwenden; für andere Images die Mindestgröße im Release beachten.
+4. In einem Image-Schreibprogramm, beispielsweise Raspberry Pi Imager mit
+   **eigenem Image** oder balenaEtcher, die `.img` und die richtige SD-Karte
+   auswählen und schreiben. **Dabei wird der gesamte Inhalt der SD gelöscht.**
+   Keine Raspberry-Pi-spezifischen Anpassungen von Benutzer, WLAN oder SSH anwenden.
+   Unter Linux bietet auch „Laufwerke“ die Funktion „Laufwerksabbild wiederherstellen“.
+5. Nach dem Schreiben die SD sicher entfernen. Für AnotterKiosk zuvor die
+   unten beschriebene Konfiguration auf der SD anpassen.
+6. Box stromlos machen, SD einsetzen, HDMI und Ethernet anschließen und einschalten.
+   Der erste Start kann länger dauern. Die Netzwerkadresse steht im Router.
 
-```sh
-sh installer.sh dispatch --profile base-A-B --console dual
-sh installer.sh status
-sh installer.sh releases
-sh installer.sh release-download --tag t95h-RUN_ID-ATTEMPT
-```
+Das Image muss auf die **ganze SD-Karte** geschrieben werden. Die `.img` nur als
+Datei auf die Karte zu kopieren reicht nicht. Ein getrenntes Formatieren vorher
+ist nicht erforderlich.
 
-Ein erfolgreicher Build veröffentlicht ein experimentelles
-Prerelease mit Installationsimage, Sysupgrade, Prüfsummen, Manifesten und diesem
-Einstiegsskript. Das Release bleibt während des Uploads als Entwurf verborgen.
-Download und Prüfsummenprüfung laufen über `gh`; ein Prerelease ist keine
-Bestätigung vollständiger Hardwarestabilität.
+## OpenWrt – Netzwerk und Router
 
-## Gesamten Speicher nutzen
+OpenWrt bietet eine Weboberfläche (LuCI), SSH und Netzwerkfunktionen.
+Welche zusätzlichen Treiber enthalten sind, steht im Profil des Releases:
 
-[SD-/eMMC-Restkapazität als Datenbereich verwenden](docs/storage-capacity.md):
-Layout, Geräteerkennung und Einbindung unter OpenWrt. **Im aktuellen Release
-verhindern Änderungen an der Partitionstabelle das Sysupgrade.** Eine automatisch
-erweiterte, updatefähige Datenpartition ist noch nicht implementiert.
+| Profil | Enthalten |
+| --- | --- |
+| `base` | Grundsystem, Ethernet, internes WLAN sowie Unterstützung für HDMI-Konsole, Audio, IR und Frontdisplay |
+| `base-A` | Grundsystem plus ausgewählte USB-Netzwerk- und Modemtreiber |
+| `base-B` | Grundsystem plus GPU-/Multimedia-Unterstützung und USB-Video (UVC) |
+| `base-A-B` | Beide Erweiterungen zusammen |
 
-## eMMC-Installation direkt an der Box (experimentell)
+Enthaltene Treiber bedeuten nicht, dass jedes angeschlossene Gerät getestet wurde.
+Beide USB-Buchsen sind Hostanschlüsse. Bei älteren Releases können Umfang und
+Dateinamen abweichen; maßgeblich ist deren Releasebeschreibung. Die OpenWrt-Version
+steht im Dateinamen, das Profil bezeichnet den Funktionsumfang.
 
-Die neue Build-Kette erzeugt pro Profil vier Ausgaben:
+**Standardzugang:** WLAN `openwrt`, WLAN-Passwort `openwrtopenwrt`;
+SSH und LuCI: Benutzer `root`, Passwort `openwrt`.
+Über WLAN ist die Box unter `192.168.50.1` erreichbar, über Ethernet erhält sie
+normalerweise eine Adresse vom Router. Die Standardpasswörter nach dem Start ändern.
 
-- **SD-Image:** OpenWrt dauerhaft von SD verwenden.
-- **eMMC-Installations-SD:** OpenWrt von SD starten; eine zusätzliche Partition
-  enthält das passende eMMC-Abbild und dessen Prüfdaten. Die Installation lässt
-  sich ohne Internet, ThinkPad-Verbindung oder SSH-Sitzung an der Box starten.
+### SD oder eMMC?
 
-Zusätzlich gibt es getrennte `…-sd-sysupgrade.bin` und `…-emmc-sysupgrade.bin`.
-Die Installations-SD wird als `…-sd-emmc-installer.img.gz` ausgeliefert: vor dem
-Schreiben mit `gzip -dk DATEI.img.gz` entpacken. Die enthaltene eMMC-Paketprüfung
-ist offline möglich. Nur das experimentelle Image mit dritter Partition enthält
-den Installationsbefehl; das gewöhnliche SD-Image enthält ihn nicht.
+| Datei im Release | Verwendung |
+| --- | --- |
+| `…-sd-install.img` | OpenWrt dauerhaft von SD starten |
+| `…-sd-emmc-installer.img.gz` | Von SD starten und OpenWrt anschließend auf den internen eMMC-Speicher installieren |
+| `…-sd-sysupgrade.bin` | Ein vorhandenes OpenWrt auf SD aktualisieren |
+| `…-emmc-sysupgrade.bin` | Ein vorhandenes OpenWrt auf eMMC aktualisieren |
 
-Die eMMC-Installations-SD booten, eine USB-Tastatur anschließen und an der
-HDMI-Konsole als `root` anmelden. Der Befehl lautet:
+Für eMMC zuerst die **eMMC-Installations-SD** starten. Dann an der HDMI-Konsole
+mit USB-Tastatur oder per SSH anmelden und ausführen:
 
 ```sh
 t95h-install-emmc
 ```
 
-**Hardwaretest ausstehend:** Der neue Installer und eMMC-Sysupgrade sind
-experimentell. Frühere Releases mit nur zwei Dateien enthalten diesen Installer
-nicht. Softwareprüfungen ersetzen keinen Installationstest auf der Box.
+**Achtung: Das vorhandene Betriebssystem und alle Daten auf der eMMC werden
+bei Bestätigung gelöscht.** Das bloße Starten der SD löscht noch nichts.
+Der Befehl fragt ausdrücklich nach `EMMC LOESCHEN`.
+Die aktuellen OpenWrt-Zugangseinstellungen der SD werden übernommen, darunter
+Passwort, SSH-Schlüssel und Netzwerk-/WLAN-Konfiguration.
+Nach erfolgreicher Installation herunterfahren, Strom trennen, SD entfernen
+und wieder einschalten. [Weitere Informationen](docs/emmc-installation.md).
 
-Vor dem ersten Schreibzugriff zeigt das Skript:
+### Updates
 
-> **ACHTUNG: Das vorhandene Betriebssystem auf der eMMC und alle dort
-> gespeicherten Daten werden gelöscht und durch OpenWrt ersetzt.**
-> Die aktuellen OpenWrt-Zugangseinstellungen der gestarteten SD werden übernommen.
-> Zum Bestätigen `EMMC LOESCHEN` eingeben. Jede andere Eingabe bricht ab.
+OpenWrt ist über die zum Release gehörende **Sysupgrade-Datei updatefähig**.
+Vorher die Konfiguration sichern. Die passende SD- oder eMMC-Datei unter
+**System → Backup / Firmware aktualisieren** in LuCI auswählen und die
+Einstellungen bei Bedarf beibehalten. Ablehnungen nicht mit „Force“ umgehen.
+Eine `.img` neu zu flashen ist eine Neuinstallation.
 
-Das bloße Booten der Installations-SD löscht nichts. Nach bestätigter Installation
-und erfolgreicher Abschlussprüfung die Box herunterfahren, Strom trennen,
-SD entfernen und wieder einschalten.
+Die ursprüngliche Partitionierung muss erhalten bleiben; selbst vergrößerte
+oder zusätzliche Partitionen können die Updateprüfung scheitern lassen.
+Updates ersetzen nicht automatisch den Bootloader. Einschränkungen und den
+Teststand jeweils in der Releasebeschreibung beachten.
 
-### Einstellungen übernehmen
+## Kodi / LibreELEC – das Mediacenter
 
-Der Installer übernimmt die Einstellungen des **laufenden OpenWrt auf der SD**: Root-Passwort, SSH-Konfiguration einschließlich vorhandener Hostkeys
-und autorisierter Schlüssel, Netzwerk-/AP-Einstellungen und LuCI-Zugang.
-Damit bleiben die bisherigen Zugangsdaten und die SSH-Identität der Box erhalten.
-Android-Einstellungen werden nicht übernommen. Bestehende feste IP-Adressen
-bleiben erhalten; bei DHCP kann der Router eine andere Adresse vergeben.
+LibreELEC macht die Box zum Kodi-Mediacenter am Fernseher. Über Kodi lassen sich
+Medienbibliotheken, Netzwerkquellen und passende Add-ons nutzen.
 
-Die Übernahme erfolgt lokal auf dem Gerät; persönliche Passwörter und Schlüssel
-gehören nicht in öffentliche Release-Images. Speicherabhängige Einstellungen wie
-Root- und Boot-UUIDs, Mount-Ziele und Bootskripte müssen auf eMMC angepasst werden,
-statt die SD-Konfiguration ungeprüft zu kopieren. Der Installer prüft die
-Konfigurationsübernahme, bevor er Erfolg meldet.
+Das normale SD-Image startet direkt von SD. Eine Datei mit
+`sd-emmc-installer` im Namen ermöglicht zusätzlich die
+[Installation auf den internen eMMC-Speicher](docs/media-emmc-installation.md).
+Das rohe eMMC-Image allein ist keine Installations-SD.
 
-Vor dem Schreiben sind Board, tatsächlich auf SD liegendes Root-Dateisystem,
-eMMC-Identität, Größe, ausgehängte Zielpartitionen und Paketprüfsummen zu prüfen.
-Eine SD, die bereits zur eMMC weiterleitet, ist kein geeignetes Installationssystem.
-SD- und eMMC-Sysupgrade-Dateien bleiben getrennt und dürfen nicht verwechselt werden.
-[Technischer eMMC-Stand](docs/emmc-installation.md).
+Den jeweiligen Download und Teststand findest du unter
+[Releases](https://github.com/frogro/t95h-linux/releases).
+Ein eigener T95H-Updateweg wird noch nicht angeboten; OpenWrt-Updatedateien
+sind hier nicht verwendbar. [Weitere Informationen zu LibreELEC](docs/libreelec.md).
 
-## Vollständiger Build vom ThinkPad
+## AnotterKiosk – Webseiten und Bildschirmübertragung
 
-Im Repository ausführen:
+AnotterKiosk startet automatisch einen Browser und zeigt die eingestellte
+Webseite im Vollbild, etwa ein Dashboard, eine Haussteuerung oder eine lokale
+Infoseite. Die Inhalte und die Bedienoberfläche liefert die Webseite.
+Die ursprüngliche Startseite kann zunächst erscheinen; sie muss für eine eigene
+Anzeige durch die gewünschte Adresse ersetzt werden.
 
-```sh
-python3 installer/t95h.py dispatch --profile base-A-B --console dual
-python3 installer/t95h.py status
-python3 installer/t95h.py download --run-id RUN_ID --profile base-A-B --console dual
+Nach dem Flashen die SD erneut am Computer einstecken und auf der Partition
+**T95HKIOSK** die Datei **`kioskbrowser.ini`** mit einem Texteditor öffnen.
+Im vorhandenen Abschnitt `[browser]` die Zeile `url` ändern:
+
+```ini
+[browser]
+url="http://mein-server/meine-seite/"
 ```
 
-`dispatch` startet **Build T95H install image and sysupgrade**. Der Workflow lädt
-prüfsummengesperrte Eingaben, kompiliert Kernel und passende Module, installiert
-frische OpenWrt-Pakete und erzeugt Installationsimage und Sysupgrade samt
-Prüfsummen und Prüfberichten. Er flasht kein Gerät und veröffentlicht keine
-Hardware-Stabilitätsfreigabe. Ein erfolgreicher kompletter Actions-Lauf ist der
-Nachweis der CI-Build-Kette; reine Vorbereitungs-Checks sind kein Image-Build.
+Speichern, SD sicher entfernen und die Box starten. Für diesen Port zunächst
+Ethernet verwenden. Die Webseite muss von der Box aus erreichbar sein.
+Die INI-Datei bietet außerdem Einstellungen für Auflösung, Sprache und weitere
+Kiosk-Funktionen. Eigene lokale Webseiten lassen sich auf der Bootpartition
+unter `www-public` ablegen.
 
-Profile: `base`, `base-A`, `base-B`, `base-A-B`. Basis enthält HDMI-Konsole und
-Audio, Ethernet, internes WLAN, IR und Frontdisplay. A ergänzt die ausgewählten
-USB-Netzwerk-/Modemtreiber; B GPU/Multimedia einschließlich Cedrus/UVC.
-PCIe, MHI und NVMe bleiben ausgeschlossen. Konsolen: `dual`, `hdmi`, `uart`.
-Die konkreten Pakete/Module stehen in den Artefakt-Manifesten.
+SSH wird wie im Original über eine Datei **`authorized_keys`** auf dieser
+Partition eingerichtet. Dort den **öffentlichen** SSH-Schlüssel des eigenen
+Computers eintragen. Es gibt kein vorgegebenes SSH-Passwort.
+[Konfiguration, SSH und Änderungen im laufenden Betrieb](docs/anotter-kiosk.md).
 
-Der lokale Einstieg zur gleichen Kette ist `tools/build-openwrt-release.py`.
-Die getrennten Vorbereitungs- und Quellprüfungsworkflows bleiben verfügbar.
-[Build-Eingaben, Signierung und Grenzen](docs/actions-build.md).
+Je nach Release gibt es ein SD-Image und eine SD mit zusätzlichem eMMC-Installer.
+[AnotterKiosk auf eMMC installieren](docs/media-emmc-installation.md).
+Ein Update ohne erneutes Flashen wird hier noch nicht angeboten.
 
-## Standardzugang
+### Bildschirmübertragung und optionale Fernsteuerung
 
-AP **openwrt**, WLAN-Passwort **openwrtopenwrt**; SSH/LuCI **root / openwrt**.
-WLAN-Adresse **192.168.50.1**, Ethernet per DHCP. Nach Installation ändern.
-`python3 installer/t95h.py access` bereitet eigene Zugangsdaten lokal vor;
-es überträgt diese nicht automatisch als GitHub-Build-Eingabe.
-[Zugangsregeln](docs/default-access.md).
+Ein anderer Computer kann seinen Bildschirm im lokalen Netzwerk bereitstellen.
+Mit Deskreen CE trägt man dessen Verbindungsadresse als Kiosk-URL ein und gibt
+den Bildschirm auf dem sendenden Computer frei. Eine neue Sitzung kann eine
+neue Adresse erfordern. Eine externe Cloud ist für diesen Aufbau nicht nötig.
 
-## Dokumentierte Hardwarepunkte
+Im T95H-Test war **go2rtc mit direkter Cedrus-Videoausgabe** deutlich besser
+bedienbar als Deskreen im Browser. Das ist ein zusätzlicher nativer
+Player und noch keine fertige Funktion der Kiosk-Webseite. Der getestete
+Aufbau und seine Grenzen stehen in der [Anleitung zur Bildschirmübertragung](docs/screen-sharing.md).
 
-SD-Start: eine Sekunde Wartezeit und bis zu drei MMC-Rescan-/Ladeversuche im
-Bootskript; bisher zwei erfolgreiche Kaltstarts auf den ersten Versuch gemeldet.
-Keine gezielte Stromschaltung, keine Bootmarker und kein Beweis vollständiger
-Kaltstartzuverlässigkeit. Das Skript hilft erst, nachdem es geladen wurde.
-WLAN: konsolidierter xradio-Stand mit vier u32-Leselängenkorrekturen und Firmware
-.58; gelegentliche SDIO-Datenfehler/missed interrupts bleiben dokumentiert.
-GPU-Initialisierung und Audio-Hardwarevalidierung bleiben ebenfalls offene
-Punkte. Weitere Hör-, Belastungs- oder Hardwaretests sind derzeit nicht Teil
-dieses Auftrags. Andere Linux-Distributionen werden später konkret angepasst.
+Optional kann **VirtualHere** Maus und Tastatur an der Box als USB-Geräte an
+den sendenden Computer weiterreichen. Währenddessen bedienen sie den entfernten
+Computer; für lokale Dialoge an der Box muss man den Empfänger wieder freigeben.
+VirtualHere ist separate Software mit eigenen Lizenzbedingungen und wird nicht
+mit dem Image ausgeliefert.
 
-## Erfolgreicher vollständiger Actions-Lauf
+## Weitere Informationen
 
-Der [Lauf 34363631215](https://github.com/frogro/t95h-linux/actions/runs/34363631215)
-hat Basis+A+B mit dualer Konsole vollständig gebaut. Download, Image-Prüfsummen,
-Kernel-APK-Signatur und das enthaltene SD-Rescan-Skript wurden anschließend auf
-dem ThinkPad geprüft. [Prüfnachweis](docs/actions-validation-20260909.md).
-
-## Weiteres Betriebssystem: LibreELEC
-
-[Experimenteller LibreELEC-Port](docs/libreelec.md), zunächst Basis+B.
-Ein eigener Actions-Workflow ermittelt pro Lauf die neueste stabile Version.
-Die ersten Ausgaben sind Testartefakte, noch keine hardwaregeprüften Releases.
-
-## USB-Anschlüsse
-
-Beide USB-Buchsen arbeiten als Host, einschließlich USB0 neben dem SD-Kartenschacht.
-USB0 wurde mit dem RTL8821CU-Stick erfolgreich auf Erkennung und WLAN-Scans
-in beiden Frequenzbändern getestet. Weitere Geräte benötigen ihre jeweiligen
-Profil-Treiber; deren Betrieb und Strombedarf sind gerätespezifisch zu prüfen.
-
-## AnotterKiosk (experimenteller SD-Port)
-
-Debian/Chromium-Kiosk mit eigener Actions-Pipeline und SSH-Schlüsselkonfiguration.
-[Build, SD-Installation und SSH-Zugang](docs/anotter-kiosk.md). Hardwaretest steht noch aus.
+[Anotter-Konfiguration](docs/anotter-kiosk.md) ·
+[Bildschirmübertragung](docs/screen-sharing.md) ·
+[LibreELEC](docs/libreelec.md) ·
+[Technische Build-Dokumentation](docs/actions-build.md)

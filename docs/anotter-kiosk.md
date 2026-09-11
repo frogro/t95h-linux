@@ -2,9 +2,10 @@
 
 Experimenteller Port von [AnotterKiosk](https://github.com/Manawyrm/AnotterKiosk),
 Debian 13 (trixie), Chromium und unserem angepassten Linux 7.2.3.
-Dies ist kein offiziell von AnotterKiosk unterstütztes Board. Noch kein
-Hardwaretest dieses Images; eMMC-Installation und OS-Updateadapter folgen erst
-nach erfolgreichem SD-Test. Nicht als OpenWrt-Sysupgrade verwenden.
+Dies ist kein offiziell von AnotterKiosk unterstütztes Board. Boot, Webseiten,
+SSH, USB-Eingabe und Panfrost wurden auf einer T95H getestet. Jedes neue Image
+bleibt bis zum eigenen Test experimentell; Eine zusätzliche Installations-SD für eMMC wird angeboten; deren
+Hardwaretest und ein OS-Updateadapter stehen separat an. Nicht als OpenWrt-Sysupgrade verwenden.
 
 Der separate Workflow `build-anotter.yml` löst beim Start die neueste stabile
 AnotterKiosk-Version auf, hält deren Git-Commit für den Lauf fest und installiert
@@ -16,19 +17,18 @@ auf einen anderen Kernel umgestellt. Die Paketversionen, Kernelkonfiguration,
 Quellversionen und Image-Prüfsummen liegen dem Artefakt bei. Identische Binärdateien
 bei einem späteren Neubau sind wegen der beweglichen Debian-Paketquellen nicht garantiert.
 
-## Build und Download am ThinkPad
+## Download und Installation
 
-```sh
-python3 installer/anotter.py dispatch
-python3 installer/anotter.py status
-python3 installer/anotter.py download --tag anotter-RUN_ID-ATTEMPT
-```
+Das passende SD-Image unter [Releases](https://github.com/frogro/t95h-linux/releases)
+herunterladen, entpacken und mit einem Image-Schreibprogramm auf die gesamte
+SD-Karte schreiben. Die [Schrittfolge in der README](../README.md#image-herunterladen-und-auf-sd-schreiben)
+beschreibt diesen Vorgang. GitHub-Konto, Build-Installer und ein bestimmter
+Host-Computer sind dafür nicht erforderlich.
 
 Das Release enthält ein `.img.gz` für SD, Manifest, SHA256SUMS, Paketliste und
 Kernelkonfiguration. Das entpackte Image ist 6276 MiB groß; mindestens 8-GB-SD
 verwenden. Mit einer Image-Schreibanwendung auf die gewünschte SD schreiben.
-Dabei wird deren vorhandener Inhalt ersetzt. Das Tool `anotter.py` selbst
-schreibt keine Rohdaten auf Datenträger und verändert keine eMMC.
+Dabei wird deren vorhandener Inhalt ersetzt. Die SD-Installation verändert die eMMC nicht.
 
 ## SSH: unverändert wie bei AnotterKiosk
 
@@ -48,8 +48,7 @@ ThinkPad noch Python, GitHub CLI oder unser Installer sind dafür erforderlich:
 
 Ohne vorhandenen Schlüssel lässt sich beispielsweise mit `ssh-keygen -t ed25519`
 einer erzeugen. Die `.pub`-Datei enthält den einzutragenden öffentlichen Schlüssel.
-Optional kann `installer/anotter.py access --boot <FAT-Pfad> --key <Schlüssel.pub>`
-das Kopieren übernehmen; der manuelle Originalweg bleibt vollständig nutzbar.
+
 
 Wir übernehmen diese drei Dateien direkt und unverändert aus dem für den Build
 aufgelösten AnotterKiosk-Release:
@@ -76,8 +75,8 @@ Grafikstart. Die Kiosk-/SSH-Konfiguration verwendet die normale FAT-Dateistruktu
 ## Umfang und offene Hardwarepunkte
 
 - Beide USB-Buchsen sind Hostports, etwa für Tastatur, Maus und USB-Touch.
-- HDMI, Audio, GPU und Cedrus verwenden unsere T95H-Kernelbasis. Die Funktion
-  unter Debian/Chromium ist noch zu testen; ein vorhandener Decoder-Treiber
+- HDMI, Audio, GPU und Cedrus verwenden unsere T95H-Kernelbasis. Panfrost und native Cedrus-Ausgabe
+  wurden unter Debian getestet; ein vorhandener Decoder-Treiber
   beweist keine Browser-Hardwaredecodierung.
 - Panfrost startet nach der bewährten späten Regulatorinitialisierung (frühestens
   45 Sekunden). LightDM wartet auf den Grafikdienst; LAN und SSH warten nicht.
@@ -153,3 +152,40 @@ unknown. These results do not prove reliable cold boot or long-term stability.
 The early deferred-probe -110 warning remains before the successful GPU probe.
 OpenWrt and LibreELEC timing is unchanged. Reverting the two Anotter wait_age
 values to 60 and 120 restores the previous startup timing.
+
+## INI-Datei über SSH dauerhaft bearbeiten
+
+Am einfachsten lässt sich die Datei bei ausgeschalteter Box auf der SD am
+Computer bearbeiten. Alternativ als root über SSH:
+
+```sh
+umount /boot/firmware/kioskbrowser.ini
+mount -o remount,rw /boot/firmware
+cp /boot/firmware/kioskbrowser.ini /boot/firmware/kioskbrowser.ini.bak
+nano /boot/firmware/kioskbrowser.ini
+sync
+mount -o remount,ro /boot/firmware
+systemctl restart t95h-public-boot.service
+systemctl restart lightdm
+```
+
+Falls `nano` nicht vorhanden ist, einen vorhandenen Editor verwenden. Die
+Öffentlichkeitskopie im RAM ist absichtlich nur lesbar eingebunden. Deshalb
+zuerst den Datei-Bind-Mount lösen. Ein direktes Ändern von
+`/run/t95h-public-boot/kioskbrowser.ini` wäre nur vorübergehend bis zum Neustart.
+Der letzte Befehl startet Browser und Bildschirmoberfläche neu, nicht die Box.
+
+## Neues DE33-Testbuild
+
+Das nächste Anotter-Release enthält den auf der Box getesteten DE33-Kernel
+mit passender Device-Tree-Anpassung und der Prüfung bereits geladener
+GPU-Abhängigkeiten. Die übliche Webseite und die SSH-Einrichtung bleiben erhalten.
+Die direkte Bildschirmübertragung ist separat einzurichten; Chromium erhält
+dadurch nicht automatisch Hardware-Videodekodierung.
+[Messungen und Grenzen](anotter-display-validation.md),
+[Bildschirmübertragung](screen-sharing.md).
+
+## eMMC
+
+Die zusätzliche `sd-emmc-installer`-Variante enthält das passende eMMC-Paket.
+[Installation und Einstellungsübernahme](media-emmc-installation.md).

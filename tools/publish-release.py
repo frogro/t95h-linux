@@ -8,7 +8,7 @@ import re
 import subprocess
 import sys
 ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'installer'))
+sys.path.insert(0,str(ROOT/'tools'))
 from verify_release import verify
 
 def assets(directory, profile, console):
@@ -36,7 +36,7 @@ def assets(directory, profile, console):
             raise ValueError('Upgrade tests do not cover this payload')
     paths={directory/x for x in checked}
     paths.update(directory.glob('*.json'))
-    paths.update([directory/'SHA256SUMS',directory/'RELEASE-NOTES.md',directory/'t95h-keep',ROOT/'installer.sh'])
+    paths.update([directory/'SHA256SUMS',directory/'RELEASE-NOTES.md',directory/'t95h-keep'])
     for path in paths:
         if path.is_symlink() or not path.is_file():raise ValueError('Missing/linked release asset: '+str(path))
     return sorted(paths)

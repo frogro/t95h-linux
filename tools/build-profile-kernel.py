@@ -36,8 +36,16 @@ def main():
  if not proof['source_preparation_passed']:raise ValueError('Source replay not verified')
  source=stage/('linux-'+proof['kernel']);board=ROOT/'boards/t95h'
  lock=json.loads((board/'kernel/source-lock.json').read_text())
+ display_files={}
+ if proof.get('display_variant'):
+  if proof['display_variant']!='anotter-de33' or not a.config or 'CONFIG_LOCALVERSION="-t95h-anotter-de33"' not in a.config.read_text():
+   raise ValueError('DE33 is restricted to the explicit Anotter config')
+  from anotter.display import verify
+  display=verify(source)
+  if proof['display_patch_sha256']!=display['patch_sha256']:raise ValueError('DE33 proof mismatch')
+  display_files=display['after']
  for entry in lock['files']:
-  expected=proof['incremental_files'].get(entry['path'],entry['sha256'])
+  expected=display_files.get(entry['path'],proof['incremental_files'].get(entry['path'],entry['sha256']))
   if sha(source/entry['path'])!=expected:raise ValueError('Source changed: '+entry['path'])
  tc=a.toolchain.resolve(strict=True);prefix=tc/'bin/aarch64-openwrt-linux-musl-'
  compiler=Path(str(prefix)+'gcc');version=subprocess.check_output([str(compiler),'--version'],text=True).splitlines()[0]

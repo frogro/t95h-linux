@@ -15,3 +15,10 @@ __pycache__/
 *.tar.*
 *.zip
 .env
+
+# Personal maintenance tools stay on the maintainer workstation.
+/installer/
+/installer.sh
+/tests/test_local_access.py
+/tests/test_emmc_preflight.py
+/tests/test_installer_bootstrap.py

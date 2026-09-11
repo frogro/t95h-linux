@@ -1,0 +1,9 @@
+# Local source only; the receiver connects through an SSH tunnel.
+api:
+  listen: "127.0.0.1:1984"
+rtsp:
+  listen: "127.0.0.1:8554"
+webrtc:
+  listen: ""
+streams:
+  desktop: []

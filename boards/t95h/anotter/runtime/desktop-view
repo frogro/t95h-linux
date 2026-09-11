@@ -1,0 +1,18 @@
+#!/bin/sh
+# Optional native display; no boot, network or permanent kiosk changes.
+set -eu
+[ "$(id -u)" = 0 ] || { echo 'Als root starten.' >&2; exit 1; }
+case "$(uname -r)" in *-t95h-anotter-de33|*-t95h-anotter-de33-test1) ;; *) echo 'Passender Anotter-DE33-Kernel erforderlich.' >&2; exit 1;; esac
+[ -c /dev/video0 ] || { echo 'Cedrus-Gerät fehlt.' >&2; exit 1; }
+for element in rtspsrc rtph264depay h264parse v4l2slh264dec kmssink; do gst-inspect-1.0 "$element" >/dev/null; done
+url=${1:-rtsp://127.0.0.1:18554/desktop}
+plane=${2:-35}
+case "$plane" in ''|*[!0-9]*) echo 'Ungültige Plane-ID.' >&2;exit 1;; esac
+was_active=no
+if systemctl is-active --quiet lightdm; then was_active=yes; fi
+restore() { [ "$was_active" != yes ] || systemctl start lightdm; }
+trap restore EXIT
+systemctl stop lightdm
+gst-launch-1.0 rtspsrc location="$url" protocols=tcp latency=30 drop-on-latency=true \
+ ! rtph264depay ! h264parse ! v4l2slh264dec ! video/x-raw,format=NV12 \
+ ! kmssink driver-name=sun4i-drm plane-id="$plane" plane-properties=props,zpos=2 skip-vsync=true sync=false

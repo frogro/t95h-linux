@@ -15,7 +15,7 @@ class AnotterTest(unittest.TestCase):
         result=m.config('CONFIG_DRM_PANFROST=y\n# CONFIG_USER_NS is not set\nCONFIG_LOCALVERSION="-old"\n')
         self.assertIn('CONFIG_DRM_PANFROST=y',result)
         for symbol in m.REQUIRED:self.assertIn('CONFIG_'+symbol+'=y\n',result)
-        self.assertIn('CONFIG_LOCALVERSION="-t95h-anotter"',result)
+        self.assertIn('CONFIG_LOCALVERSION="-t95h-anotter-de33"',result)
 
 class KernelProbeTest(unittest.TestCase):
     def test_only_compiler_probes_are_exempt(self):
