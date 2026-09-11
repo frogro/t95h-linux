@@ -64,9 +64,18 @@ def main():
     put(o,'anotter.config',config((ROOT/'boards/t95h/profiles/kconfig-draft/base-B.config').read_text()))
     tool('build-profile-kernel.py','--source-stage',o/'source','--toolchain',tc,'--firmware-root',fw,'--profile','base-B','--config',o/'anotter.config','--output',o/'kernel','--jobs',a.jobs,'--epoch',lock['epoch'])
     tool('build-profile-modules.py','--kernel-build',o/'kernel','--toolchain',tc,'--output',o/'modules','--jobs',a.jobs,'--epoch',lock['epoch'])
+    keydir=ROOT/'boards/t95h/anotter/keys'
+    expected={'archive-key-13.asc':'04B54C3CDCA79751B16BC6B5225629DF75B188BD','archive-key-13-security.asc':'5E04A1E3223A19A20706E20F9904613D4CCE68C6','release-13.asc':'41587F7DB8C774BCCF131416762F67A0B2C39DE4'}
+    keyring=o/'debian-trixie.gpg'
+    with keyring.open('wb') as target:
+        for name,fingerprint in expected.items():
+            data=subprocess.check_output(['gpg','--batch','--show-keys','--with-colons',str(keydir/name)],text=True)
+            actual=next(line.split(':')[9] for line in data.splitlines() if line.startswith('fpr:'))
+            if actual!=fingerprint: raise ValueError('Debian signing key mismatch')
+            target.write(subprocess.check_output(['gpg','--batch','--dearmor'],input=(keydir/name).read_bytes()))
     root=o/'root'
-    packages='systemd-sysv,udev,sudo,locales,dbus-user-session,polkitd,dhcpcd,rsync,ca-certificates,xserver-xorg-core,xserver-xorg-input-libinput,xinit,libgl1-mesa-dri,mesa-utils,alsa-utils,kmod'
-    run('mmdebstrap','--architectures=arm64','--variant=minbase','--include='+packages,'trixie',root,
+    packages='debian-archive-keyring,systemd-sysv,udev,sudo,locales,dbus-user-session,polkitd,dhcpcd,rsync,ca-certificates,xserver-xorg-core,xserver-xorg-input-libinput,xinit,libgl1-mesa-dri,mesa-utils,alsa-utils,kmod'
+    run('mmdebstrap','--keyring='+str(keyring),'--architectures=arm64','--variant=minbase','--include='+packages,'trixie',root,
         'deb https://deb.debian.org/debian trixie main non-free-firmware',
         'deb https://deb.debian.org/debian trixie-updates main non-free-firmware',
         'deb https://security.debian.org/debian-security trixie-security main non-free-firmware')
