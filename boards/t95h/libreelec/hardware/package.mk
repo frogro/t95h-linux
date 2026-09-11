@@ -10,10 +10,11 @@ make_target() {
   kernel_make -C $(get_build_dir linux) M=${PKG_BUILD} modules
 }
 makeinstall_target() {
-  mkdir -p ${INSTALL}/usr/lib/t95h ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants ${INSTALL}/usr/lib/systemd/system/kodi.service.d ${INSTALL}/usr/share/bootloader ${INSTALL}/usr/lib/firmware
+  local firmware_dir="${INSTALL}/$(get_full_firmware_dir)"
+  mkdir -p ${INSTALL}/usr/lib/t95h ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants ${INSTALL}/usr/lib/systemd/system/kodi.service.d ${INSTALL}/usr/share/bootloader "${firmware_dir}"
   cp ${PKG_BUILD}/t95h_aldo2.ko ${PKG_BUILD}/t95h_ana_provider.ko ${INSTALL}/usr/lib/t95h/
   cp ${PKG_DIR}/t95h.dtb ${INSTALL}/usr/share/bootloader/
-  cp -a ${PKG_DIR}/firmware/. ${INSTALL}/usr/lib/firmware/
+  cp -a ${PKG_DIR}/firmware/. "${firmware_dir}/"
   cp ${PKG_DIR}/start-hardware ${INSTALL}/usr/lib/t95h/
   chmod 755 ${INSTALL}/usr/lib/t95h/start-hardware
   cp ${PKG_DIR}/system.d/*.service ${INSTALL}/usr/lib/systemd/system/

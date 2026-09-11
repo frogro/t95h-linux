@@ -25,6 +25,8 @@ jobs:
       state: ${{ steps.compile.outputs.state }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
       - name: Reserve disk for build and checkpoint
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
@@ -45,12 +47,12 @@ jobs:
           PREVIOUS_RUN: ${{ inputs.resume_run || github.run_id }}
         run: gh run download "$PREVIOUS_RUN" --name "$CHECKPOINT" --dir build/checkpoint-in
       - name: Resolve latest stable LibreELEC once
-        if: inputs.phase == 1
+        if: inputs.checkpoint == ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 tools/libreelec/resolve.py --output build/libreelec-request.json
       - name: Reuse this build's resolved source revision
-        if: inputs.phase != 1
+        if: inputs.checkpoint != ''
         run: |
           python3 - <<'PYTHON'
           import json
@@ -84,6 +86,9 @@ jobs:
         run: |
           python3 tools/libreelec/prepare.py --source build/libreelec --firmware build/libreelec-inputs/firmware --request build/libreelec-request.json
           python3 tools/libreelec/enable-checkpoint.py build/libreelec
+      - name: Refresh firmware packaging after checkpoint restore
+        if: inputs.checkpoint != ''
+        run: python3 tools/libreelec/refresh-firmware-package.py build/libreelec
       - name: Compile until complete or a safe package boundary
         id: compile
         run: tools/libreelec/build-phase.sh
