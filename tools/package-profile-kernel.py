@@ -5,6 +5,31 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def sha(p):
  with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+def flatten_modules(root, release):
+ """Use OpenWrt kmodloader's flat namespace, preserving every module byte."""
+ folder=root/'lib/modules'/release
+ modules=sorted(folder.rglob('*.ko')); names={}; moves={}
+ for source in modules:
+  if source.is_symlink():raise ValueError('Module symlink: '+str(source))
+  key=source.stem.replace('-', '_')
+  if key in names:raise ValueError('Duplicate normalized module name: '+key)
+  names[key]=source
+  moves[str(source.relative_to(folder))]=source.name
+ before={p.name:sha(p) for p in modules}
+ for source in modules:
+  target=folder/source.name
+  if source!=target:shutil.move(source,target)
+ order=folder/'modules.order'
+ if order.exists():
+  entries=[moves[x] for x in order.read_text().splitlines() if x in moves]
+  order.write_text(''.join(x+'\n' for x in entries))
+ # Remove empty kernel/updates directories; builtin metadata stays untouched.
+ for path in sorted(folder.rglob('*'),key=lambda p:len(p.parts),reverse=True):
+  if path.is_dir() and not any(path.iterdir()):path.rmdir()
+ if {p.name:sha(p) for p in folder.glob('*.ko')}!=before:
+  raise ValueError('Module relocation changed payload')
+ return moves
+
 def main():
  p=argparse.ArgumentParser(description=__doc__)
  for name in ('kernel-build','modules-stage','firmware-root','imagebuilder','sign-key','keys','output'):
@@ -38,7 +63,13 @@ def main():
   if len(paths)!=1:raise ValueError('ANA module missing or duplicated')
   dst=root/'usr/lib/t95h-gpu';dst.mkdir(parents=True);shutil.move(paths[0],dst/'t95h_ana_provider.ko')
   (dst/'SHA256SUMS').write_text(sha(dst/'t95h_ana_provider.ko')+'  t95h_ana_provider.ko\n')
+ module_paths=flatten_modules(root,mp['kernel_release'])
  subprocess.run(['depmod','-b',str(root),mp['kernel_release']],check=True)
+ folder=root/'lib/modules'/mp['kernel_release']
+ for line in (folder/'modules.dep').read_text().splitlines():
+  for entry in line.replace(':',' ').split():
+   if '/' in entry or not (folder/entry).is_file():
+    raise ValueError('Unresolvable flat module dependency: '+entry)
  startup=json.loads((m/'startup/verification.json').read_text())
  if startup['profile']!=profile or sha(m/'startup/t95h.dtb')!=startup['dtb_sha256']:raise ValueError('Profile DT changed')
  (root/'boot').mkdir();shutil.copyfile(k/'arch/arm64/boot/Image',root/'boot/Image');shutil.copyfile(m/'startup/t95h.dtb',root/'boot/t95h.dtb')
@@ -66,6 +97,6 @@ def main():
  with (out/'package.log').open('w') as log:
   subprocess.run([str(ib/'staging_dir/host/bin/fakeroot'),str(apk),'mkpkg','--sign-key',str(a.sign_key.resolve(strict=True)),'--files',str(root),'--output',str(package),'--info','name:t95h-kernel','--info','version:'+a.version,'--info','arch:aarch64_cortex-a53','--info','description:T95H '+profile+' kernel and matching modules','--info','license:GPL-2.0-only','--info','provides:'+provides],env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
   subprocess.run([str(apk),'--keys-dir',str(a.keys.resolve(strict=True)),'verify',str(package)],env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
- report={'profile':profile,'package':package.name,'sha256':sha(package),'version':a.version,'kernel_sha256':kp['image_sha256'],'config_sha256':kp['config_sha256'],'providers':providers,'firmware':firmware,'signed_package_verified':True,'image_ready':False}
+ report={'profile':profile,'package':package.name,'sha256':sha(package),'version':a.version,'kernel_sha256':kp['image_sha256'],'config_sha256':kp['config_sha256'],'providers':providers,'firmware':firmware,'signed_package_verified':True,'image_ready':False,'module_layout':'openwrt-flat','module_paths':module_paths}
  (out/'package-report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 if __name__=='__main__':main()
