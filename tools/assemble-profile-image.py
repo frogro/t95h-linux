@@ -33,13 +33,6 @@ def main():
  (root/'boot').mkdir()
  boot=output/'fat-files/boot';boot.mkdir(parents=True)
  for name in ['Image','t95h.dtb']:shutil.copyfile(stage/'kernel-boot'/name,boot/name)
- # Paired per-profile DTBs permit disabling USB0 host without changing other hardware.
- shutil.copyfile(boot/'t95h.dtb',boot/'t95h-usb0-host.dtb')
- shutil.copyfile(boot/'t95h.dtb',boot/'t95h-usb0-off.dtb')
- for node in ['/soc/usb@5101000','/soc/usb@5101400']:
-  subprocess.run(['fdtput','-t','s',str(boot/'t95h-usb0-off.dtb'),node,'status','disabled'],check=True)
-  subprocess.run(['fdtput','-d',str(boot/'t95h-usb0-off.dtb'),node,'dr_mode'],check=True)
- (boot/'usb0-modes.sha256').write_text(''.join(sha(boot/n)+'  '+n+'\n' for n in ['t95h-usb0-host.dtb','t95h-usb0-off.dtb']))
  scripts=ROOT/'boards/t95h/boot/scripts';hashes=json.loads((scripts/'sha256.json').read_text())
  for name,h in hashes.items():
   if sha(scripts/name)!=h:raise ValueError('Boot script changed: '+name)
@@ -74,7 +67,7 @@ def main():
   run(['fakeroot','debugfs','-R','rdump / '+str(verify),fs])
   actual=inventory(verify)
   if actual!=expected:raise ValueError('Rootfs readback inventory mismatch; inspect verify-root')
-  for name in ['Image','t95h.dtb','boot.scr','boot.scm','t95h-usb0-host.dtb','t95h-usb0-off.dtb','usb0-modes.sha256']:
+  for name in ['Image','t95h.dtb','boot.scr','boot.scm']:
    dest=output/('fat-readback-'+name);run([host/'mcopy','-i',fat,'::/boot/'+name,dest])
    if sha(dest)!=sha(boot/name):raise ValueError('FAT readback differs: '+name)
  image=output/'t95h-base.img'

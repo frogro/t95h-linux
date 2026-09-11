@@ -119,11 +119,6 @@
       "sha256": "08e9f51663acaa4978d3fbde454d435befbd4d4acbdc990b74b2a84fbced8e4e",
       "mode": "0o755",
       "profile": "base"
-    },
-    "openwrt/runtime/base/usr/sbin/t95h-usb0-mode": {
-      "sha256": "dc3a415d040c29a34b3ce8c77076626d14869fc7511ab9a13afdcc2acb093543",
-      "mode": "0o755",
-      "profile": "base"
     }
   },
   "source": "explicit allowlist from local tested Cedrus runtime; no inherited rootfs",
