@@ -82,6 +82,12 @@ FIRMWARE="misc-firmware wlan-firmware"
  attr=le/'packages/devel/attr/package.mk';ats=attr.read_text()
  attr.write_text(ats.replace('http://download.savannah.nongnu.org/releases/attr/', 'https://download-mirror.savannah.gnu.org/releases/attr/'))
  wg=le/'packages/network/wireguard-tools/package.mk';wg.write_text(wireguard_archive(wg.read_text()))
+ # strace supports compiling against its bundled UAPI headers when newer
+ # host/target headers change reserved io_uring fields. Keep upstream version/hash.
+ strace=le/'packages/debug/strace/package.mk';st=strace.read_text()
+ if 'PKG_NAME="strace"' not in st or 'PKG_CONFIGURE_OPTS_TARGET' not in st:
+  raise ValueError('strace recipe changed; inspect bundled-header option')
+ strace.write_text(st+'\nPKG_CONFIGURE_OPTS_TARGET+=" --enable-bundled=yes"\n')
  # Same GMP archive from GNU; keep upstream version and SHA256 verification.
  gmp=le/'packages/devel/gmp/package.mk';gs=gmp.read_text();gmp.write_text(gs.replace('https://gmplib.org/download/gmp/', 'https://ftp.gnu.org/gnu/gmp/'))
  stage=le/'t95h-startup';subprocess.run(['/usr/bin/python3',str(ROOT/'tools/stage-startup-fixes.py'),'--profile','base-B','--output',str(stage)],check=True)
