@@ -27,6 +27,9 @@ def main():
  before=m.inventory(src);expected=json.loads(json.dumps(before))
  dt=libfdt.Fdt(src.read_bytes());dt.resize(len(src.read_bytes())+1024)
  path='/i2c-display/display@24';dt.setprop_str(dt.path_offset(path),'status','disabled');expected['nodes'][path]['status']=b'disabled\0'.hex()
+ for path in ['/soc/usb@5101000','/soc/usb@5101400']:
+  for prop,val in [('status','okay'),('dr_mode','host')]:
+   dt.setprop_str(dt.path_offset(path),prop,val);expected['nodes'][path][prop]=(val+'\0').encode().hex()
  hasB='B' in a.profile;hasA='A' in a.profile
  if not hasB:
   for path in ['/soc/gpu@1800000','/soc/video-codec@1c0e000','/soc/power-controller@7010250']:

@@ -164,3 +164,29 @@ dem ThinkPad geprüft. [Prüfnachweis](docs/actions-validation-20260909.md).
 [Experimenteller LibreELEC-Port](docs/libreelec.md), zunächst Basis+B.
 Ein eigener Actions-Workflow ermittelt pro Lauf die neueste stabile Version.
 Die ersten Ausgaben sind Testartefakte, noch keine hardwaregeprüften Releases.
+
+## USB port beside the SD slot: host / disabled
+
+Both USB sockets are enabled as hosts by default. USB0 (next to the SD slot)
+was tested with RTL8821CU: enumeration and scans on both bands succeeded.
+This does not certify the power budget for every modem or peripheral.
+
+On OpenWrt, disable USB0 host, then reboot:
+```sh
+t95h-usb0-mode off
+reboot
+```
+Restore host mode:
+```sh
+t95h-usb0-mode host
+reboot
+```
+Do not connect the ThinkPad with a host-to-host cable while USB0 is in host
+mode. **Off does not enable ADB**: this release does not configure an ADB
+USB gadget or adbd. Android ADB is separate from OpenWrt. An OpenWrt ADB
+mode still requires a tested peripheral DTB and gadget/adbd setup.
+
+The switch checks release-matched DTB checksums, preserves the prior DTB,
+and refuses unknown DTB modifications. It changes the next boot only, on
+both SD and eMMC. Sysupgrade replaces FAT and restores the release default
+(host); repeat the command if USB0 should remain disabled afterward.

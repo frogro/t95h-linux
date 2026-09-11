@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+case "${1:-}" in
+ host|off) mode=$1 ;;
+ *) echo 'Usage: t95h-usb0-mode host|off (takes effect after reboot; off does NOT enable ADB)' >&2; exit 1 ;;
+esac
+cd /boot/boot
+sha256sum -c usb0-modes.sha256
+current=$(sha256sum t95h.dtb | cut -d ' ' -f1)
+host=$(sha256sum t95h-usb0-host.dtb | cut -d ' ' -f1)
+off=$(sha256sum t95h-usb0-off.dtb | cut -d ' ' -f1)
+[ "$current" = "$host" ] || [ "$current" = "$off" ] || { echo 'STOP: DTB has other changes; review required' >&2; exit 1; }
+cp t95h.dtb t95h-usb0-previous.dtb
+cp "t95h-usb0-$mode.dtb" t95h.dtb.new
+sync
+expected=$(sha256sum "t95h-usb0-$mode.dtb" | cut -d ' ' -f1)
+[ "$(sha256sum t95h.dtb.new | cut -d ' ' -f1)" = "$expected" ]
+mv t95h.dtb.new t95h.dtb
+sync
+echo "USB0 mode $mode prepared. Run reboot. Off disables host only, not ADB setup."

@@ -93,6 +93,7 @@ Default access: root / openwrt; AP openwrt / openwrtopenwrt. Change these creden
 Public source-complete redistribution of the binary boot/toolchain/firmware inputs
 requires the remaining provenance/license work. This is an experimental artifact, not a source-completeness certification.
 '''
+ notes += '\n## USB port beside the SD slot: host / disabled\n\nBoth USB sockets are enabled as hosts by default. USB0 (next to the SD slot)\nwas tested with RTL8821CU: enumeration and scans on both bands succeeded.\nThis does not certify the power budget for every modem or peripheral.\n\nOn OpenWrt, disable USB0 host, then reboot:\n```sh\nt95h-usb0-mode off\nreboot\n```\nRestore host mode:\n```sh\nt95h-usb0-mode host\nreboot\n```\nDo not connect the ThinkPad with a host-to-host cable while USB0 is in host\nmode. **Off does not enable ADB**: this release does not configure an ADB\nUSB gadget or adbd. Android ADB is separate from OpenWrt. An OpenWrt ADB\nmode still requires a tested peripheral DTB and gadget/adbd setup.\n\nThe switch checks release-matched DTB checksums, preserves the prior DTB,\nand refuses unknown DTB modifications. It changes the next boot only, on\nboth SD and eMMC. Sysupgrade replaces FAT and restores the release default\n(host); repeat the command if USB0 should remain disabled afterward.\n'
  (o/'release/RELEASE-NOTES.md').write_text(notes)
  print('PASS: selected-profile four-artifact release complete; hardware limitations documented',flush=True)
 if __name__=='__main__':main()

@@ -23,6 +23,9 @@ class ProfileTests(unittest.TestCase):
     actual=dt.inventory(output/'t95h.dtb')
     expected=json.loads(json.dumps(reference))
     expected['nodes']['/i2c-display/display@24']['status']=b'disabled\0'.hex()
+    for path in ('/soc/usb@5101000','/soc/usb@5101400'):
+     expected['nodes'][path]['status']=b'okay\0'.hex()
+     expected['nodes'][path]['dr_mode']=b'host\0'.hex()
     if 'B' in profile:
      expected['nodes']['/soc/power-controller@7010250']['compatible']=b't95h,h616-prcm-ppu-el3\0'.hex()
     else:
