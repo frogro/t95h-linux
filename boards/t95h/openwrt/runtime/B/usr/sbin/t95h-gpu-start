@@ -80,12 +80,12 @@ if gpu_ok; then log 'PASS: standard Panfrost already bound with matching render 
 # No writes to hardware before readiness. Allow initial boot activity to settle.
 umask 077
 printf 'boot_id=%s\n' "$(cat /proc/sys/kernel/random/boot_id)" > "$LOG"
-log 'Waiting: minimum uptime 120s and 15 consecutive ready samples (overlapping)'
+log 'Waiting: minimum uptime 45s and 15 consecutive ready samples (overlapping)'
 n=0; stable=0
 while [ "$n" -lt 240 ]; do
  age=$(cut -d . -f1 /proc/uptime)
  if ready; then stable=$((stable+1)); else stable=0; fi
- [ "$age" -ge 120 ] && [ "$stable" -ge 15 ] && break
+ [ "$age" -ge 45 ] && [ "$stable" -ge 15 ] && break
  n=$((n+1)); sleep 1
 done
 [ "$stable" -ge 15 ] || { log 'STOP: readiness timeout; no GPU probe'; exit 1; }

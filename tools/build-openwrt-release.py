@@ -94,6 +94,7 @@ Public source-complete redistribution of the binary boot/toolchain/firmware inpu
 requires the remaining provenance/license work. This is an experimental artifact, not a source-completeness certification.
 '''
  notes += '\n## USB-Anschlüsse\n\nBeide USB-Buchsen arbeiten als Host, einschließlich USB0 neben dem SD-Kartenschacht.\nUSB0 wurde mit dem RTL8821CU-Stick erfolgreich auf Erkennung und WLAN-Scans\nin beiden Frequenzbändern getestet. Weitere Geräte benötigen ihre jeweiligen\nProfil-Treiber; deren Betrieb und Strombedarf sind gerätespezifisch zu prüfen.\n'
+ notes += '\n## Früherer Panfrost-Start (Profile B und A+B)\n\nGPU-Mindestwartezeit auf 45 statt 120 Sekunden reduziert. Die 15 aufeinanderfolgenden Bereitschaftsprüfungen für LAN/SSH, WLAN und Spannungsregler bleiben erhalten; tatsächlicher Start kann später erfolgen. Der frühere Start wurde unter AnotterKiosk dreimal beobachtet, ist mit diesem OpenWrt-Image aber noch hardwareseitig zu bestätigen. Frühe deferred-probe-Meldungen und gelegentliche Bootprobleme gelten dadurch nicht als behoben.\n'
  (o/'release/RELEASE-NOTES.md').write_text(notes)
  print('PASS: selected-profile four-artifact release complete; hardware limitations documented',flush=True)
 if __name__=='__main__':main()
