@@ -64,6 +64,13 @@ FIRMWARE="misc-firmware wlan-firmware"
  for recipe in (le/'packages').rglob('package.mk'):
   text=recipe.read_text();fixed=gnu_mirror_urls(text)
   if fixed!=text:recipe.write_text(fixed)
+ # Linux 7.2.3 exports a kernel-only counted_by annotation in vhost_types.h.
+ # Strip only that annotation from installed userspace headers, not kernel source.
+ linux_recipe=le/'packages/linux/package.mk';ls=linux_recipe.read_text()
+ anchor='    headers_install\n'
+ if ls.count(anchor)!=1:raise ValueError('Linux header export recipe changed')
+ sanitize="    sed -i 's/ __counted_by(count)//g' dest/include/linux/vhost_types.h\n"
+ linux_recipe.write_text(ls.replace(anchor,anchor+sanitize))
  # Same GMP archive from GNU; keep upstream version and SHA256 verification.
  gmp=le/'packages/devel/gmp/package.mk';gs=gmp.read_text();gmp.write_text(gs.replace('https://gmplib.org/download/gmp/', 'https://ftp.gnu.org/gnu/gmp/'))
  stage=le/'t95h-startup';subprocess.run(['/usr/bin/python3',str(ROOT/'tools/stage-startup-fixes.py'),'--profile','base-B','--output',str(stage)],check=True)
