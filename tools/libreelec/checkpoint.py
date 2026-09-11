@@ -27,6 +27,7 @@ def packaging_only_migration(old, new):
   '.github/workflows/libreelec-phase.yml','tools/libreelec/checkpoint.py',
   'tools/libreelec/refresh-firmware-package.py',
   'tests/test_libreelec_firmware.py',
+  'tools/libreelec/assemble.py','tests/test_libreelec_assemble.py',
  }
  changed=set(subprocess.check_output(['git','diff','--name-only',old,new],cwd=ROOT,text=True).splitlines())
  return bool(changed) and changed <= allowed

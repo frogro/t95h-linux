@@ -7,13 +7,28 @@ ROOT=Path(__file__).resolve().parents[2];M=1048576
 def sha(p):
  with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
 def run(*args):subprocess.run(list(map(str,args)),check=True)
+def built_kernel_config(le, version):
+ # LibreELEC retains the actual built config even when its source is autoremoved.
+ builds=list(le.glob('build.LibreELEC-T95H.aarch64-*'))
+ candidates=[]
+ for build in builds:
+  installed=build/'install_pkg'/('linux-'+version)/'.image/.config'
+  source=build/'build'/('linux-'+version)/'.config'
+  existing=[p for p in (installed,source) if p.is_file()]
+  if len(existing)==2 and installed.read_bytes()!=source.read_bytes():
+   raise ValueError('Built and installed kernel configs disagree: '+str(build))
+  if existing:candidates.append(existing[0])
+ if len(candidates)!=1:
+  raise ValueError('Expected one built kernel config; found '+repr([str(p) for p in candidates]))
+ return candidates[0]
+
 def main():
  p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--prefix',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
  le=a.source.resolve();version=json.loads((le/'t95h-port.json').read_text())['upstream']['tag'];o=a.output.resolve();o.mkdir(parents=True,exist_ok=False)
  port=json.loads((le/'t95h-port.json').read_text())
- configs=list(le.glob('build.*/linux-7.2.3/.config'))
- if len(configs)!=1:raise ValueError('Built kernel config missing or ambiguous')
- lines=set(configs[0].read_text().splitlines())
+ config=built_kernel_config(le,port['kernel'])
+ print('Checking built kernel config:',config)
+ lines=set(config.read_text().splitlines())
  missing=[k for k in port['required_kernel_config'] if not ({'CONFIG_'+k+'=y','CONFIG_'+k+'=m'} & lines)]
  if missing:raise ValueError('LibreELEC kernel requirements missing: '+repr(missing))
  kernels=list((le/'target').glob('*.kernel'));systems=list((le/'target').glob('*.system'))

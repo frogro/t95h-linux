@@ -104,6 +104,24 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 7
+      - name: Preserve completed kernel and SYSTEM before assembly
+        if: steps.compile.outputs.state == 'complete'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: t95h-libreelec-assembly-inputs-${{ inputs.phase }}
+          include-hidden-files: true
+          path: |
+            build/libreelec/target/*.kernel
+            build/libreelec/target/*.system
+            build/libreelec/build.*/install_pkg/linux-*/.image/.config
+            build/libreelec/build.*/build/linux-*/.config
+            build/libreelec/t95h-startup/t95h.dtb
+            build/libreelec/t95h-port.json
+            build/libreelec-inputs/prefix.bin
+            build/libreelec-request.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
       - name: Assemble experimental SD and eMMC candidates
         if: steps.compile.outputs.state == 'complete'
         run: python3 tools/libreelec/assemble.py --source build/libreelec --prefix build/libreelec-inputs/prefix.bin --output build/libreelec-images
