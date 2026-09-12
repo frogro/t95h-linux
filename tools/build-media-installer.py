@@ -31,6 +31,22 @@ def main():
     a=p.parse_args();o=a.output.resolve();o.mkdir(parents=True,exist_ok=False)
     raw=o/'sd.img';unpack(a.sd,raw)
     with raw.open('rb') as f:prefix=f.read(4*M)
+    if a.os=='libreelec':
+        # Upstream first-boot resize extends p2 to the disk end. The installer
+        # adds p3 there, so remove the marker only from this SD variant.
+        offset,count=partition(prefix,1);storage=o/'storage.ext4'
+        with raw.open('rb') as src,storage.open('wb') as dest:
+            src.seek(offset*512);left=count*512
+            while left:
+                block=src.read(min(left,M))
+                if not block:raise ValueError('Truncated storage partition')
+                dest.write(block);left-=len(block)
+        run('debugfs','-w','-R','rm /.please_resize_me',storage)
+        check=subprocess.run(['debugfs','-R','stat /.please_resize_me',str(storage)],capture_output=True,text=True,check=True)
+        if 'File not found' not in check.stderr:raise ValueError('Resize marker removal not verified')
+        run('e2fsck','-fn',storage)
+        with raw.open('r+b') as dest,storage.open('rb') as src:
+            dest.seek(offset*512);shutil.copyfileobj(src,dest,M)
     start,sectors=partition(prefix,0)
     if start!=8192:raise ValueError('Unexpected FAT offset')
     fat=o/'boot.fat'

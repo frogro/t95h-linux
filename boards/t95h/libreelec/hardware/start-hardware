@@ -32,4 +32,8 @@ n=0
 while [ ! -c /dev/dri/renderD128 ] && [ "$n" -lt 30 ]; do sleep 1; n=$((n+1)); done
 [ "$(readlink -f /sys/class/drm/renderD128/device)" = "$(readlink -f "$G")" ]
 [ "$(basename "$(readlink -f "$G/driver")")" = panfrost ]
-echo 'T95H: Panfrost render node ready; Kodi may start'
+# Avoid PLL rate changes while runtime PM has gated the GPU clock.
+# Thermal frequency limits remain active; this does not pin the GPU rate.
+echo on > "$G/power/control"
+[ "$(cat "$G/power/runtime_status")" = active ]
+echo 'T95H: Panfrost render node ready; GPU runtime suspend disabled'

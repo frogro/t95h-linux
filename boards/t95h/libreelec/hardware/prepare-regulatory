@@ -11,5 +11,15 @@ for name in regulatory.db regulatory.db.p7s; do
   fi
 done
 # Retain the user's country selection; never hard-code a regulatory domain.
-iw reg reload
+# The initial asynchronous request can still be pending during early boot.
+# Retry the real reload, and retain a failing exit status if it never succeeds.
+n=0
+while ! iw reg reload; do
+  n=$((n+1))
+  if [ "$n" -ge 15 ]; then
+    echo 'T95H: regulatory reload failed after 15 attempts' >&2
+    exit 1
+  fi
+  sleep 1
+done
 echo 'T95H: regulatory database reload requested after firmware setup'

@@ -1,7 +1,7 @@
 PKG_NAME="t95h-hardware"
 PKG_VERSION="1"
 PKG_LICENSE="GPL"
-PKG_DEPENDS_TARGET="toolchain linux"
+PKG_DEPENDS_TARGET="toolchain linux Python3 e2fsprogs"
 PKG_SECTION="tools"
 PKG_LONGDESC="Experimental T95H locked hardware modules and systemd startup"
 PKG_TOOLCHAIN="manual"
@@ -15,6 +15,9 @@ makeinstall_target() {
   cp ${PKG_BUILD}/t95h_aldo2.ko ${PKG_BUILD}/t95h_ana_provider.ko ${INSTALL}/usr/lib/t95h/
   cp ${PKG_DIR}/t95h.dtb ${INSTALL}/usr/share/bootloader/
   cp -a ${PKG_DIR}/firmware/. "${firmware_dir}/"
+  cp ${PKG_DIR}/grow-emmc-storage ${INSTALL}/usr/lib/t95h/
+  chmod 755 ${INSTALL}/usr/lib/t95h/grow-emmc-storage
+  ln -s ../t95h-grow-emmc.service ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants/t95h-grow-emmc.service
   cp ${PKG_DIR}/start-hardware ${INSTALL}/usr/lib/t95h/
   chmod 755 ${INSTALL}/usr/lib/t95h/start-hardware
   cp ${PKG_DIR}/prepare-regulatory ${INSTALL}/usr/lib/t95h/
@@ -22,5 +25,7 @@ makeinstall_target() {
   cp ${PKG_DIR}/system.d/*.service ${INSTALL}/usr/lib/systemd/system/
   ln -s ../t95h-hardware.service ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants/t95h-hardware.service
   ln -s ../t95h-regulatory.service ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants/t95h-regulatory.service
+  mkdir -p ${INSTALL}/usr/lib/systemd/system/cpufreq.service.d
+  cp ${PKG_DIR}/cpufreq.conf ${INSTALL}/usr/lib/systemd/system/cpufreq.service.d/t95h.conf
   cp ${PKG_DIR}/kodi.conf ${INSTALL}/usr/lib/systemd/system/kodi.service.d/t95h.conf
 }

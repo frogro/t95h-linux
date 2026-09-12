@@ -1,0 +1,14 @@
+[Unit]
+Description=Expand T95H eMMC storage once while preserving settings
+After=local-fs.target
+Before=kodi.service
+ConditionPathExists=/storage/.t95h-grow-emmc
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/t95h/grow-emmc-storage
+TimeoutStartSec=10min
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

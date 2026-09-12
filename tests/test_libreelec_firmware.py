@@ -9,7 +9,7 @@ class FirmwareTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as d:
    p=Path(d);src=p/'pkg';build=p/'build';out=p/'install'
    (src/'firmware/xr819').mkdir(parents=True);(src/'system.d').mkdir();build.mkdir()
-   for name in ['t95h.dtb','start-hardware','prepare-regulatory','kodi.conf','system.d/test.service','firmware/xr819/fw.bin']:(src/name).write_text(name)
+   for name in ['t95h.dtb','cpufreq.conf','grow-emmc-storage','system.d/t95h-grow-emmc.service','start-hardware','prepare-regulatory','kodi.conf','system.d/test.service','firmware/xr819/fw.bin']:(src/name).write_text(name)
    for name in ['t95h_aldo2.ko','t95h_ana_provider.ko']:(build/name).write_text(name)
    subprocess.run(['bash','-eu','-c','source "$1"; get_full_firmware_dir() { echo usr/lib/kernel-overlays/base/lib/firmware; }; makeinstall_target','test',str(ROOT/'boards/t95h/libreelec/hardware/package.mk')],env={'PATH':'/usr/bin:/bin','PKG_DIR':str(src),'PKG_BUILD':str(build),'INSTALL':str(out)},check=True)
    self.assertFalse((out/'usr/lib/firmware').exists())

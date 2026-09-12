@@ -1,10 +1,11 @@
 [Unit]
 Description=T95H WLAN regulatory database after firmware setup
-After=systemd-modules-load.service
+After=systemd-modules-load.service systemd-udev-trigger.service
 Before=iwd.service
 
 [Service]
 Type=oneshot
+TimeoutStartSec=30
 ExecStart=/usr/lib/t95h/prepare-regulatory
 RemainAfterExit=yes
 

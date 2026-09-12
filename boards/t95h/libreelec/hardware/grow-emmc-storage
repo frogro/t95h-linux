@@ -1,0 +1,100 @@
+#!/usr/bin/python3
+"""Grow installed eMMC storage once, preserving settings and filesystem UUID."""
+import ctypes
+import fcntl
+import os
+from pathlib import Path
+import re
+import shutil
+import struct
+import subprocess
+
+MARKER = Path('/storage/.t95h-grow-emmc')
+
+def plan(mbr, sectors):
+    if len(mbr) != 512 or mbr[510:] != b'\x55\xaa':
+        raise ValueError('Invalid MBR')
+    if struct.unpack_from('<I', mbr, 440)[0] != 0x1e950002:
+        raise ValueError('Not a T95H LibreELEC eMMC image')
+    if any(mbr[478:510]):
+        raise ValueError('Additional partitions present')
+    first = struct.unpack_from('<II', mbr, 454)
+    start, count = struct.unpack_from('<II', mbr, 470)
+    if mbr[450] != 12 or first != (8192, 2097152) or mbr[466] != 131 or start != 2105344:
+        raise ValueError('Unexpected partition layout')
+    target = sectors - start
+    if not 1048576 <= count <= target <= 0xffffffff:
+        raise ValueError('Unsupported disk size or shrinking requested')
+    result = bytearray(mbr)
+    struct.pack_into('<I', result, 474, target)
+    return bytes(result), start, target
+
+class Partition(ctypes.Structure):
+    _fields_ = [('start', ctypes.c_longlong), ('length', ctypes.c_longlong),
+                ('pno', ctypes.c_int), ('devname', ctypes.c_char * 64),
+                ('volname', ctypes.c_char * 64)]
+class Argument(ctypes.Structure):
+    _fields_ = [('op', ctypes.c_int), ('flags', ctypes.c_int),
+                ('datalen', ctypes.c_int), ('data', ctypes.c_void_p)]
+
+def mounted(path):
+    for line in Path('/proc/self/mountinfo').read_text().splitlines():
+        fields = line.split()
+        if fields[4] == path:
+            return Path('/sys/dev/block', fields[2]).resolve(), fields
+    raise ValueError('Missing mount: ' + path)
+
+def main():
+    if not MARKER.is_file():
+        return
+    with open('/run/t95h-grow-emmc.lock', 'w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        part, mount = mounted('/storage')
+        if not re.fullmatch(r'mmcblk[0-9]+p2', part.name):
+            raise ValueError('Storage is not MMC partition 2')
+        disk = part.parent
+        if (disk/'device/type').read_text().strip() != 'MMC':
+            raise ValueError('Storage is not eMMC')
+        boot, _ = mounted('/flash')
+        if boot.parent != disk or boot.name != disk.name + 'p1':
+            raise ValueError('Boot and storage must share eMMC')
+        if mount[mount.index('-') + 1] != 'ext4' or 'rw' not in mount[5].split(','):
+            raise ValueError('Storage must be writable ext4')
+        if int((disk/'ro').read_text()) or int((disk/'queue/logical_block_size').read_text()) != 512:
+            raise ValueError('Unsupported eMMC access')
+        resize = shutil.which('resize2fs')
+        if not resize:
+            raise ValueError('resize2fs missing')
+        device = '/dev/' + disk.name
+        with open(device, 'r+b', buffering=0) as dev:
+            old = dev.read(512)
+            new, start, count = plan(old, int((disk/'size').read_text()))
+            if int((part/'start').read_text()) != start:
+                raise ValueError('Kernel partition start disagrees')
+            backup = Path('/storage/.t95h-grow-emmc-mbr.before')
+            if not backup.exists():
+                with backup.open('xb') as saved:
+                    saved.write(old); saved.flush(); os.fsync(saved.fileno())
+                os.sync()
+            if new != old:
+                dev.seek(0); dev.write(new); os.fsync(dev.fileno())
+                dev.seek(0)
+                if dev.read(512) != new:
+                    raise IOError('Partition table write verification failed')
+            if int((part/'size').read_text()) != count:
+                # Update only p2 in the kernel; p1 and mounted filesystems stay intact.
+                partition = Partition(start * 512, count * 512, 2)
+                argument = Argument(3, 0, ctypes.sizeof(partition), ctypes.addressof(partition))
+                libc = ctypes.CDLL(None, use_errno=True)
+                if libc.ioctl(dev.fileno(), 0x1269, ctypes.byref(argument)) != 0:
+                    raise OSError(ctypes.get_errno(), 'Kernel partition resize failed; retry next boot')
+            if int((part/'size').read_text()) != count:
+                raise ValueError('Kernel partition size disagrees')
+        subprocess.run([resize, '/dev/' + part.name], check=True)
+        os.sync()
+        MARKER.unlink()
+        os.sync()
+        print('PASS: eMMC storage expanded; settings and UUID preserved')
+
+if __name__ == '__main__':
+    main()

@@ -52,7 +52,10 @@ def main():
   with fat.open('wb') as f:f.truncate(1024*M)
   with storage.open('wb') as f:f.truncate(512*M)
   bootid='1E950001' if media=='sd' else '1E950002';rootid='1e950001-0000-4000-8000-000000000002' if media=='sd' else '1e950002-0000-4000-8000-000000000002'
-  run('mkfs.vfat','-F','32','-i',bootid,'-n','LIBREELEC',fat);run('mkfs.ext4','-F','-L','STORAGE','-U',rootid,storage)
+  run('mkfs.vfat','-F','32','-i',bootid,'-n','LIBREELEC',fat);storage_seed=d/'storage-seed';storage_seed.mkdir()
+  if media=='sd':(storage_seed/'.please_resize_me').touch()
+  else:(storage_seed/'.t95h-grow-emmc').touch()
+  run('mkfs.ext4','-F','-L','STORAGE','-U',rootid,'-d',storage_seed,storage)
   chosen=dtb
   if media=='emmc':
    spec=importlib.util.spec_from_file_location('dt',ROOT/'tools/emmc/prepare-access-dtb.py');dt=importlib.util.module_from_spec(spec);spec.loader.exec_module(dt);chosen=d/'t95h.dtb';dt.prepare(dtb,chosen)

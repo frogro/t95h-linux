@@ -85,3 +85,39 @@ neu kompiliert. Die Anotter-DE33-Patches bleiben vorerst getrennt.
 [Installationsanleitung](media-emmc-installation.md).
 Die eMMC-Installation und das neue Paket müssen auf der Box getestet werden;
 der erste Vergleich beginnt mit dem normalen SD-Image.
+
+
+## Speicher nach der Installation
+
+Neue normale SD-Images erweitern beim ersten Start automatisch die Datenpartition.
+Die SD mit eMMC-Installer behält ihre zusätzliche Installationspartition.
+
+Neue eMMC-Images enthalten eine einmalige Markierung für `t95h-grow-emmc.service`.
+Der Dienst erweitert beim ersten eMMC-Start Partition 2 und das vorhandene ext4-
+Dateisystem mit `resize2fs`. Übernommene Kodi- und Zugangseinstellungen bleiben
+bestehen. Er akzeptiert ausschließlich das erwartete eMMC-Layout mit zwei
+Partitionen und gemeinsamem Boot-/Datenmedium. Eine MBR-Sicherung bleibt unter
+`/storage/.t95h-grow-emmc-mbr.before`. Erst nach Erfolg wird die Markierung gelöscht;
+bei Fehlern bleibt sie für einen erneuten Versuch nach dem nächsten Start erhalten.
+
+Die Implementierung ist lokal geprüft; der erste Hardwaretest der automatischen
+eMMC-Erweiterung steht noch aus. Bereits installierte Images werden nicht verändert.
+
+## Vorbereitete Betriebsparameter
+
+Das nächste Build verwendet `ondemand` mit dem vollen zulässigen CPU-Taktbereich.
+Die erste passive CPU-Temperaturschwelle liegt bei 65 °C mit 2 °C Hysterese;
+70 °C als zweite passive Schwelle und 110 °C als kritische Schwelle bleiben erhalten.
+Die GPU bleibt nach ihrer Initialisierung aktiv, damit keine PLL-Taktwechsel im
+Runtime-Ruhezustand stattfinden. Ihre thermische Taktbegrenzung bleibt wirksam.
+Der Regulatory-Datenbank-Reload wird bei frühen Fehlern höchstens 15-mal versucht;
+ein dauerhafter Fehler wird nicht als Erfolg gemeldet.
+
+Bluetooth übernimmt die Standardauswahl des LibreELEC-Allwinner-Kernels,
+einschließlich USB-Adaptern. Das setzt keinen eingebauten Bluetooth-Chip voraus.
+
+Live-Vergleich: 60 °C über 218 Sekunden und 65 °C über 228 Sekunden mit vier
+SHA256-Lastprozessen, aktiver GPU und ähnlichen Anfangstemperaturen. Bei 65 °C
+wurden rund 31 % mehr Hashes pro Sekunde gemessen; CPU-Spitze 72,4 °C statt
+62,3 °C. Keine neuen Kernelwarnungen während des Vergleichs. Dies ist kein
+Nachweis höherer Video-FPS oder eines abgeschlossenen Langzeit-/Neustarttests.
