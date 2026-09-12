@@ -62,14 +62,15 @@ def main():
             raise ValueError('Feed checks incomplete')
         if proof['url'].split('/')[-1]!=tag:raise ValueError('Feed release tag mismatch')
     repo=subprocess.check_output(['gh','repo','view','--json','nameWithOwner','--jq','.nameWithOwner'],text=True).strip()
-    found=subprocess.run(['gh','api',f'repos/{repo}/releases/tags/{tag}'],capture_output=True,text=True)
+    found=subprocess.run(['gh','release','view',tag,'--json','apiUrl'],capture_output=True,text=True)
     if found.returncode:
-        if '404' not in found.stderr:raise RuntimeError(found.stderr)
+        if 'release not found' not in found.stderr.lower():raise RuntimeError(found.stderr)
         subprocess.run(['gh','release','create',tag,'--target',a.commit,'--draft','--prerelease',
                         '--title',f'T95H {a.profile} / {a.console} — experimental build {a.run_id}',
                         '--notes-file',str(a.directory/'RELEASE-NOTES.md')],check=True)
-        release=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/tags/{tag}']))
-    else:release=json.loads(found.stdout)
+        found=subprocess.run(['gh','release','view',tag,'--json','apiUrl'],capture_output=True,text=True,check=True)
+    api_url=json.loads(found.stdout)['apiUrl']
+    release=json.loads(subprocess.check_output(['gh','api',api_url]))
     if not release['draft']:raise ValueError('Release already published; refusing mutation')
     pages=json.loads(subprocess.check_output(['gh','api','--paginate','--slurp',f"repos/{repo}/releases/{release['id']}/assets?per_page=100"]))
     existing={item['name']:item for page in pages for item in page}
