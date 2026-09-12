@@ -53,7 +53,13 @@ def main():
     if not re.fullmatch('[0-9a-f]{40}',a.commit):raise ValueError('Full source commit required')
     files=assets(a.directory,a.profile,a.console)
     # Each run attempt has its own immutable asset set. Failed uploads stay draft.
-    tag=f't95h-{a.run_id}-{a.attempt}'
+    feed=a.directory/'module-feed.json'
+    tag=f't95h-feedtest-{a.run_id}-{a.attempt}' if feed.exists() else f't95h-{a.run_id}-{a.attempt}'
+    if feed.exists():
+        proof=json.loads(feed.read_text())
+        if not proof.get('apk_http_install_remove_verified') or not proof.get('wrong_kernel_abi_rejected') or not proof.get('untrusted_index_rejected'):
+            raise ValueError('Feed checks incomplete')
+        if proof['url'].split('/')[-1]!=tag:raise ValueError('Feed release tag mismatch')
     subprocess.run(['gh','release','create',tag,'--target',a.commit,'--draft','--prerelease',
                     '--title',f'T95H {a.profile} / {a.console} — experimental build {a.run_id}',
                     '--notes-file',str(a.directory/'RELEASE-NOTES.md')],check=True)

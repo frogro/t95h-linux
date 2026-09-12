@@ -72,6 +72,10 @@ def main():
     base_kmods = ['kmod-' + name for name in load_base_contract()['providers']]
     packages = sorted(set(packages) | set(base_kmods))
     kernel = args.kernel_package.resolve(strict=True)
+    feed_proof = kernel.parent/'feed/module-feed.json'
+    if feed_proof.exists():
+        omitted = {item['name'] for item in json.loads(feed_proof.read_text())['packages'].values()}
+        packages = [name for name in packages if name not in omitted]
     if sha(kernel) != args.kernel_sha256:
         raise ValueError('Custom kernel package checksum mismatch')
     ib = args.imagebuilder.resolve(strict=True)

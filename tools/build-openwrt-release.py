@@ -10,7 +10,7 @@ def run(*cmd):
 def get(url,p):
  with urllib.request.urlopen(url,timeout=120) as r,p.open('wb') as f:shutil.copyfileobj(r,f)
 def main():
- p=argparse.ArgumentParser();p.add_argument('--request',type=Path,required=True);p.add_argument('--inputs',type=Path,required=True);p.add_argument('--sign-key',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--jobs',type=int,default=2);p.add_argument('--revision',type=int,required=True);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--request',type=Path,required=True);p.add_argument('--inputs',type=Path,required=True);p.add_argument('--sign-key',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--jobs',type=int,default=2);p.add_argument('--revision',type=int,required=True);p.add_argument('--module-feed-url');a=p.parse_args()
  if a.revision<1:raise ValueError('Positive package revision required')
  o=a.output.resolve();o.mkdir(exist_ok=False,parents=True);request=json.loads(a.request.read_text());lock=json.loads((ROOT/'boards/t95h/build-inputs.json').read_text());epoch=str(lock['epoch']);os.environ['SOURCE_DATE_EPOCH']=epoch
  if sha(a.inputs)!=lock['sha256']:raise ValueError('Build input checksum mismatch')
@@ -36,7 +36,7 @@ def main():
  tool('prepare-kernel-source.py','--archive',o/'kernel.tar.xz','--output',o/'source')
  tool('build-profile-kernel.py','--source-stage',o/'source','--toolchain',tc,'--firmware-root',fw,'--profile',request['profile'],'--output',o/'kernel','--jobs',a.jobs,'--epoch',epoch)
  tool('build-profile-modules.py','--kernel-build',o/'kernel','--toolchain',tc,'--output',o/'modules','--jobs',a.jobs,'--epoch',epoch)
- tool('package-profile-kernel.py','--kernel-build',o/'kernel','--modules-stage',o/'modules','--firmware-root',fw,'--imagebuilder',ib,'--sign-key',a.sign_key.resolve(),'--keys',keys,'--output',o/'kernel-package','--version','7.2.3-r'+str(a.revision),'--epoch',epoch)
+ tool('package-profile-kernel.py','--kernel-build',o/'kernel','--modules-stage',o/'modules','--firmware-root',fw,'--imagebuilder',ib,'--sign-key',a.sign_key.resolve(),'--keys',keys,'--output',o/'kernel-package','--version','7.2.3-r'+str(a.revision),'--epoch',epoch,*(['--module-feed-url',a.module_feed_url] if a.module_feed_url else []))
  pkg=json.loads((o/'kernel-package/package-report.json').read_text())
  tool('assemble-openwrt-packages.py','--request',a.request.resolve(),'--imagebuilder',ib,'--keys',keys,'--kernel-package',o/'kernel-package'/pkg['package'],'--kernel-sha256',pkg['sha256'],'--output',o/'packages')
  tool('prepare-openwrt-rootfs.py','--packages',o/'packages','--imagebuilder',ib,'--compiler',tc/'bin/aarch64-openwrt-linux-musl-gcc','--output',o/'rootfs','--epoch',epoch)
@@ -63,6 +63,13 @@ def main():
  for source,name in [(a.request,'request.json'),(o/'packages/package-lock.json','package-lock.json'),(o/'kernel-package/package-report.json','kernel-package-report.json')]:shutil.copyfile(source,o/'release'/name)
  shutil.copyfile(o/'kernel-package/root/usr/share/t95h/base-module-verification.json',release/'base-module-verification.json')
  shutil.copyfile(ROOT/'boards/t95h/kernel/base-module-contract.json',release/'base-module-contract.json')
+ if a.module_feed_url:
+  feed=o/'kernel-package/feed'
+  for path in [*feed.glob('*.apk'),feed/'packages.adb',feed/'module-feed.json',keys/'t95h-build.pem']:
+   shutil.copyfile(path,release/path.name)
+  with (release/'SHA256SUMS').open('a') as sums:
+   for path in [*feed.glob('*.apk'),feed/'packages.adb',feed/'module-feed.json',keys/'t95h-build.pem']:
+    sums.write(sha(path)+'  '+path.name+'\n')
  notes=f'''# T95H {request['profile']}: OpenWrt {version}, Linux {request['kernel']}
 
 SD image, SD with offline eMMC installer, and separate SD/eMMC sysupgrade files from one build. Console: {request['console']}.
@@ -98,6 +105,9 @@ requires the remaining provenance/license work. This is an experimental artifact
  notes += '\n## USB-Anschlüsse\n\nBeide USB-Buchsen arbeiten als Host, einschließlich USB0 neben dem SD-Kartenschacht.\nUSB0 wurde mit dem RTL8821CU-Stick erfolgreich auf Erkennung und WLAN-Scans\nin beiden Frequenzbändern getestet. Weitere Geräte benötigen ihre jeweiligen\nProfil-Treiber; deren Betrieb und Strombedarf sind gerätespezifisch zu prüfen.\n'
  notes += '\n## Früherer Panfrost-Start (Profile B und A+B)\n\nGPU-Mindestwartezeit auf 45 statt 120 Sekunden reduziert. Die 15 aufeinanderfolgenden Bereitschaftsprüfungen für LAN/SSH, WLAN und Spannungsregler bleiben erhalten; tatsächlicher Start kann später erfolgen. Der frühere Start wurde unter AnotterKiosk dreimal beobachtet, ist mit diesem OpenWrt-Image aber noch hardwareseitig zu bestätigen. Frühe deferred-probe-Meldungen und gelegentliche Bootprobleme gelten dadurch nicht als behoben.\n'
  notes+='\n## Router-Basis-Erweiterung (Test)\nKryptografie/AF_ALG, WireGuard, TUN/VETH, nftables-Socket/TPROXY/Bridge und Traffic-Shaping einschließlich CAKE/IFB sind jetzt in allen Basisprofilen vorgesehen. Vorhandene Built-ins bleiben erhalten; zusätzliche Module liegen im signierten t95h-kernel-Paket. Der Build prüft alle neuen Provider anhand von Konfiguration und Modul-/Builtin-Dateien und fordert alle Namen beim APK-Solver an. Ein unabhängiger Feed zum Nachladen beliebiger weiterer Kernelmodule ist noch nicht enthalten. Die vollständige Angleichung des OpenWrt-Modulkatalogs bleibt offen. Noch kein Hardwaretest dieses Images.\n'
+ if a.module_feed_url:
+  notes=notes.replace('Ein unabhängiger Feed zum Nachladen beliebiger weiterer Kernelmodule ist noch nicht enthalten.', 'Dieses Testrelease stellt ausschließlich VETH und CAKE als separat nachladbare Module bereit.')
+  notes+='\n## Separate module-feed experiment\nThis image intentionally omits VETH and CAKE. Install them with `apk update` and `apk add kmod-veth kmod-sched-cake`, then load them using `modprobe veth` and `modprobe sch_cake`. The feed URL and public verification key are preconfigured. Packages require this exact kernel ABI; other T95H images are not compatible. Signed HTTP download/install/removal and wrong-ABI rejection are checked before publication. Loading on hardware remains to be tested. The general OpenWrt module catalog is not provided by this two-package experiment.\n'
  (o/'release/RELEASE-NOTES.md').write_text(notes)
  print('PASS: selected-profile four-artifact release complete; hardware limitations documented',flush=True)
 if __name__=='__main__':main()

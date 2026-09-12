@@ -13,6 +13,10 @@ on:
         type: choice
         options: [dual, hdmi, uart]
         default: dual
+      module_feed_test:
+        description: Separate test release with downloadable VETH and CAKE modules
+        type: boolean
+        default: false
 permissions:
   contents: write
 concurrency:
@@ -55,8 +59,14 @@ jobs:
           umask 077
           printf '%s\n' "$T95H_APK_SIGNING_KEY" > "$RUNNER_TEMP/t95h-sign.pem"
       - name: Compile profile and verify all four SD/eMMC artifacts
+        env:
+          MODULE_FEED_TEST: ${{ inputs.module_feed_test }}
         run: |
-          python3 tools/build-openwrt-release.py --request build/request.json --inputs build/dependencies/t95h-locked-inputs-v1.tar.gz --sign-key "$RUNNER_TEMP/t95h-sign.pem" --output build/full --jobs 2 --revision "$((1000 + GITHUB_RUN_NUMBER))"
+          feed_args=()
+          if [ "$MODULE_FEED_TEST" = true ]; then
+            feed_args=(--module-feed-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/t95h-feedtest-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")
+          fi
+          python3 tools/build-openwrt-release.py --request build/request.json --inputs build/dependencies/t95h-locked-inputs-v1.tar.gz --sign-key "$RUNNER_TEMP/t95h-sign.pem" --output build/full --jobs 2 --revision "$((1000 + GITHUB_RUN_NUMBER))" "${feed_args[@]}"
       - name: Remove temporary private key
         if: always()
         run: rm -f "$RUNNER_TEMP/t95h-sign.pem"
@@ -68,6 +78,9 @@ jobs:
             build/full/release/*-installer.img.gz
             build/full/release/*-sysupgrade.bin
             build/full/release/*.json
+            build/full/release/*.apk
+            build/full/release/*.adb
+            build/full/release/*.pem
             build/full/release/SHA256SUMS
             build/full/release/platform.sh
             build/full/release/t95h-keep
