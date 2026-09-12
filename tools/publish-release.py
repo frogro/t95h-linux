@@ -72,8 +72,14 @@ def main():
     api_url=json.loads(found.stdout)['apiUrl']
     release=json.loads(subprocess.check_output(['gh','api',api_url]))
     if not release['draft']:raise ValueError('Release already published; refusing mutation')
-    pages=json.loads(subprocess.check_output(['gh','api','--paginate','--slurp',f"repos/{repo}/releases/{release['id']}/assets?per_page=100"]))
-    existing={item['name']:item for page in pages for item in page}
+    # Explicit pagination also supports the older gh shipped by Ubuntu.
+    existing={}
+    page=1
+    while True:
+        items=json.loads(subprocess.check_output(['gh','api',f"repos/{repo}/releases/{release['id']}/assets?per_page=100&page={page}"]))
+        existing.update({item['name']:item for item in items})
+        if len(items)<100:break
+        page+=1
     expected={path.name for path in files}
     if set(existing)-expected:raise ValueError('Unexpected assets in draft')
     pending=[]
