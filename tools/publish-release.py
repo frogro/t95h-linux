@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import time
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
 from verify_release import verify
@@ -60,10 +61,36 @@ def main():
         if not proof.get('apk_http_install_remove_verified') or not proof.get('wrong_kernel_abi_rejected') or not proof.get('untrusted_index_rejected'):
             raise ValueError('Feed checks incomplete')
         if proof['url'].split('/')[-1]!=tag:raise ValueError('Feed release tag mismatch')
-    subprocess.run(['gh','release','create',tag,'--target',a.commit,'--draft','--prerelease',
-                    '--title',f'T95H {a.profile} / {a.console} — experimental build {a.run_id}',
-                    '--notes-file',str(a.directory/'RELEASE-NOTES.md')],check=True)
-    subprocess.run(['gh','release','upload',tag,*map(str,files)],check=True)
+    repo=subprocess.check_output(['gh','repo','view','--json','nameWithOwner','--jq','.nameWithOwner'],text=True).strip()
+    found=subprocess.run(['gh','api',f'repos/{repo}/releases/tags/{tag}'],capture_output=True,text=True)
+    if found.returncode:
+        if '404' not in found.stderr:raise RuntimeError(found.stderr)
+        subprocess.run(['gh','release','create',tag,'--target',a.commit,'--draft','--prerelease',
+                        '--title',f'T95H {a.profile} / {a.console} — experimental build {a.run_id}',
+                        '--notes-file',str(a.directory/'RELEASE-NOTES.md')],check=True)
+        release=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/tags/{tag}']))
+    else:release=json.loads(found.stdout)
+    if not release['draft']:raise ValueError('Release already published; refusing mutation')
+    pages=json.loads(subprocess.check_output(['gh','api','--paginate','--slurp',f"repos/{repo}/releases/{release['id']}/assets?per_page=100"]))
+    existing={item['name']:item for page in pages for item in page}
+    expected={path.name for path in files}
+    if set(existing)-expected:raise ValueError('Unexpected assets in draft')
+    pending=[]
+    for path in files:
+        with path.open('rb') as f:digest='sha256:'+hashlib.file_digest(f,'sha256').hexdigest()
+        if path.name in existing:
+            if existing[path.name].get('digest')!=digest:raise ValueError('Existing asset checksum mismatch: '+path.name)
+        else:pending.append(path)
+    print(f'Resuming draft: {len(existing)} verified assets, {len(pending)} pending',flush=True)
+    for index,path in enumerate(pending):
+        for retry in range(4):
+            result=subprocess.run(['gh','release','upload',tag,str(path)],capture_output=True,text=True)
+            if result.returncode==0:break
+            if 'secondary rate limit' not in result.stderr and '429' not in result.stderr:raise RuntimeError(result.stderr)
+            if retry==3:raise RuntimeError('Rate limit persists; verified draft retained for resume')
+            time.sleep(60*(retry+1))
+        if len(files)>100:time.sleep(10)
+        if index%20==0:print(f'Uploaded {index+1}/{len(pending)} remaining assets',flush=True)
     subprocess.run(['gh','release','edit',tag,'--draft=false','--prerelease','--latest=false'],check=True)
     print('PASS: experimental release published:',tag)
 if __name__=='__main__':main()
