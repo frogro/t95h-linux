@@ -8,6 +8,10 @@ def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def gnu_mirror_urls(text):
  # ftpmirror recipes use both /package and /gnu/package paths.
  return re.sub(r'https?://ftpmirror\.gnu\.org/(?:gnu/)?', 'https://ftp.gnu.org/gnu/', text)
+def fontconfig_archive(text):
+ # The freedesktop.org endpoint returned HTTP 418 on Actions. The project's
+ # own release endpoint serves the identical archive; retain version and hash.
+ return text.replace('https://www.freedesktop.org/software/fontconfig/release/', 'https://fontconfig.org/release/')
 def wireguard_archive(text):
  # cgit regenerated this snapshot; archived bytes match all 123 tag files/modes.
  old='PKG_SHA256="6afe492647c3b0b2f68ab6df524e9e4290d03c34c3027e069e5bbc486949960e"'
@@ -109,6 +113,7 @@ FIRMWARE="misc-firmware wlan-firmware"
  strace.write_text(st+'\nPKG_CONFIGURE_OPTS_TARGET+=" --enable-bundled=yes"\n')
  # Same GMP archive from GNU; keep upstream version and SHA256 verification.
  gmp=le/'packages/devel/gmp/package.mk';gs=gmp.read_text();gmp.write_text(gs.replace('https://gmplib.org/download/gmp/', 'https://ftp.gnu.org/gnu/gmp/'))
+ fontconfig=le/'packages/x11/other/fontconfig/package.mk';fontconfig.write_text(fontconfig_archive(fontconfig.read_text()))
  stage=le/'t95h-startup';subprocess.run(['/usr/bin/python3',str(ROOT/'tools/stage-startup-fixes.py'),'--profile','base-B','--output',str(stage)],check=True)
  hw=pr/'packages/t95h-hardware';shutil.copytree(board/'libreelec/hardware',hw)
  src=hw/'sources';src.mkdir();shutil.copyfile(board/'external/regulator/t95h_aldo2.c',src/'t95h_aldo2.c');shutil.copyfile(stage/'ana/t95h_ana_provider.c',src/'t95h_ana_provider.c');(src/'Makefile').write_text('obj-m := t95h_aldo2.o t95h_ana_provider.o\n');shutil.copyfile(stage/'t95h.dtb',hw/'t95h.dtb')

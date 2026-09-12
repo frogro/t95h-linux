@@ -7,6 +7,12 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
 class GnuMirrors(unittest.TestCase):
+    def test_fontconfig_project_endpoint_retains_archive(self):
+        recipe = 'PKG_VERSION="2.15.0"\nPKG_SHA256="f5f359d6332861bd497570848fcb42520964a9e83d5e3abe397b6b6db9bcaaf4"\nPKG_URL="https://www.freedesktop.org/software/fontconfig/release/${PKG_NAME}-${PKG_VERSION}.tar.gz"\n'
+        fixed = module.fontconfig_archive(recipe)
+        self.assertEqual(fixed, recipe.replace('https://www.freedesktop.org/software/fontconfig/release/', 'https://fontconfig.org/release/'))
+        self.assertEqual(module.fontconfig_archive(fixed), fixed)
+
     def test_both_upstream_path_forms(self):
         for scheme in ("http", "https"):
             for prefix in ("", "gnu/"):
