@@ -1,59 +1,31 @@
-name: Package completed LibreELEC build for SD and eMMC
+name: Publish completed LibreELEC images
 on:
+  workflow_run:
+    workflows: [Build experimental T95H LibreELEC SD and eMMC]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       source_run:
-        description: Successful LibreELEC run with preserved assembly inputs
+        description: Successful LibreELEC build with completed candidate images
         required: true
-        default: '34642912252'
         type: string
 permissions:
   contents: write
   actions: read
 concurrency:
-  group: t95h-libreelec-packaging
+  group: t95h-libreelec-publishing
   cancel-in-progress: false
 jobs:
-  package:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - name: Install packaging tools
-        run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu python3-libfdt device-tree-compiler e2fsprogs dosfstools mtools u-boot-tools
-      - name: Download successful compiled inputs
+      - name: Download and publish verified completed images
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          SOURCE_RUN: ${{ inputs.source_run }}
-        run: |
-          python3 - <<'PY'
-          import json,os,subprocess
-          from pathlib import Path
-          run=os.environ['SOURCE_RUN']
-          if not run.isdecimal(): raise ValueError('Invalid run ID')
-          repo=os.environ['GH_REPO']
-          info=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/actions/runs/{run}']))
-          if info['conclusion']!='success' or info['path']!='.github/workflows/build-libreelec.yml' or info['head_repository']['full_name']!=repo:
-              raise ValueError('Expected successful same-repository LibreELEC build')
-          subprocess.run(['gh','run','download',run,'--name','t95h-libreelec-assembly-inputs-1','--dir','build'],check=True)
-          Path('build/repackage-source.json').write_text(json.dumps({'run':run,'commit':info['head_sha']},indent=2))
-          PY
-      - name: Assemble without recompiling kernel or Kodi
-        run: python3 tools/libreelec/assemble.py --source build/libreelec --prefix build/libreelec-inputs/prefix.bin --output build/libreelec-images
-      - name: Publish SD and eMMC installation images
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          gh release create "libreelec-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" build/libreelec-images/*.img.gz build/libreelec-images/SHA256SUMS build/libreelec-images/images.json build/repackage-source.json --target "$GITHUB_SHA" --prerelease --title "T95H LibreELEC SD and eMMC" --notes-file docs/libreelec-release-notes.md
-      - name: Preserve packaging diagnostics
-        if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: libreelec-packaging-diagnostics
-          path: |
-            build/repackage-source.json
-            build/libreelec-images/images.json
-            build/libreelec-images/installer-sd/installer.json
-          if-no-files-found: ignore
+          SOURCE_RUN: ${{ inputs.source_run || github.event.workflow_run.id }}
+        run: python3 tools/libreelec/publish.py --source-run "$SOURCE_RUN"

@@ -1,9 +1,9 @@
 # T95H LibreELEC – SD and eMMC installation candidate
 
-This package reuses the completed LibreELEC kernel and SYSTEM from the successful
-source run identified in `repackage-source.json`. It does not rebuild Kodi or
-change the kernel. The Anotter DE33 experiment is not included; this is the
-baseline for the first Kodi hardware test.
+These are the completed SD and eMMC images from a successful LibreELEC build.
+Publication verifies both compressed and raw image checksums and preserves the
+exact images without recompiling or repackaging. `release-source.json` identifies
+the source run and commit; `libreelec-request.json` records the LibreELEC version.
 
 Files:
 - `…-sd.img.gz`: run from SD.
