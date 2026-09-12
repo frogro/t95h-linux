@@ -66,9 +66,11 @@ def main():
     gh('run', 'download', args.source_run, '--repo', repo, '--name',
        't95h-libreelec-base-B-candidates', '--dir', directory)
     assets = verify(directory)
+    publication_commit = os.environ.get('GITHUB_SHA') or subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     provenance = directory / 'release-source.json'
     provenance.write_text(json.dumps({'run': args.source_run, 'commit': info['head_sha'],
         'attempt': info['run_attempt'], 'url': info['html_url'],
+        'publication_commit': publication_commit,
         'checksums_verified': True, 'hardware_tested': False}, indent=2) + '\n')
     assets.append(provenance)
     tag = f"libreelec-{args.source_run}-{info['run_attempt']}"
@@ -78,7 +80,7 @@ def main():
         print('Already published: ' + existing['html_url'])
         return
     if not existing:
-        gh('release', 'create', tag, '--repo', repo, '--target', info['head_sha'],
+        gh('release', 'create', tag, '--repo', repo, '--target', publication_commit,
            '--draft', '--prerelease', '--title', 'T95H LibreELEC – SD und eMMC',
            '--notes-file', ROOT / 'docs/libreelec-release-notes.md')
     gh('release', 'upload', tag, *assets, '--repo', repo, '--clobber')

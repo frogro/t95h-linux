@@ -3,7 +3,7 @@
 These are the completed SD and eMMC images from a successful LibreELEC build.
 Publication verifies both compressed and raw image checksums and preserves the
 exact images without recompiling or repackaging. `release-source.json` identifies
-the source run and commit; `libreelec-request.json` records the LibreELEC version.
+the source run and build commit (the release tag identifies the publication workflow); `libreelec-request.json` records the LibreELEC version.
 
 Files:
 - `…-sd.img.gz`: run from SD.
