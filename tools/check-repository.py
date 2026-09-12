@@ -29,6 +29,8 @@ def check():
         assert digest(board/'external'/name)==entry['source_sha256'], 'External source mismatch: '+name
     for profile in baseline['profiles']:
         cfg=(board/'profiles/kconfig-draft'/(profile+'.config')).read_text()
+        from base_module_contract import verify as verify_base, read_config
+        verify_base(read_config(cfg))
         for option in ['CONFIG_PCI','CONFIG_BLK_DEV_NVME','CONFIG_MHI_BUS']:
             assert option+'=y' not in cfg and option+'=m' not in cfg, profile+': '+option
         assert 'CONFIG_XRADIO=y' in cfg, profile+': internal WLAN missing'

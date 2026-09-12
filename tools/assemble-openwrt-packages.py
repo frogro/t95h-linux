@@ -51,6 +51,7 @@ def installed_packages(db):
 
 
 def main():
+    from base_module_contract import load as load_base_contract
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--request', required=True, type=Path)
     parser.add_argument('--imagebuilder', required=True, type=Path)
@@ -66,6 +67,10 @@ def main():
     groups = profiles[request['profile']]
     seeds = json.loads((ROOT/'boards/t95h/openwrt/packages.json').read_text())['seeds']
     packages = sorted({name for group in groups for name in seeds[group]} - {'t95h-kernel'})
+    # Exercise the real APK solver with every new kmod name. Official kernel
+    # repositories are excluded, so only our verified bundled providers qualify.
+    base_kmods = ['kmod-' + name for name in load_base_contract()['providers']]
+    packages = sorted(set(packages) | set(base_kmods))
     kernel = args.kernel_package.resolve(strict=True)
     if sha(kernel) != args.kernel_sha256:
         raise ValueError('Custom kernel package checksum mismatch')

@@ -61,6 +61,8 @@ def main():
  (release/'release-set.json').write_text(json.dumps({'format':'T95H-RELEASE-SET-1','artifacts':artifacts,'hardware_emmc_install_tested':False,'hardware_emmc_upgrade_tested':False},indent=2)+'\n')
  (release/'SHA256SUMS').write_text(''.join(sha(release/n)+'  '+n+'\n' for n in [*artifacts.values(),'platform.sh']))
  for source,name in [(a.request,'request.json'),(o/'packages/package-lock.json','package-lock.json'),(o/'kernel-package/package-report.json','kernel-package-report.json')]:shutil.copyfile(source,o/'release'/name)
+ shutil.copyfile(o/'kernel-package/root/usr/share/t95h/base-module-verification.json',release/'base-module-verification.json')
+ shutil.copyfile(ROOT/'boards/t95h/kernel/base-module-contract.json',release/'base-module-contract.json')
  notes=f'''# T95H {request['profile']}: OpenWrt {version}, Linux {request['kernel']}
 
 SD image, SD with offline eMMC installer, and separate SD/eMMC sysupgrade files from one build. Console: {request['console']}.
@@ -95,6 +97,7 @@ requires the remaining provenance/license work. This is an experimental artifact
 '''
  notes += '\n## USB-Anschlüsse\n\nBeide USB-Buchsen arbeiten als Host, einschließlich USB0 neben dem SD-Kartenschacht.\nUSB0 wurde mit dem RTL8821CU-Stick erfolgreich auf Erkennung und WLAN-Scans\nin beiden Frequenzbändern getestet. Weitere Geräte benötigen ihre jeweiligen\nProfil-Treiber; deren Betrieb und Strombedarf sind gerätespezifisch zu prüfen.\n'
  notes += '\n## Früherer Panfrost-Start (Profile B und A+B)\n\nGPU-Mindestwartezeit auf 45 statt 120 Sekunden reduziert. Die 15 aufeinanderfolgenden Bereitschaftsprüfungen für LAN/SSH, WLAN und Spannungsregler bleiben erhalten; tatsächlicher Start kann später erfolgen. Der frühere Start wurde unter AnotterKiosk dreimal beobachtet, ist mit diesem OpenWrt-Image aber noch hardwareseitig zu bestätigen. Frühe deferred-probe-Meldungen und gelegentliche Bootprobleme gelten dadurch nicht als behoben.\n'
+ notes+='\n## Router-Basis-Erweiterung (Test)\nKryptografie/AF_ALG, WireGuard, TUN/VETH, nftables-Socket/TPROXY/Bridge und Traffic-Shaping einschließlich CAKE/IFB sind jetzt in allen Basisprofilen vorgesehen. Vorhandene Built-ins bleiben erhalten; zusätzliche Module liegen im signierten t95h-kernel-Paket. Der Build prüft alle neuen Provider anhand von Konfiguration und Modul-/Builtin-Dateien und fordert alle Namen beim APK-Solver an. Ein unabhängiger Feed zum Nachladen beliebiger weiterer Kernelmodule ist noch nicht enthalten. Die vollständige Angleichung des OpenWrt-Modulkatalogs bleibt offen. Noch kein Hardwaretest dieses Images.\n'
  (o/'release/RELEASE-NOTES.md').write_text(notes)
  print('PASS: selected-profile four-artifact release complete; hardware limitations documented',flush=True)
 if __name__=='__main__':main()

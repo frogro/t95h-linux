@@ -31,6 +31,7 @@ def flatten_modules(root, release):
  return moves
 
 def main():
+ from base_module_contract import verify as verify_base_modules, read_config
  p=argparse.ArgumentParser(description=__doc__)
  for name in ('kernel-build','modules-stage','firmware-root','imagebuilder','sign-key','keys','output'):
   p.add_argument('--'+name,type=Path,required=True)
@@ -49,6 +50,9 @@ def main():
  profile=kp['profile'];groups={'base'}|set(profile.split('-')[1:]);board=ROOT/'boards/t95h'
  config=dict(re.findall(r'^(CONFIG_\w+)=(.*)$',(k/'.config').read_text(),re.M))
  providers={n:o for n,o in json.loads((board/'kernel/package-providers.json').read_text())['config'].items() if config.get('CONFIG_'+o) in ('y','m')}
+ # New router providers require every selected function and its actual payload.
+ base_providers=verify_base_modules(read_config((k/'.config').read_text()),m/'root/lib/modules',k/'modules.builtin')
+ providers.update(base_providers)
  ib=a.imagebuilder.resolve(strict=True);apk=ib/'staging_dir/host/bin/apk'
  a.sign_key.resolve(strict=True);a.keys.resolve(strict=True)
  out=a.output.resolve();out.mkdir(parents=True,exist_ok=False);root=out/'root';shutil.copytree(m/'root',root,symlinks=True)
@@ -86,6 +90,7 @@ def main():
  metadata=root/'usr/share/t95h';metadata.mkdir(parents=True,exist_ok=True)
  shutil.copyfile(k/'.config',metadata/'kernel.config')
  (metadata/'kernel-providers.json').write_text(json.dumps({'release':mp['kernel_release'],'config':providers},indent=2)+'\n')
+ (metadata/'base-module-verification.json').write_text(json.dumps({'passed':True,'providers':base_providers,'kernel_image_sha256':kp['image_sha256'],'packaging':'included in signed t95h-kernel; no separate module feed'},indent=2)+'\n')
  (metadata/'build-profile.json').write_text(json.dumps({'profile':profile,'kernel':mp['kernel_release'],'kernel_sha256':kp['image_sha256'],'config_sha256':kp['config_sha256'],'dtb_sha256':startup['dtb_sha256'],'modules_sha256':{str(f.relative_to(root)):sha(f) for f in root.rglob('*.ko')},'wlan_firmware':'.58','hardware_validation':'pending'},indent=2)+'\n')
  for path in sorted(root.rglob('*')):
   if path.is_symlink():raise ValueError('Unexpected payload symlink: '+str(path))

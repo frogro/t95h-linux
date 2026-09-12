@@ -1,0 +1,425 @@
+{
+  "kernel": "7.2.3",
+  "scope": "First router base extension, all profiles; bundled matching modules, not a separate downloadable kmod feed",
+  "providers": {
+    "crypto-aead": {
+      "symbols": [
+        "CRYPTO_AEAD",
+        "CRYPTO_AEAD2"
+      ],
+      "objects": {
+        "CRYPTO_AEAD2": [
+          "aead"
+        ]
+      }
+    },
+    "crypto-manager": {
+      "symbols": [
+        "CRYPTO_MANAGER",
+        "CRYPTO_MANAGER2"
+      ],
+      "objects": {
+        "CRYPTO_MANAGER2": [
+          "cryptomgr"
+        ]
+      }
+    },
+    "crypto-null": {
+      "symbols": [
+        "CRYPTO_NULL"
+      ],
+      "objects": {
+        "CRYPTO_NULL": [
+          "crypto_null"
+        ]
+      }
+    },
+    "crypto-cmac": {
+      "symbols": [
+        "CRYPTO_CMAC"
+      ],
+      "objects": {
+        "CRYPTO_CMAC": [
+          "cmac"
+        ]
+      }
+    },
+    "crypto-hmac": {
+      "symbols": [
+        "CRYPTO_HMAC"
+      ],
+      "objects": {
+        "CRYPTO_HMAC": [
+          "hmac"
+        ]
+      }
+    },
+    "crypto-user": {
+      "symbols": [
+        "CRYPTO_USER",
+        "CRYPTO_USER_API",
+        "CRYPTO_USER_API_AEAD",
+        "CRYPTO_USER_API_HASH",
+        "CRYPTO_USER_API_RNG",
+        "CRYPTO_USER_API_SKCIPHER"
+      ],
+      "objects": {
+        "CRYPTO_USER": [
+          "crypto_user"
+        ],
+        "CRYPTO_USER_API": [
+          "af_alg"
+        ],
+        "CRYPTO_USER_API_AEAD": [
+          "algif_aead"
+        ],
+        "CRYPTO_USER_API_HASH": [
+          "algif_hash"
+        ],
+        "CRYPTO_USER_API_RNG": [
+          "algif_rng"
+        ],
+        "CRYPTO_USER_API_SKCIPHER": [
+          "algif_skcipher"
+        ]
+      }
+    },
+    "crypto-rng": {
+      "symbols": [
+        "CRYPTO_RNG",
+        "CRYPTO_RNG2",
+        "CRYPTO_DRBG",
+        "CRYPTO_JITTERENTROPY"
+      ],
+      "objects": {
+        "CRYPTO_RNG2": [
+          "rng"
+        ],
+        "CRYPTO_DRBG": [
+          "drbg"
+        ],
+        "CRYPTO_JITTERENTROPY": [
+          "jitterentropy_rng"
+        ]
+      }
+    },
+    "crypto-sha3": {
+      "symbols": [
+        "CRYPTO_SHA3"
+      ],
+      "objects": {
+        "CRYPTO_SHA3": [
+          "sha3"
+        ]
+      }
+    },
+    "crypto-sha256": {
+      "symbols": [
+        "CRYPTO_SHA256"
+      ],
+      "objects": {
+        "CRYPTO_SHA256": [
+          "sha256"
+        ]
+      }
+    },
+    "crypto-sha512": {
+      "symbols": [
+        "CRYPTO_SHA512"
+      ],
+      "objects": {
+        "CRYPTO_SHA512": [
+          "sha512"
+        ]
+      }
+    },
+    "crypto-lib-chacha20poly1305": {
+      "symbols": [
+        "CRYPTO_LIB_CHACHA20POLY1305"
+      ],
+      "objects": {
+        "CRYPTO_LIB_CHACHA20POLY1305": [
+          "libchacha20poly1305"
+        ]
+      }
+    },
+    "crypto-lib-curve25519": {
+      "symbols": [
+        "CRYPTO_LIB_CURVE25519"
+      ],
+      "objects": {
+        "CRYPTO_LIB_CURVE25519": [
+          "libcurve25519"
+        ]
+      }
+    },
+    "udptunnel4": {
+      "symbols": [
+        "NET_UDP_TUNNEL"
+      ],
+      "objects": {
+        "NET_UDP_TUNNEL": [
+          "udp_tunnel"
+        ]
+      }
+    },
+    "udptunnel6": {
+      "symbols": [
+        "NET_UDP_TUNNEL",
+        "IPV6"
+      ],
+      "objects": {
+        "NET_UDP_TUNNEL": [
+          "ip6_udp_tunnel"
+        ]
+      }
+    },
+    "wireguard": {
+      "symbols": [
+        "WIREGUARD"
+      ],
+      "objects": {
+        "WIREGUARD": [
+          "wireguard"
+        ]
+      }
+    },
+    "tun": {
+      "symbols": [
+        "TUN"
+      ],
+      "objects": {
+        "TUN": [
+          "tun"
+        ]
+      }
+    },
+    "veth": {
+      "symbols": [
+        "VETH"
+      ],
+      "objects": {
+        "VETH": [
+          "veth"
+        ]
+      }
+    },
+    "nf-socket": {
+      "symbols": [
+        "NF_SOCKET_IPV4",
+        "NF_SOCKET_IPV6"
+      ],
+      "objects": {
+        "NF_SOCKET_IPV4": [
+          "nf_socket_ipv4"
+        ],
+        "NF_SOCKET_IPV6": [
+          "nf_socket_ipv6"
+        ]
+      }
+    },
+    "nf-tproxy": {
+      "symbols": [
+        "NF_TPROXY_IPV4",
+        "NF_TPROXY_IPV6"
+      ],
+      "objects": {
+        "NF_TPROXY_IPV4": [
+          "nf_tproxy_ipv4"
+        ],
+        "NF_TPROXY_IPV6": [
+          "nf_tproxy_ipv6"
+        ]
+      }
+    },
+    "nft-socket": {
+      "symbols": [
+        "NFT_SOCKET"
+      ],
+      "objects": {
+        "NFT_SOCKET": [
+          "nft_socket"
+        ]
+      }
+    },
+    "nft-tproxy": {
+      "symbols": [
+        "NFT_TPROXY"
+      ],
+      "objects": {
+        "NFT_TPROXY": [
+          "nft_tproxy"
+        ]
+      }
+    },
+    "nft-bridge": {
+      "symbols": [
+        "NFT_BRIDGE_META",
+        "NFT_BRIDGE_REJECT",
+        "NF_CONNTRACK_BRIDGE"
+      ],
+      "objects": {
+        "NFT_BRIDGE_META": [
+          "nft_meta_bridge"
+        ],
+        "NFT_BRIDGE_REJECT": [
+          "nft_reject_bridge"
+        ],
+        "NF_CONNTRACK_BRIDGE": [
+          "nf_conntrack_bridge"
+        ]
+      }
+    },
+    "sched-core": {
+      "symbols": [
+        "NET_ACT_GACT",
+        "NET_ACT_MIRRED",
+        "NET_ACT_SKBEDIT",
+        "NET_CLS",
+        "NET_CLS_ACT",
+        "NET_CLS_BASIC",
+        "NET_CLS_FLOW",
+        "NET_CLS_FW",
+        "NET_CLS_MATCHALL",
+        "NET_CLS_ROUTE4",
+        "NET_CLS_U32",
+        "NET_EMATCH",
+        "NET_EMATCH_U32",
+        "NET_SCHED",
+        "NET_SCH_HFSC",
+        "NET_SCH_HTB",
+        "NET_SCH_INGRESS",
+        "NET_SCH_TBF"
+      ],
+      "objects": {
+        "NET_ACT_GACT": [
+          "act_gact"
+        ],
+        "NET_ACT_MIRRED": [
+          "act_mirred"
+        ],
+        "NET_ACT_SKBEDIT": [
+          "act_skbedit"
+        ],
+        "NET_CLS_BASIC": [
+          "cls_basic"
+        ],
+        "NET_CLS_FLOW": [
+          "cls_flow"
+        ],
+        "NET_CLS_FW": [
+          "cls_fw"
+        ],
+        "NET_CLS_MATCHALL": [
+          "cls_matchall"
+        ],
+        "NET_CLS_ROUTE4": [
+          "cls_route"
+        ],
+        "NET_CLS_U32": [
+          "cls_u32"
+        ],
+        "NET_EMATCH_U32": [
+          "em_u32"
+        ],
+        "NET_SCH_HFSC": [
+          "sch_hfsc"
+        ],
+        "NET_SCH_HTB": [
+          "sch_htb"
+        ],
+        "NET_SCH_INGRESS": [
+          "sch_ingress"
+        ],
+        "NET_SCH_TBF": [
+          "sch_tbf"
+        ]
+      }
+    },
+    "sched-cake": {
+      "symbols": [
+        "NET_SCH_CAKE"
+      ],
+      "objects": {
+        "NET_SCH_CAKE": [
+          "sch_cake"
+        ]
+      }
+    },
+    "ifb": {
+      "symbols": [
+        "IFB",
+        "NET_CLS"
+      ],
+      "objects": {
+        "IFB": [
+          "ifb"
+        ]
+      }
+    }
+  },
+  "required_config": {
+    "CRYPTO_AEAD": "m",
+    "CRYPTO_AEAD2": "m",
+    "CRYPTO_MANAGER": "m",
+    "CRYPTO_MANAGER2": "m",
+    "CRYPTO_NULL": "m",
+    "CRYPTO_CMAC": "m",
+    "CRYPTO_HMAC": "m",
+    "CRYPTO_USER": "m",
+    "CRYPTO_USER_API": "m",
+    "CRYPTO_USER_API_AEAD": "m",
+    "CRYPTO_USER_API_HASH": "m",
+    "CRYPTO_USER_API_RNG": "m",
+    "CRYPTO_USER_API_SKCIPHER": "m",
+    "CRYPTO_RNG": "m",
+    "CRYPTO_RNG2": "m",
+    "CRYPTO_DRBG": "m",
+    "CRYPTO_JITTERENTROPY": "m",
+    "CRYPTO_SHA3": "m",
+    "CRYPTO_SHA256": "m",
+    "CRYPTO_SHA512": "m",
+    "CRYPTO_LIB_CHACHA20POLY1305": "m",
+    "CRYPTO_LIB_CURVE25519": "m",
+    "NET_UDP_TUNNEL": "m",
+    "WIREGUARD": "m",
+    "TUN": "y",
+    "VETH": "m",
+    "NF_SOCKET_IPV4": "m",
+    "NF_SOCKET_IPV6": "m",
+    "NF_TPROXY_IPV4": "m",
+    "NF_TPROXY_IPV6": "m",
+    "NFT_SOCKET": "m",
+    "NFT_TPROXY": "m",
+    "NFT_BRIDGE_META": "m",
+    "NFT_BRIDGE_REJECT": "m",
+    "NF_CONNTRACK_BRIDGE": "m",
+    "NET_ACT_GACT": "m",
+    "NET_ACT_MIRRED": "m",
+    "NET_ACT_SKBEDIT": "m",
+    "NET_CLS": "y",
+    "NET_CLS_ACT": "y",
+    "NET_CLS_BASIC": "m",
+    "NET_CLS_FLOW": "m",
+    "NET_CLS_FW": "m",
+    "NET_CLS_MATCHALL": "m",
+    "NET_CLS_ROUTE4": "m",
+    "NET_CLS_U32": "m",
+    "NET_EMATCH": "y",
+    "NET_EMATCH_U32": "m",
+    "NET_SCHED": "y",
+    "NET_SCH_HFSC": "m",
+    "NET_SCH_HTB": "m",
+    "NET_SCH_INGRESS": "m",
+    "NET_SCH_TBF": "m",
+    "NET_SCH_CAKE": "m",
+    "IFB": "m",
+    "KEYS": "y",
+    "KEY_DH_OPERATIONS": "y"
+  },
+  "notes": [
+    "Preserve existing y/m choices when already enabled.",
+    "Linux 7.2 no longer has CRYPTO_DRBG_MENU/CRYPTO_DRBG_HMAC.",
+    "Architecture crypto implementations are selected by Linux 7.2 Kconfig, not copied from all-architecture OpenWrt metadata."
+  ]
+}
