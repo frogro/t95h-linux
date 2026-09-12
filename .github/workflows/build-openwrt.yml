@@ -17,6 +17,10 @@ on:
         description: Separate test release with downloadable VETH and CAKE modules
         type: boolean
         default: false
+      module_catalog:
+        description: Build audited A+B kernel-module catalog with per-package exclusions
+        type: boolean
+        default: false
 permissions:
   contents: write
 concurrency:
@@ -61,11 +65,13 @@ jobs:
       - name: Compile profile and verify all four SD/eMMC artifacts
         env:
           MODULE_FEED_TEST: ${{ inputs.module_feed_test }}
+          MODULE_CATALOG: ${{ inputs.module_catalog }}
         run: |
           feed_args=()
-          if [ "$MODULE_FEED_TEST" = true ]; then
+          if [ "$MODULE_FEED_TEST" = true ] || [ "$MODULE_CATALOG" = true ]; then
             feed_args=(--module-feed-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/t95h-feedtest-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")
           fi
+          if [ "$MODULE_CATALOG" = true ]; then feed_args+=(--module-catalog); fi
           python3 tools/build-openwrt-release.py --request build/request.json --inputs build/dependencies/t95h-locked-inputs-v1.tar.gz --sign-key "$RUNNER_TEMP/t95h-sign.pem" --output build/full --jobs 2 --revision "$((1000 + GITHUB_RUN_NUMBER))" "${feed_args[@]}"
       - name: Remove temporary private key
         if: always()

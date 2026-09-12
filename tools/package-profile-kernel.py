@@ -36,6 +36,7 @@ def main():
  for name in ('kernel-build','modules-stage','firmware-root','imagebuilder','sign-key','keys','output'):
   p.add_argument('--'+name,type=Path,required=True)
  p.add_argument('--version',required=True);p.add_argument('--epoch',type=int,required=True)
+ p.add_argument('--module-catalog',action='store_true')
  p.add_argument('--module-feed-url',help='Opt-in isolated feed-test release URL')
  a=p.parse_args()
  if not re.fullmatch(r'7\.2\.3-r[0-9]+',a.version):raise ValueError('Explicit 7.2.3 package revision required')
@@ -78,10 +79,13 @@ def main():
  abi='0~'+hashlib.sha256((kp['image_sha256']+kp['config_sha256']).encode()).hexdigest()
  feed=None
  if a.module_feed_url:
-  from module_feed import split
+  if a.module_catalog:
+   from module_catalog import split
+  else:
+   from module_feed import split
   feed_env=dict(os.environ,STAGING_DIR_HOST=str(ib/'staging_dir/host'),SOURCE_DATE_EPOCH=str(a.epoch),TZ='UTC',LC_ALL='C')
   feed=split(root,mp['kernel_release'],out/'feed',providers,a.version,abi,a.module_feed_url,
-             apk,ib/'staging_dir/host/bin/fakeroot',a.sign_key.resolve(),a.keys.resolve(),a.epoch,feed_env)
+             apk,ib/'staging_dir/host/bin/fakeroot',a.sign_key.resolve(),a.keys.resolve(),a.epoch,feed_env,*([k] if a.module_catalog else []))
  startup=json.loads((m/'startup/verification.json').read_text())
  if startup['profile']!=profile or sha(m/'startup/t95h.dtb')!=startup['dtb_sha256']:raise ValueError('Profile DT changed')
  (root/'boot').mkdir();shutil.copyfile(k/'arch/arm64/boot/Image',root/'boot/Image');shutil.copyfile(m/'startup/t95h.dtb',root/'boot/t95h.dtb')
@@ -98,7 +102,7 @@ def main():
  metadata=root/'usr/share/t95h';metadata.mkdir(parents=True,exist_ok=True)
  shutil.copyfile(k/'.config',metadata/'kernel.config')
  (metadata/'kernel-providers.json').write_text(json.dumps({'release':mp['kernel_release'],'config':providers},indent=2)+'\n')
- (metadata/'base-module-verification.json').write_text(json.dumps({'passed':True,'providers':base_providers,'kernel_image_sha256':kp['image_sha256'],'packaging':'two optional leaf modules in release feed' if feed else 'included in signed t95h-kernel; no separate module feed'},indent=2)+'\n')
+ (metadata/'base-module-verification.json').write_text(json.dumps({'passed':True,'providers':base_providers,'kernel_image_sha256':kp['image_sha256'],'packaging':'matching packages in release feed' if feed else 'included in signed t95h-kernel; no separate module feed'},indent=2)+'\n')
  (metadata/'build-profile.json').write_text(json.dumps({'profile':profile,'kernel':mp['kernel_release'],'kernel_sha256':kp['image_sha256'],'config_sha256':kp['config_sha256'],'dtb_sha256':startup['dtb_sha256'],'modules_sha256':{str(f.relative_to(root)):sha(f) for f in root.rglob('*.ko')},'wlan_firmware':'.58','hardware_validation':'pending'},indent=2)+'\n')
  for path in sorted(root.rglob('*')):
   if path.is_symlink():raise ValueError('Unexpected payload symlink: '+str(path))

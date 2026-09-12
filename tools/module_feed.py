@@ -93,6 +93,7 @@ def exercise(feed, kernel, apk, fakeroot, key, keys, env):
                 raise ValueError('Index without trusted key was not rejected as untrusted')
             repository.write_text('http://127.0.0.1:'+str(server.server_port)+'/packages.adb\n')
             names=[p['name'] for p in proof['packages'].values()]
+            payloads=[{'module':path,'module_sha256':digest} for item in proof['packages'].values() for path,digest in item.get('modules',{item['module']:item['module_sha256']} if 'module' in item else {}).items()]
             def cmd(root,*args,success=True):
                 result=subprocess.run([str(apk),'--root',str(root),'--arch','aarch64_cortex-a53',
                     '--keys-dir',str(keys),'--repositories-file',str(repository),'--no-cache',
@@ -102,16 +103,16 @@ def exercise(feed, kernel, apk, fakeroot, key, keys, env):
                 return result
             root=temp/'positive';root.mkdir()
             cmd(root,'add','--initdb','--force-non-repository',str(kernel))
-            for item in proof['packages'].values():
+            for item in payloads:
                 if (root/item['module']).exists():raise ValueError('Feed payload already in test image')
             cmd(root,'add',*names)
-            for item in proof['packages'].values():
+            for item in payloads:
                 if sha(root/item['module'])!=item['module_sha256']:raise ValueError('Downloaded payload differs')
             # Removal must not remove or change the kernel image.
             kernel_hash=sha(root/'boot/Image')
             cmd(root,'del',*names)
             if sha(root/'boot/Image')!=kernel_hash:raise ValueError('Module removal changed kernel')
-            if any((root/i['module']).exists() for i in proof['packages'].values()):raise ValueError('Module removal failed')
+            if any((root/i['module']).exists() for i in payloads):raise ValueError('Module removal failed')
             stage=temp/'wrong-root';stage.mkdir();wrong=temp/'wrong-kernel.apk'
             subprocess.run([str(fakeroot),str(apk),'mkpkg','--sign-key',str(key),
                 '--files',str(stage),'--output',str(wrong),'--info','name:t95h-kernel',
@@ -123,7 +124,7 @@ def exercise(feed, kernel, apk, fakeroot, key, keys, env):
             rejected=cmd(negative,'add',*names,success=False)
             if 't95h-kernel-abi' not in rejected.stdout+rejected.stderr:
                 raise ValueError('Failure did not identify ABI dependency')
-            if any((negative/i['module']).exists() for i in proof['packages'].values()):raise ValueError('Wrong ABI installed payload')
+            if any((negative/i['module']).exists() for i in payloads):raise ValueError('Wrong ABI installed payload')
             proof['apk_http_install_remove_verified']=True
             proof['wrong_kernel_abi_rejected']=True
             proof['untrusted_index_rejected']=True

@@ -10,9 +10,14 @@ def run(*cmd):
 def get(url,p):
  with urllib.request.urlopen(url,timeout=120) as r,p.open('wb') as f:shutil.copyfileobj(r,f)
 def main():
- p=argparse.ArgumentParser();p.add_argument('--request',type=Path,required=True);p.add_argument('--inputs',type=Path,required=True);p.add_argument('--sign-key',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--jobs',type=int,default=2);p.add_argument('--revision',type=int,required=True);p.add_argument('--module-feed-url');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--request',type=Path,required=True);p.add_argument('--inputs',type=Path,required=True);p.add_argument('--sign-key',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--jobs',type=int,default=2);p.add_argument('--revision',type=int,required=True);p.add_argument('--module-feed-url');p.add_argument('--module-catalog',action='store_true');a=p.parse_args()
  if a.revision<1:raise ValueError('Positive package revision required')
- o=a.output.resolve();o.mkdir(exist_ok=False,parents=True);request=json.loads(a.request.read_text());lock=json.loads((ROOT/'boards/t95h/build-inputs.json').read_text());epoch=str(lock['epoch']);os.environ['SOURCE_DATE_EPOCH']=epoch
+ o=a.output.resolve();o.mkdir(exist_ok=False,parents=True);request=json.loads(a.request.read_text());
+ if a.module_catalog:
+  from module_catalog import load
+  catalog=load()
+  if not a.module_feed_url or request['profile']!='base-A-B' or request['openwrt']!=catalog['openwrt']:raise ValueError('Catalog requires audited OpenWrt version, A+B profile and feed URL')
+ lock=json.loads((ROOT/'boards/t95h/build-inputs.json').read_text());epoch=str(lock['epoch']);os.environ['SOURCE_DATE_EPOCH']=epoch
  if sha(a.inputs)!=lock['sha256']:raise ValueError('Build input checksum mismatch')
  with tarfile.open(a.inputs) as t:t.extractall(o/'inputs',filter='data')
  inputs=o/'inputs';tc=inputs/'toolchain';fw=inputs/'firmware';prefix=inputs/'prefix.bin'
@@ -34,9 +39,9 @@ def main():
  def tool(name,*args):run(py,ROOT/'tools'/name,*args)
  tool('download-kernel-archive.py','--output',o/'kernel.tar.xz')
  tool('prepare-kernel-source.py','--archive',o/'kernel.tar.xz','--output',o/'source')
- tool('build-profile-kernel.py','--source-stage',o/'source','--toolchain',tc,'--firmware-root',fw,'--profile',request['profile'],'--output',o/'kernel','--jobs',a.jobs,'--epoch',epoch)
+ tool('build-profile-kernel.py','--source-stage',o/'source','--toolchain',tc,'--firmware-root',fw,'--profile',request['profile'],'--output',o/'kernel','--jobs',a.jobs,'--epoch',epoch,*(['--config',ROOT/'boards/t95h/profiles/catalog/base-A-B.config'] if a.module_catalog else []))
  tool('build-profile-modules.py','--kernel-build',o/'kernel','--toolchain',tc,'--output',o/'modules','--jobs',a.jobs,'--epoch',epoch)
- tool('package-profile-kernel.py','--kernel-build',o/'kernel','--modules-stage',o/'modules','--firmware-root',fw,'--imagebuilder',ib,'--sign-key',a.sign_key.resolve(),'--keys',keys,'--output',o/'kernel-package','--version','7.2.3-r'+str(a.revision),'--epoch',epoch,*(['--module-feed-url',a.module_feed_url] if a.module_feed_url else []))
+ tool('package-profile-kernel.py','--kernel-build',o/'kernel','--modules-stage',o/'modules','--firmware-root',fw,'--imagebuilder',ib,'--sign-key',a.sign_key.resolve(),'--keys',keys,'--output',o/'kernel-package','--version','7.2.3-r'+str(a.revision),'--epoch',epoch,*(['--module-feed-url',a.module_feed_url] if a.module_feed_url else []),*(['--module-catalog'] if a.module_catalog else []))
  pkg=json.loads((o/'kernel-package/package-report.json').read_text())
  tool('assemble-openwrt-packages.py','--request',a.request.resolve(),'--imagebuilder',ib,'--keys',keys,'--kernel-package',o/'kernel-package'/pkg['package'],'--kernel-sha256',pkg['sha256'],'--output',o/'packages')
  tool('prepare-openwrt-rootfs.py','--packages',o/'packages','--imagebuilder',ib,'--compiler',tc/'bin/aarch64-openwrt-linux-musl-gcc','--output',o/'rootfs','--epoch',epoch)
@@ -65,10 +70,10 @@ def main():
  shutil.copyfile(ROOT/'boards/t95h/kernel/base-module-contract.json',release/'base-module-contract.json')
  if a.module_feed_url:
   feed=o/'kernel-package/feed'
-  for path in [*feed.glob('*.apk'),feed/'packages.adb',feed/'module-feed.json',keys/'t95h-build.pem']:
+  for path in [*feed.glob('*.apk'),feed/'packages.adb',feed/'module-feed.json',keys/'t95h-build.pem',*([feed/'catalog-audit.json'] if a.module_catalog else [])]:
    shutil.copyfile(path,release/path.name)
   with (release/'SHA256SUMS').open('a') as sums:
-   for path in [*feed.glob('*.apk'),feed/'packages.adb',feed/'module-feed.json',keys/'t95h-build.pem']:
+   for path in [*feed.glob('*.apk'),feed/'packages.adb',feed/'module-feed.json',keys/'t95h-build.pem',*([feed/'catalog-audit.json'] if a.module_catalog else [])]:
     sums.write(sha(path)+'  '+path.name+'\n')
  notes=f'''# T95H {request['profile']}: OpenWrt {version}, Linux {request['kernel']}
 
@@ -108,6 +113,13 @@ requires the remaining provenance/license work. This is an experimental artifact
  if a.module_feed_url:
   notes=notes.replace('Ein unabhängiger Feed zum Nachladen beliebiger weiterer Kernelmodule ist noch nicht enthalten.', 'Dieses Testrelease stellt ausschließlich VETH und CAKE als separat nachladbare Module bereit.')
   notes+='\n## Separate module-feed experiment\nThis image intentionally omits VETH and CAKE. Install them with `apk update` and `apk add kmod-veth kmod-sched-cake`, then load them using `modprobe veth` and `modprobe sch_cake`. The feed URL and public verification key are preconfigured. Packages require this exact kernel ABI; other T95H images are not compatible. Signed HTTP download/install/removal and wrong-ABI rejection are checked before publication. Loading on hardware remains to be tested. The general OpenWrt module catalog is not provided by this two-package experiment.\n'
+ if a.module_catalog:
+  notes=notes[:notes.index('## Separate module-feed experiment')]
+  from collections import Counter
+  audit=json.loads((feed/'catalog-audit.json').read_text())
+  counts=Counter(r['state'] for r in audit['audit'])
+  notes+='## Audited module catalog\n\nThis is a full comparison of 976 upstream packages, not a claim that all 976 packages are available. Available signed feed packages: '+str(len(audit['packages']))+'. Downloadable module objects: '+str(len(audit['movable_objects']))+'. See `catalog-audit.json` for every available or excluded package and its reason. External drivers, unresolved kernel-version mappings and missing dependencies are not advertised as working. Use `apk update` and `apk add <package>`. Existing kernel/boot modules remain bundled. Hardware tests remain pending.\n\n'+json.dumps(dict(counts),indent=2)+'\n'
+  notes=notes.replace('Dieses Testrelease stellt ausschließlich VETH und CAKE als separat nachladbare Module bereit.','Dieses Testrelease enthält den nach Datei- und Abhängigkeitsabgleich verfügbaren Modulkatalog.')
  (o/'release/RELEASE-NOTES.md').write_text(notes)
  print('PASS: selected-profile four-artifact release complete; hardware limitations documented',flush=True)
 if __name__=='__main__':main()
