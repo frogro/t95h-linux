@@ -3,14 +3,14 @@
 export PATH=/usr/sbin:/usr/bin:/sbin:/bin
 n=0
 while [ "$n" -lt 60 ]; do
- if pidof dropbear >/dev/null 2>&1 &&
-    [ "$(ubus -t 2 call network.interface.lan status 2>/dev/null | jsonfilter -e '@.up')" = true ]; then
+ if ubus -t 2 call system board >/dev/null 2>&1 &&
+    ubus -t 2 list network.wireless 2>/dev/null | grep -qx network.wireless; then
   break
  fi
  n=$((n+1)); sleep 1
 done
-[ "$n" -lt 60 ] || { logger -t t95h-wlan-late 'LAN/SSH not ready; no WLAN power attempt'; exit 1; }
-logger -t t95h-wlan-late 'LAN and SSH ready; registering WLAN supply'
+[ "$n" -lt 60 ] || { logger -t t95h-wlan-late 'Local system/netifd not ready; no WLAN power attempt'; exit 1; }
+logger -t t95h-wlan-late 'Local system/netifd ready; registering WLAN supply (no LAN link required)'
 if [ ! -d /sys/module/t95h_aldo2 ]; then
  /sbin/insmod /lib/modules/"$(uname -r)"/t95h_aldo2.ko || {
   logger -t t95h-wlan-late 'ALDO2 registration failed'; exit 1;

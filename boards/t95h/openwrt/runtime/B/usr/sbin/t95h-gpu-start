@@ -41,9 +41,6 @@ radio_required() {
  )
 }
 ready() {
- pidof dropbear >/dev/null 2>&1 || return 1
- [ "$(ubus -t 2 call network.interface.lan status | jsonfilter -e '@.up')" = true ] || return 1
- [ "$(cat /sys/class/net/eth0/carrier 2>/dev/null)" = 1 ] || return 1
  if radio_required; then
   w=$(ubus -t 2 call network.wireless status) || return 1
   [ "$(printf '%s' "$w" | jsonfilter -e '@.radio0.up')" = true ] || return 1
@@ -69,7 +66,7 @@ ready() {
  [ "$cpu$gpu$wlan" = 111 ]
 }
 if [ "${1:-}" = --check-ready ]; then
- if ready; then echo 'PASS: LAN/SSH, WLAN worker, radio and regulators ready'; exit 0; fi
+ if ready; then echo 'PASS: WLAN worker, radio and regulators ready (no LAN link required)'; exit 0; fi
  echo 'NOT READY'; exit 1
 fi
 [ "$(uname -r)" = 7.2.3-t95h-candidate3 ] || { log 'STOP: incompatible kernel'; exit 1; }

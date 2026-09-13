@@ -6,7 +6,7 @@
       "profile": "A"
     },
     "openwrt/runtime/B/usr/sbin/t95h-gpu-start": {
-      "sha256": "4a24605c13c5fef6a80b169137f1a969dbb8b32ede6fc56a3d686984d62cd78d",
+      "sha256": "78dfd760abdb638de09f2e5901a63910ac8a68aacad266e8ce110b892211fbb8",
       "mode": "0o755",
       "profile": "B"
     },
@@ -41,7 +41,7 @@
       "profile": "base"
     },
     "openwrt/runtime/base/usr/sbin/t95h-wlan-late": {
-      "sha256": "8c62b2b4c3173b63acd26513556abdc2d5214faac64324f7a8882f358d90a2cb",
+      "sha256": "5478a2aac5d551c7946fc491ac1d7016c4768ea1108bbc851748826714a3eb5c",
       "mode": "0o755",
       "profile": "base"
     },
