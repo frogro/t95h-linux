@@ -81,7 +81,7 @@
       "profile": "base"
     },
     "openwrt/runtime/base/etc/config/dhcp": {
-      "sha256": "d546696ddd77b2f75b983e13ae5fbd5cef68a8bbd3535b5f22617dc09e1fc48c",
+      "sha256": "e6d0e245103a2b768679fe6cdf522f81a90adb537ba577a7d326b48ea0f593f6",
       "mode": "0o644",
       "profile": "base"
     },
