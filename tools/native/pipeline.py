@@ -51,6 +51,12 @@ def prepare(key):
             _,name,url=line.split();pin=url.rsplit('^',1)[-1]
             if not re.fullmatch('[0-9a-f]{40}',pin) or output('git','rev-parse','HEAD',cwd=SOURCE/'feeds'/name)!=pin:
                 raise RuntimeError('Unpinned or mismatching stable feed: '+name)
+    # Apply reviewed feed fixes only after verifying the upstream pinned commits.
+    # These patches are included in resolve()'s compatibility fingerprint.
+    for patch in sorted((HERE/'feed-patches').glob('*/*.patch')):
+        feed=SOURCE/'feeds'/patch.parent.name
+        run('git','apply','--check',patch,cwd=feed)
+        run('git','apply',patch,cwd=feed)
     run('./scripts/feeds','install','-a',cwd=SOURCE)
     groups=json.loads((HERE/'packages.json').read_text());selected=set()
     if 'A' in d['profile'].split('-'):selected.update(groups['A'])
