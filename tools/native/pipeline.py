@@ -29,7 +29,7 @@ def resolve(profile, key):
         if p.is_file() and '__pycache__' not in p.parts:
             h.update(str(p.relative_to(HERE)).encode());h.update(p.read_bytes())
     fingerprint = h.hexdigest()
-    d = dict(version=version,tag=tag,commit=commit,profile=profile,fingerprint=fingerprint,feed_id=fingerprint[:16])
+    d = dict(version=version,tag=tag,commit=commit,profile=profile,build_commit=os.environ.get('GITHUB_SHA'),fingerprint=fingerprint,feed_id=fingerprint[:16])
     (WORK/'lock.json').write_text(json.dumps(d,indent=2)+'\n')
     if os.environ.get('GITHUB_OUTPUT'):
         with open(os.environ['GITHUB_OUTPUT'],'a') as f:
@@ -115,7 +115,11 @@ Alte Systeme benötigen vor dem ersten Update den passenden Plattformskriptstand
     sums=[sha(p)+'  '+p.name for p in sorted(out.iterdir()) if p.is_file() and p.name!='SHA256SUMS']
     (out/'SHA256SUMS').write_text('\n'.join(sums)+'\n')
 def publish():
-    d=lock();repo=os.environ['GITHUB_REPOSITORY'];commit=os.environ['GITHUB_SHA']
+    d=lock();repo=os.environ['GITHUB_REPOSITORY']
+    # Publishing an older workflow-changing commit can require workflows:write.
+    # Tag the current default-branch head; retain the actual build SHA separately.
+    branch=output('gh','api',f'repos/{repo}','--jq','.default_branch')
+    commit=output('gh','api',f'repos/{repo}/commits/{branch}','--jq','.sha')
     feeds=list((WORK/'releases').glob('native-kmods-*'))
     if len(feeds)!=1:raise RuntimeError('Expected one verified module repository')
     feed=feeds[0];tag=feed.name
@@ -133,8 +137,10 @@ def publish():
         run('gh','release','edit',tag,'--repo',repo,'--draft=false','--latest=false')
     tag=f'openwrt-native-{d["version"]}-{d["profile"]}-{os.environ["GITHUB_RUN_ID"]}-{os.environ["GITHUB_RUN_ATTEMPT"]}'
     out=WORK/'release'
-    run('gh','release','create',tag,'--repo',repo,'--target',commit,'--draft','--prerelease','--title',f'T95H OpenWrt {d["version"]} Kernel 6 SD/eMMC ({d["profile"]})','--notes-file',out/'RELEASE-NOTES.md')
-    run('gh','release','upload',tag,'--repo',repo,*sorted(out.iterdir()))
+    notes=out/'publication-notes.md'
+    notes.write_text((out/'RELEASE-NOTES.md').read_text()+f'\nBuild source commit: {d.get("build_commit", os.environ["GITHUB_SHA"])}\nPublication tag commit: {commit}\n')
+    run('gh','release','create',tag,'--repo',repo,'--target',commit,'--draft','--prerelease','--title',f'T95H OpenWrt {d["version"]} Kernel 6 SD/eMMC ({d["profile"]})','--notes-file',notes)
+    run('gh','release','upload',tag,'--repo',repo,*[p for p in sorted(out.iterdir()) if p.name!='publication-notes.md'])
     run('gh','release','edit',tag,'--repo',repo,'--draft=false','--latest=false')
     print('Published:',tag)
 if __name__=='__main__':

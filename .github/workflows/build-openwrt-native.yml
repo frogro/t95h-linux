@@ -54,9 +54,30 @@ jobs:
             build/native/source/staging_dir
             build/native/source/bin
       - name: Build, audit full kernel catalog and assemble both update paths
+        id: compile
         run: |
           set -o pipefail
           python3 -u tools/native/pipeline.py build --jobs 4 2>&1 | tee "$NATIVE_WORK/logs/build.log"
+      - name: Preserve completed images and signed module feed
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-${{ inputs.profile }}-release-bundle
+          path: |
+            build/native/release/
+            build/native/releases/
+            build/native/lock.json
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+      - name: Save completed build before publication
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          key: ${{ steps.resolve.outputs.cache_key }}
+          path: |
+            build/native/source/dl
+            build/native/source/build_dir
+            build/native/source/staging_dir
+            build/native/source/bin
       - name: Publish signed module feed and SD/eMMC release
         run: python3 tools/native/pipeline.py publish
       - name: Remove private keys
