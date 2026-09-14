@@ -78,8 +78,6 @@ jobs:
             build/native/source/build_dir
             build/native/source/staging_dir
             build/native/source/bin
-      - name: Publish signed module feed and SD/eMMC release
-        run: python3 tools/native/pipeline.py publish
       - name: Remove private keys
         if: always()
         run: rm -f "$RUNNER_TEMP/native-sign.pem" "$NATIVE_WORK/source/private-key.pem"
@@ -94,3 +92,23 @@ jobs:
             build/native/source/.config
           if-no-files-found: ignore
           compression-level: 1
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    concurrency:
+      group: t95h-native-feed-publication
+      queue: max
+    env:
+      NATIVE_WORK: ${{ github.workspace }}/build/native
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Restore completed images and signed module feed
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: native-${{ inputs.profile }}-release-bundle
+          path: build/native
+      - name: Publish or resume verified release assets
+        run: python3 -u tools/native/pipeline.py publish

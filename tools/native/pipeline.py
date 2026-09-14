@@ -115,34 +115,24 @@ Alte Systeme benötigen vor dem ersten Update den passenden Plattformskriptstand
     sums=[sha(p)+'  '+p.name for p in sorted(out.iterdir()) if p.is_file() and p.name!='SHA256SUMS']
     (out/'SHA256SUMS').write_text('\n'.join(sums)+'\n')
 def publish():
+    from publisher import GitHub
     d=lock();repo=os.environ['GITHUB_REPOSITORY']
-    # Publishing an older workflow-changing commit can require workflows:write.
-    # Tag the current default-branch head; retain the actual build SHA separately.
-    branch=output('gh','api',f'repos/{repo}','--jq','.default_branch')
-    commit=output('gh','api',f'repos/{repo}/commits/{branch}','--jq','.sha')
+    client=GitHub(repo)
+    branch=client.api(f'repos/{repo}')['default_branch']
+    commit=client.api(f'repos/{repo}/commits/{branch}')['sha']
     feeds=list((WORK/'releases').glob('native-kmods-*'))
     if len(feeds)!=1:raise RuntimeError('Expected one verified module repository')
-    feed=feeds[0];tag=feed.name
-    existing=subprocess.run(['gh','release','view',tag,'--repo',repo,'--json','isDraft'],capture_output=True,text=True)
-    if existing.returncode==0:
-        if json.loads(existing.stdout)['isDraft']:raise RuntimeError('Existing incomplete feed release; inspect before retry')
-        tmp=WORK/'published-feed';tmp.mkdir(exist_ok=True)
-        run('gh','release','download',tag,'--repo',repo,'--pattern','catalog.json','--dir',tmp,'--clobber')
-        old=json.loads((tmp/'catalog.json').read_text());new=json.loads((feed/'catalog.json').read_text())
-        if old['kernel_dependency']!=new['kernel_dependency'] or {n:v['sha256'] for n,v in old['packages'].items()}!={n:v['sha256'] for n,v in new['packages'].items()}:raise RuntimeError('Published immutable feed differs')
-    else:
-        run('gh','release','create',tag,'--repo',repo,'--target',commit,'--draft','--title','T95H native kernel module feed '+d['feed_id'],'--notes','Signed kernel packages for the matching native T95H build. Do not mix kernel ABIs.')
-        assets=sorted(feed.iterdir())
-        for i in range(0,len(assets),60):run('gh','release','upload',tag,'--repo',repo,*assets[i:i+60])
-        run('gh','release','edit',tag,'--repo',repo,'--draft=false','--latest=false')
-    tag=f'openwrt-native-{d["version"]}-{d["profile"]}-{os.environ["GITHUB_RUN_ID"]}-{os.environ["GITHUB_RUN_ATTEMPT"]}'
+    feed=feeds[0]
+    client.publish(feed.name, sorted(feed.iterdir()), commit,
+        'T95H native kernel module feed '+d['feed_id'],
+        'Signed kernel packages for the matching native T95H build. Do not mix kernel ABIs.')
+    # Stable across job retries, so an interrupted image upload can resume too.
+    tag=f'openwrt-native-{d["version"]}-{d["profile"]}-{os.environ["GITHUB_RUN_ID"]}'
     out=WORK/'release'
-    notes=out/'publication-notes.md'
-    notes.write_text((out/'RELEASE-NOTES.md').read_text()+f'\nBuild source commit: {d.get("build_commit", os.environ["GITHUB_SHA"])}\nPublication tag commit: {commit}\n')
-    run('gh','release','create',tag,'--repo',repo,'--target',commit,'--draft','--prerelease','--title',f'T95H OpenWrt {d["version"]} Kernel 6 SD/eMMC ({d["profile"]})','--notes-file',notes)
-    run('gh','release','upload',tag,'--repo',repo,*[p for p in sorted(out.iterdir()) if p.name!='publication-notes.md'])
-    run('gh','release','edit',tag,'--repo',repo,'--draft=false','--latest=false')
-    print('Published:',tag)
+    # Preserve the original checksummed notes and assets across retries.
+    notes=(out/'RELEASE-NOTES.md').read_text()+f'\nBuild source commit: {d.get("build_commit", os.environ["GITHUB_SHA"])}\n'
+    client.publish(tag, [p for p in sorted(out.iterdir()) if p.name!='publication-notes.md'],
+        commit, f'T95H OpenWrt {d["version"]} Kernel 6 SD/eMMC ({d["profile"]})', notes, prerelease=True)
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('command',choices=['resolve','prepare','build','publish']);p.add_argument('--profile',choices=PROFILES,default='base');p.add_argument('--key',type=Path);p.add_argument('--jobs',type=int,default=2);a=p.parse_args()
     if a.command=='resolve':resolve(a.profile,a.key)
