@@ -1,4 +1,5 @@
 name: Build T95H OpenWrt Kernel 6 SD and eMMC
+run-name: OpenWrt Kernel 6 – ${{ inputs.profile }} – SD/eMMC
 on:
   workflow_dispatch:
     inputs:
@@ -10,7 +11,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: t95h-native-release
+  group: t95h-native-release-${{ inputs.profile }}
   cancel-in-progress: false
 jobs:
   build:

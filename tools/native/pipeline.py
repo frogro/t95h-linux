@@ -24,7 +24,7 @@ def resolve(profile, key):
     commit = refs.get(f'refs/tags/{tag}^{{}}', refs.get(f'refs/tags/{tag}'))
     if not commit: raise RuntimeError('Stable tag missing')
     run('openssl','pkey','-in',key,'-pubout','-out',WORK/'public-key.pem')
-    h = hashlib.sha256((commit+'ubuntu-24.04-x86_64-native-v1'+sha(WORK/'public-key.pem')).encode())
+    h = hashlib.sha256((commit+profile+'ubuntu-24.04-x86_64-native-v1'+sha(WORK/'public-key.pem')).encode())
     for p in sorted(HERE.rglob('*')):
         if p.is_file() and '__pycache__' not in p.parts:
             h.update(str(p.relative_to(HERE)).encode());h.update(p.read_bytes())
