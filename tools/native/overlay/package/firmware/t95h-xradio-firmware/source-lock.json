@@ -1,0 +1,8 @@
+{
+  "source": "/mnt/entwicklung/projekte/T95H/linux/openwrt/t95h-linux/build/kernel-package-conservative-full-4/root/lib/firmware/xr819",
+  "sha256": {
+    "boot_xr819.bin": "6583350b3eb12f70fc6d6081426717bd0019b55c6558ffe820c1548f0702bb8c",
+    "fw_xr819.bin": "fb81436ad7cc0876614a2a9c2a54c5a93a75315aee164e3a3afe3db80842a9e1",
+    "sdd_xr819.bin": "84d3fb3ca8e5d25a0c113a5063bccbeb5b53da230a0afa236b5b625f37db5161"
+  }
+}

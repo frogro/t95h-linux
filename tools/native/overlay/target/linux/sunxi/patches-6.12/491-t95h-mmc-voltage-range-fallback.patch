@@ -1,0 +1,15 @@
+--- a/drivers/mmc/host/sunxi-mmc.c
++++ b/drivers/mmc/host/sunxi-mmc.c
+@@ -1309,6 +1309,12 @@
+ 	ret = mmc_regulator_get_supply(host->mmc);
+ 	if (ret)
+ 		return ret;
++	/* Match the tested T95H 7.x port when supply is described by voltage-ranges. */
++	if (IS_ERR(host->mmc->supply.vmmc)) {
++		ret = mmc_of_parse_voltage(host->mmc, &host->mmc->ocr_avail);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	host->reg_base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(host->reg_base))

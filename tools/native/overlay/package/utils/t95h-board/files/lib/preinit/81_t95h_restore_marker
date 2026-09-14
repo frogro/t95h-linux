@@ -1,0 +1,6 @@
+# Runs after do_mount_root has restored the standard sysupgrade archive.
+t95h_restore_marker() {
+ [ -f /sysupgrade.tgz ] || [ -f /tmp/sysupgrade.tar ] || return 0
+ : > /tmp/t95h-config-restored
+}
+boot_hook_add preinit_main t95h_restore_marker

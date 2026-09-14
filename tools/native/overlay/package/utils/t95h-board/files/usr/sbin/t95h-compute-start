@@ -1,0 +1,54 @@
+#!/bin/sh
+# No respawn: a failed hardware initialization requires diagnosis.
+set -eu
+G=/sys/bus/platform/devices/1800000.gpu
+P=/sys/bus/platform/devices/7010250.power-controller
+trap 'rc=$?; [ "$rc" = 0 ] || logger -t t95h-compute "Initialization failed rc=$rc; CPU DVFS not advanced"' EXIT
+ready() {
+ service=$(ubus -t 2 call service list '{"name":"t95h-wlan-late"}') || return 1
+ [ "$(printf '%s' "$service" | jsonfilter -e '@["t95h-wlan-late"].instances.instance1.running')" = false ] || return 1
+ [ "$(printf '%s' "$service" | jsonfilter -e '@["t95h-wlan-late"].instances.instance1.exit_code')" = 0 ] || return 1
+}
+n=0; stable=0
+while [ "$n" -lt 240 ]; do
+ if ready; then stable=$((stable+1)); else stable=0; fi
+ [ "$(cut -d . -f1 /proc/uptime)" -ge 45 ] && [ "$stable" -ge 15 ] && break
+ n=$((n+1)); sleep 1
+done
+[ "$stable" -ge 15 ] && [ "$n" -lt 240 ]
+cpu=0; gpu=0; wlan=0
+for r in /sys/class/regulator/regulator.*; do
+ name=$(cat "$r/name" 2>/dev/null) || continue
+ case "$name" in
+ t95h-cpu-dcdca|t95h-gpu-inherited|t95h-aldo2-wlan)
+  [ "$(cat "$r/state")" = enabled ]
+  uv=$(cat "$r/microvolts")
+  case "$name" in
+   t95h-cpu-dcdca) [ "$uv" -ge 900000 ] && [ "$uv" -le 1120000 ]; cpu=1;;
+   t95h-gpu-inherited) [ "$uv" = 960000 ] || [ "$uv" = 1100000 ]; gpu=1;;
+   t95h-aldo2-wlan) [ "$uv" = 3300000 ]; wlan=1;;
+  esac;;
+ esac
+done
+[ "$cpu$gpu$wlan" = 111 ]
+[ -d "$G" ] && [ -d "$P" ]
+if [ ! -L "$G/driver" ]; then
+ [ ! -L "$P/driver" ]
+ echo t95h-hold > "$G/driver_override"
+ modprobe panfrost
+ modprobe t95h_ana_provider
+ [ -L "$P/driver" ]
+ echo panfrost > "$G/driver_override"
+ echo 1800000.gpu > /sys/bus/platform/drivers_probe || true
+fi
+n=0
+while [ ! -c /dev/dri/renderD128 ] && [ "$n" -lt 30 ]; do sleep 1; n=$((n+1)); done
+[ "$(readlink -f /sys/class/drm/renderD128/device)" = "$(readlink -f "$G")" ]
+[ "$(basename "$(readlink -f "$G/driver")")" = panfrost ]
+echo on > "$G/power/control"
+[ "$(cat "$G/power/runtime_status")" = active ]
+modprobe sun50i-cpufreq-nvmem
+n=0
+while [ ! -e /sys/devices/system/cpu/cpufreq/policy0/scaling_governor ] && [ "$n" -lt 30 ]; do sleep 1; n=$((n+1)); done
+echo ondemand > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+logger -t t95h-compute 'Panfrost active, runtime suspend disabled, CPU ondemand enabled; thermal limits retained'

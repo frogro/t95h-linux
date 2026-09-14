@@ -1,0 +1,74 @@
+name: Build T95H OpenWrt Kernel 6 SD and eMMC
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Image profile
+        type: choice
+        options: [base, base-A, base-B, base-A-B]
+        default: base
+permissions:
+  contents: write
+concurrency:
+  group: t95h-native-release
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      NATIVE_WORK: ${{ github.workspace }}/build/native
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Reserve disk and install build dependencies
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" update
+          sudo apt-get -o Dir::Etc::sourcelist="sources.list.d/ubuntu.sources" -o Dir::Etc::sourceparts="-" install -y build-essential bc bison flex libssl-dev libelf-dev libncurses-dev device-tree-compiler python3-libfdt kmod rsync cpio xz-utils zstd unzip file gawk gettext swig python3-dev e2fsprogs dosfstools mtools u-boot-tools fakeroot busybox g++-multilib libgnutls28-dev
+          df -h .
+      - name: Install temporary signing key
+        env:
+          SIGNING_KEY: ${{ secrets.T95H_APK_SIGNING_KEY }}
+        run: |
+          test -n "$SIGNING_KEY"
+          umask 077
+          printf '%s\n' "$SIGNING_KEY" > "$RUNNER_TEMP/native-sign.pem"
+      - name: Test pipeline guards
+        run: python3 -m unittest discover -s tools/native/tests -v
+      - name: Resolve current stable release and compatibility fingerprint
+        id: resolve
+        env:
+          PROFILE: ${{ inputs.profile }}
+        run: python3 tools/native/pipeline.py resolve --profile "$PROFILE" --key "$RUNNER_TEMP/native-sign.pem"
+      - name: Apply port and select profile
+        run: python3 tools/native/pipeline.py prepare --key "$RUNNER_TEMP/native-sign.pem"
+      - name: Restore exactly matching build state
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          key: ${{ steps.resolve.outputs.cache_key }}
+          path: |
+            build/native/source/dl
+            build/native/source/build_dir
+            build/native/source/staging_dir
+            build/native/source/bin
+      - name: Build, audit full kernel catalog and assemble both update paths
+        run: |
+          set -o pipefail
+          python3 -u tools/native/pipeline.py build --jobs 4 2>&1 | tee "$NATIVE_WORK/logs/build.log"
+      - name: Publish signed module feed and SD/eMMC release
+        run: python3 tools/native/pipeline.py publish
+      - name: Remove private keys
+        if: always()
+        run: rm -f "$RUNNER_TEMP/native-sign.pem" "$NATIVE_WORK/source/private-key.pem"
+      - name: Preserve build diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-${{ inputs.profile }}-diagnostics
+          path: |
+            build/native/lock.json
+            build/native/logs/
+            build/native/source/.config
+          if-no-files-found: ignore
+          compression-level: 1

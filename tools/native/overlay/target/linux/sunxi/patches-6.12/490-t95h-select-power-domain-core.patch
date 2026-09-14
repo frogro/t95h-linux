@@ -1,0 +1,13 @@
+--- a/kernel/power/Kconfig
++++ b/kernel/power/Kconfig
+@@ -372,3 +372,10 @@
+ 	  The exact usage of the energy model is subsystem-dependent.
+ 
+ 	  If in doubt, say N.
++
++config T95H_GUARDED_POWER_DOMAINS
++	bool "T95H guarded GPU power domains"
++	depends on ARCH_SUNXI && PM
++	select PM_GENERIC_DOMAINS
++	help
++	  Enable the generic power domain core used by the T95H ANA provider.

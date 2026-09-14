@@ -1,0 +1,5 @@
+#!/bin/sh
+# This repository is owned by the image, not by the preserved user configuration.
+[ -f /usr/share/t95h/kmods.list ] || exit 1
+mkdir -p /etc/apk/repositories.d
+cp /usr/share/t95h/kmods.list /etc/apk/repositories.d/t95h-kmods.list

@@ -1,0 +1,22 @@
+#!/bin/sh
+[ "$(cat /tmp/sysinfo/board_name)" = "t95h,h616-tvbox" ] || exit 0
+# Keep restored network, passwords and service choices across profile upgrades.
+[ -e /tmp/t95h-config-restored ] && exit 0
+sed -i 's|^root:[^:]*:|root:$6$t95hnative$kAVfT3gxI5zPaGlipAhicwSr13RA4wFEIMHdfd6cccb4vk0BzbLgbunYuxQcLUIVwzTBBgOLSN667rGICcvJU.:|' /etc/shadow
+uci set network.lan.proto='dhcp'
+uci set network.lan.hostname='t95h-openwrt'
+uci -q delete network.lan.ipaddr
+uci -q delete network.lan.netmask
+uci set dhcp.lan.ignore='1'
+# This image joins an existing LAN; its upstream router supplies IPv6 too.
+uci set dhcp.lan.dhcpv6='disabled'
+uci set dhcp.lan.ra='disabled'
+uci set dhcp.lan.ndp='disabled'
+uci set system.@system[0].hostname='t95h-openwrt'
+uci commit network
+uci commit dhcp
+uci commit system
+/etc/init.d/t95h-wlan-late enable
+/etc/init.d/t95h-fd655-live enable
+/etc/init.d/t95h-compute enable
+exit 0

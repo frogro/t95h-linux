@@ -1,0 +1,21 @@
+--- a/drivers/gpu/drm/sun4i/sun50i_planes.c
++++ b/drivers/gpu/drm/sun4i/sun50i_planes.c
+@@ -171,8 +171,16 @@
+ 	if (!planes->quirks)
+ 		return dev_err_probe(dev, -EINVAL, "Unable to get quirks\n");
+ 
+-	planes->mapping = syscon_regmap_lookup_by_phandle(dev->of_node,
+-							  "allwinner,plane-mapping");
++	{
++		struct device_node *mapping_np;
++
++		mapping_np = of_parse_phandle(dev->of_node, "allwinner,plane-mapping", 0);
++		if (!mapping_np)
++			return -EINVAL;
++		/* The CCU registers its own regmap; it is not a generic syscon. */
++		planes->mapping = device_node_to_regmap(mapping_np);
++		of_node_put(mapping_np);
++	}
+ 	if (IS_ERR(planes->mapping))
+ 		return dev_err_probe(dev, PTR_ERR(planes->mapping),
+ 				     "Unable to get mapping\n");

@@ -1,0 +1,21 @@
+#!/bin/sh
+# Dedicated bus and kernel-driver checks are performed by t95h-fd655.
+while :; do
+ mask=17
+ [ "$(cat /sys/class/net/eth0/carrier 2>/dev/null)" = 1 ] && mask=$((mask | 32))
+ if [ "$(ubus -t 2 call network.wireless status 2>/dev/null | jsonfilter -e '@.radio0.up' 2>/dev/null)" = true ] &&
+    [ "$(cat /sys/class/net/phy0-ap0/carrier 2>/dev/null)" = 1 ]; then
+  mask=$((mask | 64))
+ fi
+ for usb in /sys/bus/usb/devices/*; do
+  [ -r "$usb/idVendor" ] || continue
+  [ "$(cat "$usb/bDeviceClass" 2>/dev/null)" = 09 ] && continue
+  mask=$((mask | 2)); break
+ done
+ case "$(cat /var/run/t95h-display-media 2>/dev/null)" in
+  play) mask=$((mask | 4));;
+  pause) mask=$((mask | 8));;
+ esac
+ /usr/sbin/t95h-fd655 "$(date +%H%M)" "$mask" || exit 1
+ sleep 5
+done
