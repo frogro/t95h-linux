@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Native OpenWrt CI: resolve once, apply the audited port, build and publish."""
-import argparse, hashlib, json, os, re, shutil, subprocess, urllib.request
+import argparse, ast, hashlib, json, os, re, shutil, subprocess, urllib.request
 from pathlib import Path
 HERE = Path(__file__).resolve().parent
 WORK = Path(os.environ.get('NATIVE_WORK', 'build/native')).resolve()
@@ -13,6 +13,26 @@ def output(*args, cwd=None):
 def sha(path):
     with Path(path).open('rb') as f: return hashlib.file_digest(f, 'sha256').hexdigest()
 def lock(): return json.loads((WORK/'lock.json').read_text())
+def build_fingerprint(root, commit, profile, public_key_hash):
+    # Version this contract when runner dependencies or build semantics change.
+    h=hashlib.sha256(json.dumps([commit, profile, public_key_hash,
+        'ubuntu-24.04-x86_64-native-v2'], separators=(',', ':')).encode())
+    for path in sorted(root.rglob('*')):
+        relative=path.relative_to(root)
+        if not path.is_file() or 'tests' in relative.parts or '__pycache__' in relative.parts:
+            continue
+        if relative.as_posix() in ('pipeline.py', 'publisher.py'):
+            continue
+        h.update(relative.as_posix().encode());h.update(path.read_bytes())
+    # Packaging checks and publishing do not change compiled outputs. Hash the
+    # actual preparation/build functions, ignoring comments and formatting.
+    tree=ast.parse((root/'pipeline.py').read_text())
+    names={'run', 'output', 'sha', 'lock', 'prepare', 'build'}
+    functions={node.name:node for node in tree.body if isinstance(node, ast.FunctionDef)}
+    for name in sorted(names):
+        h.update(ast.dump(functions[name], include_attributes=False).encode())
+    return h.hexdigest()
+
 def resolve(profile, key):
     WORK.mkdir(parents=True, exist_ok=True)
     with urllib.request.urlopen('https://downloads.openwrt.org/.versions.json', timeout=60) as f:
@@ -24,16 +44,12 @@ def resolve(profile, key):
     commit = refs.get(f'refs/tags/{tag}^{{}}', refs.get(f'refs/tags/{tag}'))
     if not commit: raise RuntimeError('Stable tag missing')
     run('openssl','pkey','-in',key,'-pubout','-out',WORK/'public-key.pem')
-    h = hashlib.sha256((commit+profile+'ubuntu-24.04-x86_64-native-v1'+sha(WORK/'public-key.pem')).encode())
-    for p in sorted(HERE.rglob('*')):
-        if p.is_file() and '__pycache__' not in p.parts:
-            h.update(str(p.relative_to(HERE)).encode());h.update(p.read_bytes())
-    fingerprint = h.hexdigest()
+    fingerprint = build_fingerprint(HERE, commit, profile, sha(WORK/'public-key.pem'))
     d = dict(version=version,tag=tag,commit=commit,profile=profile,build_commit=os.environ.get('GITHUB_SHA'),fingerprint=fingerprint,feed_id=fingerprint[:16])
     (WORK/'lock.json').write_text(json.dumps(d,indent=2)+'\n')
     if os.environ.get('GITHUB_OUTPUT'):
         with open(os.environ['GITHUB_OUTPUT'],'a') as f:
-            f.write(f'cache_key=native-v1-{fingerprint}-{profile}\nfeed_id={d["feed_id"]}\n')
+            f.write(f'cache_prefix=native-v2-{fingerprint}-{profile}-\nfeed_id={d["feed_id"]}\n')
     print(json.dumps(d))
 def prepare(key):
     d=lock();(WORK/'logs').mkdir(exist_ok=True)
