@@ -39,9 +39,7 @@
     "gst1-mod-tcp",
     "gst1-mod-playback",
     "ustreamer",
-    "v4l-utils",
-    "gstreamer1-plugins-good",
-    "gstreamer1-plugins-bad"
+    "v4l-utils"
   ],
   "common_hardware_note": "Native compute/media packages stay common: CPU DVFS currently requires active GPU; HDMI/audio share the media package. B adds multimedia applications and UVC. No hardware shutdown in base.",
   "required_base_packages": [
@@ -82,5 +80,9 @@
     "kmod-sched-core",
     "kmod-sched-cake",
     "kmod-ifb"
+  ],
+  "B_config_only": [
+    "gstreamer1-plugins-good",
+    "gstreamer1-plugins-bad"
   ]
 }

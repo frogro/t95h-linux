@@ -89,6 +89,8 @@ jobs:
           path: |
             build/native/lock.json
             build/native/logs/
+            build/native/selected.json
+            build/native/source/bin/targets/sunxi/cortexa53/*.manifest
             build/native/source/.config
           if-no-files-found: ignore
           compression-level: 1

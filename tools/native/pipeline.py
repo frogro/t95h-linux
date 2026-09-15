@@ -61,12 +61,14 @@ def prepare(key):
     groups=json.loads((HERE/'packages.json').read_text());selected=set()
     if 'A' in d['profile'].split('-'):selected.update(groups['A'])
     if 'B' in d['profile'].split('-'):selected.update(groups['B'])
-    optional=set(groups['A'])|set(groups['B']);lines=[]
+    config_only=set(groups.get('B_config_only', []))
+    config_selected=selected | (config_only if 'B' in d['profile'].split('-') else set())
+    optional=set(groups['A'])|set(groups['B'])|config_only;lines=[]
     for line in (HERE/'native-common.config').read_text().splitlines():
         if any(line.startswith('CONFIG_PACKAGE_'+p+'=') or line=='# CONFIG_PACKAGE_'+p+' is not set' for p in optional):continue
         lines.append(line)
     for p in sorted(optional):
-        lines.append('CONFIG_PACKAGE_'+p+'='+('y' if p in selected else 'm') if p in selected or p.startswith('kmod-') else '# CONFIG_PACKAGE_'+p+' is not set')
+        lines.append('CONFIG_PACKAGE_'+p+'='+('y' if p in config_selected else 'm') if p in config_selected or p.startswith('kmod-') else '# CONFIG_PACKAGE_'+p+' is not set')
     lines += ['CONFIG_VERSIONOPT=y',f'CONFIG_VERSION_NUMBER="{d["version"]}"',f'CONFIG_VERSION_REPO="https://downloads.openwrt.org/releases/{d["version"]}"']
     (SOURCE/'.config').write_text('\n'.join(lines)+'\n')
     shutil.copy2(key,SOURCE/'private-key.pem');(SOURCE/'private-key.pem').chmod(0o600)
@@ -76,7 +78,7 @@ def prepare(key):
     (SOURCE/'package/utils/t95h-board/files/usr/share/t95h/profile').write_text(d['profile']+'\n')
     run('make','defconfig',cwd=SOURCE)
     config=(SOURCE/'.config').read_text()
-    for p in selected|set(groups['required_base_packages']):
+    for p in config_selected|set(groups['required_base_packages']):
         if 'CONFIG_PACKAGE_'+p+'=y\n' not in config: raise RuntimeError('Required package not enabled: '+p)
     if 'CONFIG_ALL_KMODS=y' not in config: raise RuntimeError('Full module catalog disabled')
     (WORK/'selected.json').write_text(json.dumps(sorted(selected|set(groups['required_base_packages'])),indent=2))
@@ -89,12 +91,17 @@ def build(jobs):
     run('make',f'-j{jobs}','V=s',f'T95H_FEED_ID={d["feed_id"]}',cwd=SOURCE)
     run('python3',HERE/'kernel-catalog.py','export')
     package()
+def check_image_packages(expected, manifest):
+    installed={line.split()[0] for line in manifest.splitlines() if line.strip()}
+    missing=sorted(set(expected)-installed)
+    if missing:
+        raise RuntimeError('Incomplete image package selection: '+', '.join(missing))
+
 def package():
     d=lock();out=WORK/'release';out.mkdir(exist_ok=True);src=SOURCE/'bin/targets/sunxi/cortexa53'
     manifests=list(src.glob('*t95h_tvbox.manifest'))
     if len(manifests)!=1:raise RuntimeError('Package manifest missing/ambiguous')
-    installed={l.split()[0] for l in manifests[0].read_text().splitlines() if l.strip()}
-    if not set(json.loads((WORK/'selected.json').read_text()))<=installed:raise RuntimeError('Incomplete image package selection')
+    check_image_packages(json.loads((WORK/'selected.json').read_text()), manifests[0].read_text())
     shutil.copy2(manifests[0],out/'packages.manifest')
     for medium in ['sdcard','emmc']:
         p=src/f'openwrt-sunxi-cortexa53-t95h_tvbox-ext4-{medium}.img.gz'
