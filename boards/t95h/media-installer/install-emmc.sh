@@ -87,7 +87,7 @@ if [ "$os" = openwrt6 ]; then
  echo sysupgrade.tgz > "$work/list"
  source=$work
 elif [ "$os" = anotter ]; then
- for f in kioskbrowser.ini authorized_keys id_rsa id_ed25519 ssh_host_rsa_key ssh_host_rsa_key.pub ssh_host_ed25519_key ssh_host_ed25519_key.pub splash.png www-public; do
+ for f in kioskbrowser.ini wpa_supplicant.conf authorized_keys id_rsa id_ed25519 ssh_host_rsa_key ssh_host_rsa_key.pub ssh_host_ed25519_key ssh_host_ed25519_key.pub splash.png www-public; do
   [ ! -e "$boot/$f" ] || echo "$f" >> "$work/list"
  done
  source=$boot

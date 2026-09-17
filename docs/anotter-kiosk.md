@@ -5,7 +5,8 @@ Debian 13 (trixie), Chromium und unserem angepassten Linux 7.2.3.
 Dies ist kein offiziell von AnotterKiosk unterstütztes Board. Boot, Webseiten,
 SSH, USB-Eingabe und Panfrost wurden auf einer T95H getestet. Jedes neue Image
 bleibt bis zum eigenen Test experimentell; Eine zusätzliche Installations-SD für eMMC wird angeboten; deren
-Hardwaretest und ein OS-Updateadapter stehen separat an. Nicht als OpenWrt-Sysupgrade verwenden.
+Hardwaretest steht separat an. Neue Versionen werden entsprechend dem dokumentierten
+Anotter-Ablauf als Image geflasht; [Ablauf und Konfiguration](anotter-image-update.md). Nicht als OpenWrt-Sysupgrade verwenden.
 
 Der separate Workflow `build-anotter.yml` löst beim Start die neueste stabile
 AnotterKiosk-Version auf, hält deren Git-Commit für den Lauf fest und installiert
@@ -189,3 +190,17 @@ dadurch nicht automatisch Hardware-Videodekodierung.
 
 Die zusätzliche `sd-emmc-installer`-Variante enthält das passende eMMC-Paket.
 [Installation und Einstellungsübernahme](media-emmc-installation.md).
+
+## Internes WLAN
+
+Neue Images aktivieren den XR819-SDIO-Host. Nach der Regulator-/GPU-Initialisierung
+startet `t95h-wlan.service` die WLAN-Verbindung, wenn in `kioskbrowser.ini` unter
+`[wifi]` eine SSID eingetragen ist oder `wpa_supplicant.conf` auf FAT liegt.
+Der originale Anotter-Generator verarbeitet die Einstellungen; ifupdown übernimmt
+DHCP wie beim Upstream. Ohne Netzkonfiguration bleibt Ethernet unverändert.
+
+Nach einer Änderung der Konfiguration kann `systemctl restart t95h-wlan` verwendet
+werden (eine bereits aktive Verbindung zuvor mit `ifdown wlan0` beenden).
+Der kombinierte Installer übernimmt auch eine separate `wpa_supplicant.conf` auf
+eMMC. Es werden keine privaten Netz-Zugangsdaten ins Release eingebaut.
+Die früher beobachteten XR819-Interruptprobleme sind damit nicht als behoben erklärt.

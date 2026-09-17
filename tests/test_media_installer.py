@@ -20,3 +20,13 @@ class Layout(unittest.TestCase):
   result=subprocess.run(['bash',str(ROOT/'boards/t95h/media-installer/install-emmc.sh')],stdin=subprocess.DEVNULL,capture_output=True,text=True)
   self.assertNotEqual(result.returncode,0)
   self.assertIn('STOP:',result.stderr)
+
+ def test_anotter_settings_include_external_wlan_but_not_boot_payload(self):
+  text=(ROOT/'boards/t95h/media-installer/install-emmc.sh').read_text()
+  block=text.split('elif [ "$os" = anotter ]; then\n',1)[1].split('\nelse',1)[0]
+  with tempfile.TemporaryDirectory() as d:
+   p=Path(d);boot=p/'boot';work=p/'work';boot.mkdir();work.mkdir()
+   for name in ['kioskbrowser.ini','authorized_keys','wpa_supplicant.conf','Image','t95h.dtb']:(boot/name).write_text('test')
+   import os
+   subprocess.run(['sh','-eu','-c',block],env={**os.environ,'boot':str(boot),'work':str(work)},check=True)
+   self.assertEqual(set((work/'list').read_text().splitlines()),{'kioskbrowser.ini','authorized_keys','wpa_supplicant.conf'})

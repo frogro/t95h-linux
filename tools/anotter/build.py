@@ -128,7 +128,7 @@ def main():
     for name in ['20-noglamor.conf']:
         (root/'usr/share/X11/xorg.conf.d'/name).unlink(missing_ok=True)
     (root/'etc/X11/xorg.conf.d/99-v3d.conf').unlink(missing_ok=True)
-    put(root,'etc/network/interfaces','auto lo\niface lo inet loopback\nallow-hotplug eth0\niface eth0 inet dhcp\n')
+    put(root,'etc/network/interfaces','auto lo\niface lo inet loopback\nallow-hotplug eth0\niface eth0 inet dhcp\n\n# Started after regulator initialization, only with user WLAN settings.\niface wlan0 inet dhcp\n    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf\n')
     # ifupdown owns eth0; the global manager would request a second DHCP lease.
     run('systemctl','--root',root,'disable','dhcpcd.service')
     run('systemctl','--root',root,'mask','dhcpcd.service')
@@ -143,8 +143,9 @@ def main():
     put(root,'home/pi/.xsession-errors','',0o600)
     with (root/'etc/fstab').open('a') as f:
         f.write('tmpfs /var/cache/lightdm tmpfs mode=0755,nosuid,nodev,size=4m 0 0\n')
-    for name in ['prepare-session','wait-network']:
+    for name in ['prepare-session','wait-network','start-wlan']:
         put(root,'usr/lib/t95h/'+name,(ROOT/'boards/t95h/anotter/runtime'/name).read_text(),0o755)
+    put(root,'etc/systemd/system/t95h-wlan.service',(ROOT/'boards/t95h/anotter/runtime/t95h-wlan.service').read_text())
     put(root,'etc/systemd/system/t95h-session-runtime.service',(ROOT/'boards/t95h/anotter/runtime/t95h-session-runtime.service').read_text())
     put(root,'etc/systemd/system/ntpdate.service.d/t95h-network.conf',(ROOT/'boards/t95h/anotter/runtime/ntp-network.conf').read_text())
     put(root,'etc/chromium/policies/managed/t95h-kiosk.json',json.dumps({'TranslateEnabled':False},indent=2)+'\n')
@@ -181,11 +182,14 @@ def main():
     put(root,'etc/systemd/system/t95h-public-boot.service',(ROOT/'boards/t95h/anotter/runtime/t95h-public-boot.service').read_text())
     put(root,'etc/systemd/system/lightdm.service.d/t95h.conf','[Unit]\nRequires=t95h-hardware.service t95h-public-boot.service t95h-session-runtime.service\nAfter=t95h-hardware.service t95h-public-boot.service t95h-session-runtime.service\n')
     put(root,'etc/systemd/system/nginx.service.d/t95h.conf','[Unit]\nRequires=t95h-public-boot.service\nAfter=t95h-public-boot.service\n')
-    # Keep Xradio cold during the initial kiosk test; Ethernet/USB input remain available.
+    # Enable the internal XR819 host; association uses the public Anotter config.
     dtb=o/'modules/startup/t95h.dtb'
     tool('anotter/display.py','dtb',dtb)
-    run('fdtput','-t','s',dtb,'/soc/mmc@4021000','status','disabled')
-    for unit in ['t95h-audio','t95h-hardware','t95h-dns-init','t95h-public-boot','t95h-session-runtime']:
+    run('fdtput','-t','s',dtb,'/soc/mmc@4021000','status','okay')
+    if subprocess.check_output(['fdtget','-t','s',str(dtb),'/soc/mmc@4021000','status'],text=True).strip()!='okay':raise ValueError('Internal WLAN host disabled')
+    builtin=(root/'lib/modules'/release/'modules.builtin').read_text()
+    if 'kernel/drivers/net/wireless/xradio/xradio_wlan.ko' not in builtin and not list((root/'lib/modules'/release).rglob('*xradio*.ko')):raise ValueError('Internal WLAN driver missing')
+    for unit in ['t95h-wlan','t95h-audio','t95h-hardware','t95h-dns-init','t95h-public-boot','t95h-session-runtime']:
         run('systemctl','--root',root,'enable',unit)
     for f in (root/'etc/ssh').glob('ssh_host_*'): f.unlink()
     put(root,'etc/machine-id','')
@@ -202,6 +206,7 @@ def main():
     text=conf.read_text().replace('hostname = "kioskpi"','hostname = "t95h-kiosk"').replace('ssid="My WiFi"','ssid=""').replace('psk="My Passphrase"','psk=""')
     conf.write_text(text)
     out=o/'release'; out.mkdir()
+    shutil.copy2(ROOT/'docs/anotter-image-update.md',out/'UPDATE.md')
     put(out,'prefix.bin', '')
     run('python3',ROOT/'tools/emmc/prepare-corrected-prefix.py','--source',inputs/'prefix.bin','--output',o/'corrected-prefix.bin','--medium','sd')
     (out/'prefix.bin').write_bytes(prefix((o/'corrected-prefix.bin').read_bytes()))

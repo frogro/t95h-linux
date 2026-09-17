@@ -29,3 +29,13 @@ GStreamer tools/plugins and `t95h-desktop-view` are now included for optional
 native display. The sending PC still needs its own capture, encoder and go2rtc.
 VirtualHere is not bundled. The new packaged player needs a full-image test;
 the live evidence concerns the matching pipeline, not automatic setup on every PC.
+
+Internal XR819 WLAN is enabled in the device tree. Set [wifi] in kioskbrowser.ini
+or supply wpa_supplicant.conf on FAT, as documented by AnotterKiosk. The connection
+starts after hardware initialization; no configured SSID leaves Ethernet unchanged.
+The eMMC installer preserves the separate WLAN configuration too. Known XR819
+interrupt issues are not claimed fixed; this complete image needs WLAN testing.
+
+UPDATE.md describes upstream's image-flashing procedure for T95H. No official
+in-place updater exists; the experimental unsafe upstream script is not included.
+The prior NTP concurrency and ALSA rule fixes remain included.

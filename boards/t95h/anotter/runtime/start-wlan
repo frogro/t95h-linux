@@ -1,0 +1,22 @@
+#!/bin/bash
+# Use Anotter's public configuration and generator; Ethernet remains independent.
+set -eu
+boot=/boot/firmware
+if [ ! -f "$boot/wpa_supplicant.conf" ] && [ -z "$(get-ini "$boot/kioskbrowser.ini" wifi ssid)" ]; then
+ echo 'T95H: no WLAN network configured; radio available, Ethernet unchanged'
+ exit 0
+fi
+umask 077
+rm -f /tmp/wpa_supplicant.conf
+/usr/bin/kiosk-wifi
+[ -s /tmp/wpa_supplicant.conf ] || { echo 'T95H: WLAN configuration missing' >&2; exit 1; }
+for attempt in $(seq 1 30); do
+ if [ -d /sys/class/net/wlan0 ]; then
+  rfkill unblock wlan
+  iw dev wlan0 set power_save off || true
+  exec ifup wlan0
+ fi
+ sleep 1
+done
+echo 'T95H: internal WLAN interface did not appear after hardware initialization' >&2
+exit 1

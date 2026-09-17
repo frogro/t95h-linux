@@ -1,0 +1,14 @@
+[Unit]
+Description=T95H internal WLAN using AnotterKiosk configuration
+Requires=t95h-hardware.service
+After=t95h-hardware.service networking.service
+RequiresMountsFor=/boot/firmware
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/t95h/start-wlan
+TimeoutStartSec=120
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
