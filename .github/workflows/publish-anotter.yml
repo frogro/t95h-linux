@@ -1,0 +1,26 @@
+name: Publish completed AnotterKiosk images
+on:
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: Run ID containing completed Anotter images
+        type: string
+        required: true
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: t95h-anotter
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify and publish completed images without rebuilding
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SOURCE_RUN: ${{ inputs.source_run }}
+        run: python3 -u tools/anotter/publish.py --source-run "$SOURCE_RUN"

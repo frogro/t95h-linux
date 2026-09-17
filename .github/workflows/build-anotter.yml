@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: t95h-anotter
   cancel-in-progress: false
@@ -53,7 +54,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "anotter-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" build/anotter/release/* --target "$GITHUB_SHA" --prerelease --title "T95H AnotterKiosk SD test ${GITHUB_RUN_ID}" --notes-file build/anotter/release/RELEASE-NOTES.md
+          python3 tools/anotter/publish.py --source-run "$GITHUB_RUN_ID" --directory build/anotter/release
       - name: Preserve build diagnostics
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
