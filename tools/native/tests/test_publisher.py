@@ -63,3 +63,19 @@ class PublisherTests(unittest.TestCase):
         client.api('repos/o/r/releases','POST',{})
         client.api('repos/o/r/releases/1','PATCH',{})
         sleep.assert_called_once_with(7)
+
+    @patch.object(pub.time, 'sleep')
+    def test_upload_reconciles_server_failure(self, sleep):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'image.gz'; path.write_bytes(b'image')
+            asset = dict(name=path.name, size=5, state='uploaded', digest=pub.digest(path))
+            release = dict(id=1, upload_url='https://uploads.github.com/test{?name}')
+            for existing, calls in [(None, 2), (asset, 1)]:
+                client = pub.GitHub('o/r')
+                with patch.object(client, 'api', side_effect=[pub.GitHubError(500, 'server'), asset]) as api, patch.object(client, 'assets', return_value={} if existing is None else {path.name: existing}):
+                    client.upload('tag', release, path)
+                    self.assertEqual(api.call_count, calls)
+            client = pub.GitHub('o/r')
+            with patch.object(client, 'api', side_effect=pub.GitHubError(500, 'server')) as api, patch.object(client, 'assets', return_value={path.name: dict(asset, digest='wrong')}):
+                with self.assertRaises(RuntimeError): client.upload('tag', release, path)
+                self.assertEqual(api.call_count, 1)

@@ -23,6 +23,12 @@ def retry_delay(headers, attempt, now=None):
     return min(3600, 60 * 2 ** attempt)
 
 
+class GitHubError(RuntimeError):
+    def __init__(self, status, message):
+        super().__init__(message)
+        self.status = status
+
+
 class GitHub:
     def __init__(self, repo, interval=8):
         self.repo = repo
@@ -59,7 +65,7 @@ class GitHub:
             # reconciled on the next job attempt, avoiding duplicate writes.
             transient_read = method == 'GET' and (status == 0 or status >= 500)
             if attempt == 8 or not (limited or transient_read):
-                raise RuntimeError(f'GitHub {method} failed ({status}): {body or result.stderr}')
+                raise GitHubError(status, f'GitHub {method} failed ({status}): {body or result.stderr}')
             delay = retry_delay(headers, attempt)
             print(f'GitHub limit/transient read error; retry in {delay:.0f}s', flush=True)
             time.sleep(delay)
@@ -91,6 +97,29 @@ class GitHub:
         if actual != expected:
             raise RuntimeError(f'Immutable asset differs: {path.name}')
 
+    def upload(self, tag, release, path):
+        url = release['upload_url'].split('{')[0] + '?name=' + quote(path.name, safe='')
+        for attempt in range(4):
+            try:
+                asset = self.api(url, 'POST', file=path)
+            except GitHubError as error:
+                if error.status != 0 and error.status < 500:
+                    raise
+                # A failed response can conceal a successful upload. Reconcile
+                # before retrying; never replace an existing asset.
+                time.sleep(15)
+                asset = self.assets(release['id']).get(path.name)
+                if asset is not None:
+                    self.verify(tag, path, asset)
+                    return
+                if attempt == 3:
+                    raise
+                print(f'Upload absent after server/transport failure; retry {attempt + 1}/3: {path.name}', flush=True)
+                time.sleep(15 * (attempt + 1))
+                continue
+            self.verify(tag, path, asset)
+            return
+
     def publish(self, tag, paths, target, title, notes, prerelease=False):
         paths = {p.name: p for p in paths}
         endpoint = f'repos/{self.repo}/releases'
@@ -110,9 +139,7 @@ class GitHub:
             if name in assets:
                 continue
             print(f'Uploading {tag}: {name}', flush=True)
-            url = release['upload_url'].split('{')[0] + '?name=' + quote(name, safe='')
-            asset = self.api(url, 'POST', file=path)
-            self.verify(tag, path, asset)
+            self.upload(tag, release, path)
         # Check the complete server-side set before making the release public.
         assets = self.assets(release['id'])
         if set(assets) != set(paths):
