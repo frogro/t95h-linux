@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 PKG_NAME:=t95h-media
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_LICENSE:=GPL-2.0-only
 include $(INCLUDE_DIR)/package.mk
 
@@ -19,8 +19,9 @@ define KernelPackage/t95h-media
  CONFIG_SND_SOC_SUNXI_AHUB_DAM CONFIG_SND_SOC_SUNXI_MACH \
  CONFIG_SND_SOC_HDMI_CODEC CONFIG_SND_SOC_SUNXI_AAUDIO=n \
  CONFIG_SND_SOC_SUNXI_DEBUG=n CONFIG_STAGING=y CONFIG_STAGING_MEDIA=y \
- CONFIG_VIDEO_SUNXI=y CONFIG_VIDEO_SUNXI_CEDRUS
+ CONFIG_VIDEO_SUNXI=y CONFIG_VIDEO_SUNXI_CEDRUS CONFIG_MEDIA_PLATFORM_DRIVERS=y CONFIG_V4L_MEM2MEM_DRIVERS=y CONFIG_VIDEO_SUN50I_DI300
   FILES:= \
+ $(LINUX_DIR)/drivers/media/platform/sunxi/sun50i-di300/sun50i-di300.ko \
  $(LINUX_DIR)/drivers/media/cec/core/cec.ko \
  $(LINUX_DIR)/drivers/gpu/drm/sun4i/sun4i-drm.ko \
  $(LINUX_DIR)/drivers/gpu/drm/sun4i/sun4i-tcon.ko \
@@ -38,7 +39,7 @@ define KernelPackage/t95h-media
  $(LINUX_DIR)/sound/soc/sunxi_v2/snd_soc_sunxi_ahub_dam.ko \
  $(LINUX_DIR)/sound/soc/sunxi_v2/snd_soc_sunxi_machine.ko \
  $(LINUX_DIR)/drivers/staging/media/sunxi/cedrus/sunxi-cedrus.ko
-  AUTOLOAD:=$(call AutoProbe,snd-soc-hdmi-codec dw-hdmi-i2s-audio dw-hdmi-cec sun4i-drm sun4i-tcon sun8i-mixer sun8i-drm-hdmi sun8i_tcon_top sun4i-codec snd_soc_sunxi_ahub snd_soc_sunxi_ahub_dam snd_soc_sunxi_machine sunxi-cedrus)
+  AUTOLOAD:=$(call AutoProbe,snd-soc-hdmi-codec dw-hdmi-i2s-audio dw-hdmi-cec sun4i-drm sun4i-tcon sun8i-mixer sun8i-drm-hdmi sun8i_tcon_top sun4i-codec snd_soc_sunxi_ahub snd_soc_sunxi_ahub_dam snd_soc_sunxi_machine sunxi-cedrus sun50i-di300)
 endef
 
 define Build/Compile

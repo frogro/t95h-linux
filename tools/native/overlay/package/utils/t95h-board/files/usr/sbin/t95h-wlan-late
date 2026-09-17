@@ -11,6 +11,17 @@ while [ "$n" -lt 60 ]; do
 done
 [ "$n" -lt 60 ] || { logger -t t95h-wlan-late 'Local system/netifd not ready; no WLAN power attempt'; exit 1; }
 logger -t t95h-wlan-late 'Local system/netifd ready; registering WLAN supply (no LAN link required)'
+# Hold the GPU BEFORE supply registration can trigger deferred probes.
+# A failed hold stops this attempt; the worker never respawns.
+G=/sys/bus/platform/devices/1800000.gpu
+P=/sys/bus/platform/devices/7010250.power-controller
+if [ -d "$G" ] && [ ! -L "$G/driver" ]; then
+ if [ ! -L "$P/driver" ]; then
+  echo t95h-hold > "$G/driver_override" || { logger -t t95h-wlan-late 'Cannot hold GPU before supply registration'; exit 1; }
+ else
+  logger -t t95h-wlan-late 'GPU provider unexpectedly bound before supply registration'; exit 1
+ fi
+fi
 if [ ! -d /sys/module/t95h_aldo2 ]; then
  /sbin/modprobe t95h_aldo2 || {
   logger -t t95h-wlan-late 'ALDO2 registration failed'; exit 1;

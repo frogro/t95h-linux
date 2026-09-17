@@ -9,7 +9,9 @@ The eleven selected commits end at
 They include follow-up buffer, FMD and Request API fixes. Unrelated display
 changes at the branch head are deliberately excluded. Original patches,
 authorship and SHA-256 hashes are retained in `tools/experimental/di300/`.
-No release build currently invokes this experimental directory.
+The three image builders now consume the pinned driver series through
+`tools/t95h_di300.py`; the original patch archive remains in this directory.
+Hardware deinterlacing qualification is still pending.
 
 `prepare.py --source KERNEL --output NEW_DIRECTORY --kernel-api 7.2`
 verifies hashes and replays patches with zero fuzz into a separate review
@@ -99,3 +101,37 @@ For Anotter and OpenWrt 6, port the ordering contract, not the LibreELEC paths
 or fixed kernel guard. OpenWrt's WLAN worker also registers power resources:
 place the hold before that registration and preserve networking independence.
 After qualification, generate the same startup policy for SD, eMMC and updates.
+
+## Integrated build paths (subsequent change)
+
+* LibreELEC and Anotter now select MEDIA_PLATFORM_DRIVERS,
+  V4L_MEM2MEM_DRIVERS and VIDEO_SUN50I_DI300=m. Their effective staged DTB
+  receives the upstream-equivalent node using the actual CCU/IOMMU phandles.
+* OpenWrt 6.12 applies the driver series plus the pinned API backport and
+  carries the node in t95h-multimedia.dtsi. The t95h-media package includes
+  and loads sun50i-di300.ko; both config and package contents are audited.
+* LibreELEC again includes the V4L2 deinterlace filter while preserving Cedrus
+  Request API decoding. Playback on DI300 still requires hardware testing.
+* LibreELEC and Anotter share the readiness-driven startup script. OpenWrt
+  places the GPU hold before the WLAN worker registers the supply and waits
+  for that worker's actual completion, dropping the fixed 45-second/15-sample
+  delay. Provider identity, voltages and render-node checks remain mandatory.
+* SD and eMMC derive from the same compiled kernel/rootfs. Each eMMC DTB is
+  checked after conversion. The combined installer additionally extracts and
+  verifies the DI300 node from the **embedded compressed eMMC image**, as well
+  as its own SD DTB. Update images inherit these same payloads.
+* Native build cache identity now includes the shared integration code and
+  pinned patches. LibreELEC checkpoints remain restricted to matching commits.
+
+Local validation: 7.2 olddefconfig retains DI300=m and its dependencies;
+OpenWrt's complete board DTS plus multimedia overlay compiled against 6.12.94
+and passed the shared DI300 DT check. Existing DT warnings in unrelated audio/
+graph nodes remain. The new-node-only test verifies all existing DT properties
+are unchanged and the node survives eMMC preparation. This does not replace a
+complete image build, cold-boot test or interlaced-video runtime validation.
+
+The current diagnostic LibreELEC installation retains its explicit temporary
+`/storage/.config/system.d/t95h-hardware.service.d/fast-start.conf` override.
+Remove that known test override when deploying the new image; a settings-
+preserving update otherwise correctly preserves it and it masks the packaged
+startup script. Do not delete unrelated user systemd overrides.

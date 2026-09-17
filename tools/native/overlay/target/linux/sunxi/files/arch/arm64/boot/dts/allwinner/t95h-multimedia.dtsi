@@ -10,6 +10,17 @@
 		status = "disabled";
 	};
 soc {
+        deinterlace: deinterlace@1420000 {
+            compatible = "allwinner,sun50i-h616-deinterlace";
+            reg = <0x01420000 0x40000>;
+            clocks = <&ccu CLK_BUS_DEINTERLACE>, <&ccu CLK_DEINTERLACE>;
+            clock-names = "bus", "mod";
+            resets = <&ccu RST_BUS_DEINTERLACE>;
+            interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
+            iommus = <&iommu 1>;
+            status = "okay";
+        };
+
 		bus@1000000 {
 			compatible = "allwinner,sun50i-h616-de33",
 				     "allwinner,sun50i-a64-de2";

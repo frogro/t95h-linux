@@ -10,6 +10,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+from t95h_di300 import verify_dtb
+
 M = 1024 * 1024
 PREFIX_HASH = '550f1a8cbd9ad30fccc6c1e66fa0ab17aada12d389e2bef0238c3de2d7647842'
 
@@ -38,6 +40,7 @@ def main():
         'DRM_SUN4I': 'm',
         'DRM_SUN8I_MIXER': 'm',
         'VIDEO_SUNXI_CEDRUS': 'm',
+        'VIDEO_SUN50I_DI300': 'm',
         'SND_SUN4I_CODEC': 'm',
         'SND_SOC_SUNXI_AHUB': 'm',
         'IR_SUNXI': 'm',
@@ -62,7 +65,7 @@ def main():
     for module in ('panfrost', 't95h_ana_provider', 'sun50i-cpufreq-nvmem', 'usbhid',
                    'sun4i-drm', 'sun8i-mixer', 'sun8i-drm-hdmi', 'sunxi-cedrus',
                    'sun4i-codec', 'snd_soc_sunxi_ahub', 'snd_soc_sunxi_machine',
-                   'sunxi-cir', 'btusb'):
+                   'sunxi-cir', 'btusb', 'sun50i-di300'):
         result = subprocess.run([str(args.host/'debugfs'), '-R',
                                  f'stat /lib/modules/{kernel_release}/{module}.ko', str(args.rootfs)],
                                 capture_output=True, text=True, check=True)
@@ -106,6 +109,7 @@ def main():
         raise ValueError('Set CONFIG_TARGET_ROOTFS_PARTSIZE=1932')
     if not args.kernel.is_file() or not args.dtb.is_file():
         raise ValueError('Missing kernel or DTB')
+    verify_dtb(args.dtb)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     def run(tool, *values):
         subprocess.run([str(args.host/tool), *map(str, values)], check=True)

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Native OpenWrt CI: resolve once, apply the audited port, build and publish."""
-import argparse, ast, hashlib, json, os, re, shutil, subprocess, urllib.request
+import argparse, ast, hashlib, json, os, re, shutil, subprocess, urllib.request, sys
 from pathlib import Path
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0,str(HERE.parent))
+import t95h_di300 as di300
 WORK = Path(os.environ.get('NATIVE_WORK', 'build/native')).resolve()
 SOURCE = WORK / 'source'
 PROFILES = ('base', 'base-A', 'base-B', 'base-A-B')
@@ -28,6 +30,8 @@ def build_fingerprint(root, commit, profile, public_key_hash):
     if shared.is_dir():
         for path in sorted(shared.iterdir()):
             if path.is_file():h.update(path.name.encode());h.update(path.read_bytes())
+    for path in [root.parent/'t95h_di300.py', *sorted((root.parent/'experimental/di300').glob('*.patch')), root.parent/'experimental/di300/manifest.json']:
+        if path.is_file():h.update(path.name.encode());h.update(path.read_bytes())
     # Packaging checks and publishing do not change compiled outputs. Hash the
     # actual preparation/build functions, ignoring comments and formatting.
     tree=ast.parse((root/'pipeline.py').read_text())
@@ -63,12 +67,15 @@ def prepare(key):
     run('git','apply','--check',HERE/'port.patch',cwd=SOURCE)
     run('git','apply',HERE/'port.patch',cwd=SOURCE)
     shutil.copytree(HERE/'overlay',SOURCE,dirs_exist_ok=True)
+    for n,(path,digest) in enumerate(di300.patches('6.12'),start=500):
+        shutil.copyfile(path,SOURCE/'target/linux/sunxi/patches-6.12'/f'{n}-t95h-di300.patch')
+    shutil.copyfile(HERE.parent/'t95h_di300.py',SOURCE/'target/linux/sunxi/image/t95h/t95h_di300.py')
     audio=HERE.parents[1]/'boards/t95h/audio'
     board_files=SOURCE/'package/utils/t95h-board/files'
     shutil.copy2(audio/'t95h-audio-init',board_files/'usr/sbin/t95h-audio-init')
     shutil.copy2(audio/'t95h-audio.conf',board_files/'etc/t95h-audio.conf')
     target=(SOURCE/'target/linux/sunxi/Makefile').read_text()
-    if not re.search(r'^KERNEL_PATCHVER\s*:?=\s*6\.',target,re.M): raise RuntimeError('Stable target no longer uses kernel 6; port review required')
+    if not re.search(r'^KERNEL_PATCHVER\s*:?=\s*6\.12(?:\s|$)',target,re.M): raise RuntimeError('Stable target no longer uses reviewed kernel 6.12; port review required')
     run('./scripts/feeds','update','-a',cwd=SOURCE)
     for line in (SOURCE/'feeds.conf.default').read_text().splitlines():
         if line.startswith('src-git '):

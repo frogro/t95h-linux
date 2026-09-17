@@ -57,9 +57,8 @@ class HardwareStartupTests(unittest.TestCase):
  def test_shorter_timing_keeps_regulator_validation_and_runtime_pm(self):
   text=(ROOT/'boards/t95h/libreelec/hardware/start-hardware').read_text()
   fixed=m.hardware_startup(text)
-  self.assertIn('wait_age 30\n',fixed)
-  self.assertIn('wait_age 45\n',fixed)
-  self.assertNotIn('wait_age 120\n',fixed)
+  self.assertNotIn('wait_age',fixed)
+  self.assertLess(fixed.index('echo t95h-hold'),fixed.index('insmod /usr/lib/t95h/t95h_aldo2.ko'))
   self.assertIn('existing Panfrost/provider bindings verified',fixed)
   for line in text.splitlines():
    if 'microvolts' in line or '960000' in line or '3300000' in line:

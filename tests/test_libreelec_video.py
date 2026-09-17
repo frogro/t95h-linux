@@ -22,7 +22,7 @@ fi
 printf '%s:%s' "$REQUEST" "$PATCHES"
 '''
         fixed = module.ffmpeg_t95h(recipe)
-        for project, expected in [('T95H', 'yes:'), ('Allwinner', 'yes:deinterlace'), ('Rockchip', 'yes:deinterlace'), ('Generic', 'no:')]:
+        for project, expected in [('T95H', 'yes:deinterlace'), ('Allwinner', 'yes:deinterlace'), ('Rockchip', 'yes:deinterlace'), ('Generic', 'no:')]:
             result = subprocess.check_output(['sh', '-c', fixed], env={**os.environ, 'PROJECT': project}, text=True)
             self.assertEqual(result, expected)
 

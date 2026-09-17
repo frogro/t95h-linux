@@ -1,11 +1,17 @@
 #!/bin/sh
-# Initial LE adapter: network remains independent; no module reload/restart loop.
+# Supply/provider-driven startup shared by LibreELEC and Anotter.
 set -eu
 [ "$(uname -r)" = 7.2.3-t95h-libreelec ]
-wait_age() { while [ "$(cut -d . -f1 /proc/uptime)" -lt "$1" ]; do sleep 1; done; }
-wait_age 60
+G=/sys/bus/platform/devices/1800000.gpu
+P=/sys/bus/platform/devices/7010250.power-controller
+[ -d "$G" ] && [ -d "$P" ]
+# Hold before the regulator registration can trigger a premature deferred probe.
+if [ ! -L "$G/driver" ]; then
+ [ ! -L "$P/driver" ]
+ echo t95h-hold > "$G/driver_override"
+ [ "$(cat "$G/driver_override")" = t95h-hold ]
+fi
 [ -d /sys/module/t95h_aldo2 ] || insmod /usr/lib/t95h/t95h_aldo2.ko
-wait_age 120
 cpu=0; gpu=0; wlan=0
 for r in /sys/class/regulator/regulator.*; do
  name=$(cat "$r/name" 2>/dev/null) || continue
@@ -23,9 +29,21 @@ done
 [ "$cpu$gpu$wlan" = 111 ]
 G=/sys/bus/platform/devices/1800000.gpu
 P=/sys/bus/platform/devices/7010250.power-controller
+# Accept only the complete, validated binding; never unload a live GPU.
+if [ "$(basename "$(readlink -f "$G/driver")")" = panfrost ] &&
+   [ "$(readlink -f /sys/class/drm/renderD128/device)" = "$(readlink -f "$G")" ] &&
+   [ "$(basename "$(readlink -f "$P/driver")")" = t95h-ana-provider-test ]; then
+    echo panfrost > "$G/driver_override"
+    echo 'T95H: existing Panfrost/provider bindings verified; no duplicate insertion'
+    echo on > "$G/power/control"
+    [ "$(cat "$G/power/runtime_status")" = active ]
+    exit 0
+fi
+
 [ ! -L "$G/driver" ] && [ ! -L "$P/driver" ]
 echo t95h-hold > "$G/driver_override"
 insmod /usr/lib/t95h/t95h_ana_provider.ko
+[ "$(basename "$(readlink -f "$P/driver")")" = t95h-ana-provider-test ]
 echo panfrost > "$G/driver_override"
 echo 1800000.gpu > /sys/bus/platform/drivers_probe || true
 n=0

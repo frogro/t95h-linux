@@ -9,13 +9,12 @@ ready() {
  [ "$(printf '%s' "$service" | jsonfilter -e '@["t95h-wlan-late"].instances.instance1.running')" = false ] || return 1
  [ "$(printf '%s' "$service" | jsonfilter -e '@["t95h-wlan-late"].instances.instance1.exit_code')" = 0 ] || return 1
 }
-n=0; stable=0
-while [ "$n" -lt 240 ]; do
- if ready; then stable=$((stable+1)); else stable=0; fi
- [ "$(cut -d . -f1 /proc/uptime)" -ge 45 ] && [ "$stable" -ge 15 ] && break
+# Wait for the actual supply/WLAN worker result, not a fixed boot age.
+n=0
+while ! ready; do
+ [ "$n" -lt 240 ] || exit 1
  n=$((n+1)); sleep 1
 done
-[ "$stable" -ge 15 ] && [ "$n" -lt 240 ]
 cpu=0; gpu=0; wlan=0
 for r in /sys/class/regulator/regulator.*; do
  name=$(cat "$r/name" 2>/dev/null) || continue
@@ -37,7 +36,7 @@ if [ ! -L "$G/driver" ]; then
  echo t95h-hold > "$G/driver_override"
  modprobe panfrost
  modprobe t95h_ana_provider
- [ -L "$P/driver" ]
+ [ "$(basename "$(readlink -f "$P/driver")")" = t95h-ana-provider-test ]
  echo panfrost > "$G/driver_override"
  echo 1800000.gpu > /sys/bus/platform/drivers_probe || true
 fi
@@ -45,6 +44,7 @@ n=0
 while [ ! -c /dev/dri/renderD128 ] && [ "$n" -lt 30 ]; do sleep 1; n=$((n+1)); done
 [ "$(readlink -f /sys/class/drm/renderD128/device)" = "$(readlink -f "$G")" ]
 [ "$(basename "$(readlink -f "$G/driver")")" = panfrost ]
+[ "$(basename "$(readlink -f "$P/driver")")" = t95h-ana-provider-test ]
 echo on > "$G/power/control"
 [ "$(cat "$G/power/runtime_status")" = active ]
 modprobe sun50i-cpufreq-nvmem

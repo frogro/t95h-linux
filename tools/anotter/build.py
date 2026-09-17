@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Build an experimental Debian/Anotter ARM64 SD image; never open block devices."""
-import argparse, gzip, hashlib, json, os, re, shutil, struct, subprocess, tarfile
+import argparse, gzip, hashlib, json, os, re, shutil, struct, subprocess, tarfile, sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT/"tools"))
+import t95h_di300 as di300
 M = 1048576
 DISK = 'a0950001'
 REQUIRED = 'CPU_FREQ_GOV_SCHEDUTIL DEVTMPFS DEVTMPFS_MOUNT TMPFS TMPFS_POSIX_ACL TMPFS_XATTR CGROUPS MEMCG CGROUP_PIDS CGROUP_FREEZER CGROUP_DEVICE NAMESPACES USER_NS UTS_NS IPC_NS PID_NS NET_NS SECCOMP SECCOMP_FILTER FHANDLE INOTIFY_USER SIGNALFD TIMERFD EPOLL UNIX UNIX_DIAG BINFMT_ELF BINFMT_SCRIPT AUTOFS_FS EXT4_FS VFAT_FS NLS_CODEPAGE_437 NLS_ISO8859_1'.split()
@@ -44,7 +46,7 @@ def config(text):
         m = re.fullmatch(r'# (CONFIG_\w+) is not set', line)
         if m: values[m[1]] = 'n'
     values.update({'CONFIG_'+x: 'y' for x in REQUIRED})
-    values.update(CONFIG_SND_USB_AUDIO='y', CONFIG_LOCALVERSION='"-t95h-anotter-de33"', CONFIG_LOCALVERSION_AUTO='n', CONFIG_INITRAMFS_SOURCE='""')
+    values.update(CONFIG_MEDIA_PLATFORM_DRIVERS='y', CONFIG_V4L_MEM2MEM_DRIVERS='y', CONFIG_VIDEO_SUN50I_DI300='m', CONFIG_SND_USB_AUDIO='y', CONFIG_LOCALVERSION='"-t95h-anotter-de33"', CONFIG_LOCALVERSION_AUTO='n', CONFIG_INITRAMFS_SOURCE='""')
     return '\n'.join(f'# {k} is not set' if v == 'n' else f'{k}={v}' for k,v in sorted(values.items()))+'\n'
 
 def prefix(data):
@@ -173,12 +175,6 @@ def main():
         if sha(src)!=entry['sha256']: raise ValueError('Firmware mismatch '+rel)
         dst=root/rel; dst.parent.mkdir(parents=True,exist_ok=True); shutil.copyfile(src,dst)
     start=(ROOT/'boards/t95h/libreelec/hardware/start-hardware').read_text().replace('7.2.3-t95h-libreelec',release).replace('Kodi may start','kiosk may start')
-    # Three live Anotter boots validated this timing; other OS defaults stay unchanged.
-    start=start.replace('wait_age 60\n','wait_age 30\n').replace('wait_age 120\n','wait_age 45\n')
-    guard=(ROOT/'boards/t95h/anotter/runtime/panfrost-existing.sh').read_text()
-    marker='[ ! -L "$G/driver" ] && [ ! -L "$P/driver" ]'
-    if start.count(marker)!=1: raise ValueError('Hardware startup contract changed')
-    start=start.replace(marker,guard+'\n'+marker)
     put(root,'usr/lib/t95h/start-hardware',start,0o755)
     unit=(ROOT/'boards/t95h/anotter/runtime/t95h-hardware.service').read_text()
     put(root,'etc/systemd/system/t95h-hardware.service',unit)
@@ -190,6 +186,7 @@ def main():
     dtb=o/'modules/startup/t95h.dtb'
     tool('anotter/display.py','dtb',dtb)
     tool('anotter/display.py','thermal',dtb)
+    di300.add_dtb(dtb)
     run('fdtput','-t','s',dtb,'/soc/mmc@4021000','status','okay')
     if subprocess.check_output(['fdtget','-t','s',str(dtb),'/soc/mmc@4021000','status'],text=True).strip()!='okay':raise ValueError('Internal WLAN host disabled')
     builtin=(root/'lib/modules'/release/'modules.builtin').read_text()

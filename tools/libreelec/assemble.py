@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Assemble experimental SD/eMMC media from LE-built KERNEL and SYSTEM, no devices."""
-import argparse,gzip,hashlib,importlib.util,json,shutil,struct,subprocess
+import argparse,gzip,hashlib,importlib.util,json,shutil,struct,subprocess,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2];M=1048576
+sys.path.insert(0,str(ROOT/"tools"))
+from t95h_di300 import verify_dtb
 
 def sha(p):
  with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
@@ -57,6 +59,7 @@ def main():
   chosen=dtb
   if media=='emmc':
    spec=importlib.util.spec_from_file_location('dt',ROOT/'tools/emmc/prepare-access-dtb.py');dt=importlib.util.module_from_spec(spec);spec.loader.exec_module(dt);chosen=d/'t95h.dtb';dt.prepare(dtb,chosen)
+  verify_dtb(chosen)
   text=(ROOT/'boards/t95h/boot/scripts/boot-clean.scm.txt').read_text()
   start=text.index('setenv bootargs ');end=text.index('\n',start)
   text=text[:start]+f'setenv bootargs console=ttyS0,115200 console=tty0 earlycon=uart8250,mmio32,0x05000000 loglevel=7 boot=UUID={bootid[:4]}-{bootid[4:]} disk=UUID={rootid} quiet ssh net.ifnames=0'+text[end:]

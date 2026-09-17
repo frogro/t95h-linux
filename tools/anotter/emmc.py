@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Derive Anotter eMMC and installer SD from the same completed SD build."""
-import argparse,gzip,hashlib,json,shutil,struct,subprocess
+import argparse,gzip,hashlib,json,shutil,struct,subprocess,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2];M=1048576
+sys.path.insert(0,str(ROOT/"tools"))
+from t95h_di300 import verify_dtb
 
 def run(*a):subprocess.run(list(map(str,a)),check=True)
 def sha(p):
@@ -20,6 +22,7 @@ def main():
  fat=d/'boot.fat';fs=d/'root.ext4'
  run('mlabel','-i',fat,'-N','a0950002','::T95HKIOSK')
  run('python3',ROOT/'tools/emmc/prepare-access-dtb.py','--source',b/'modules/startup/t95h.dtb','--output',d/'t95h.dtb')
+ verify_dtb(d/'t95h.dtb')
  run('mcopy','-o','-i',fat,d/'t95h.dtb','::/boot/t95h.dtb')
  text=(b/'boot.txt').read_text()
  if text.count('root=PARTUUID=a0950001-02')!=1:raise ValueError('Root argument contract changed')

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Create an isolated LibreELEC project from pinned sources and T95H locks."""
-import argparse, hashlib, json, re, shutil, subprocess
+import argparse, hashlib, json, re, shutil, subprocess, sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT/"tools"))
+import t95h_di300 as di300
 IWD_KERNEL_CONFIG=['PKCS8_PRIVATE_KEY_PARSER','CRYPTO_MD4','KEYS','KEY_DH_OPERATIONS','CRYPTO_USER_API_HASH','CRYPTO_USER_API_SKCIPHER','CRYPTO_USER_API_AEAD','CRYPTO_USER_API_RNG','CRYPTO_AES','CRYPTO_DES','CRYPTO_ECB','CRYPTO_CBC','CRYPTO_CMAC','CRYPTO_HMAC','CRYPTO_MD5','CRYPTO_SHA1','CRYPTO_SHA256','CRYPTO_SHA512']
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def gnu_mirror_urls(text):
@@ -50,19 +52,18 @@ def ffmpeg_t95h(text):
  if text.count(gate)!=1:raise ValueError('FFmpeg V4L2 Request project gate changed; review required')
  text=text.replace(gate,'if [ "${PROJECT}" = "T95H" -o "${PROJECT}" = "Allwinner" -o "${PROJECT}" = "Rockchip"')
  if text.count('Allwinner|Rockchip)')!=1:raise ValueError('FFmpeg deinterlace project gate changed; review required')
- # No compatible V4L2 mem2mem deinterlacer is exposed on our T95H.
- # Keep stateless Cedrus Request decoding enabled without that filter.
- return text
+ # The image now includes the H616 DI300 raw-frame deinterlacer.
+ return text.replace('Allwinner|Rockchip)', 'T95H|Allwinner|Rockchip)')
 def hardware_startup(text):
- # Match the Anotter timing while retaining regulator checks and probe guards.
- for old in ('wait_age 60\n', 'wait_age 120\n'):
-  if text.count(old)!=1:raise ValueError('Hardware startup timing contract changed')
- text=text.replace('wait_age 60\n','wait_age 30\n').replace('wait_age 120\n','wait_age 45\n')
- marker='[ ! -L "$G/driver" ] && [ ! -L "$P/driver" ]'
- if text.count(marker)!=1:raise ValueError('Hardware startup binding contract changed')
- guard=(ROOT/'boards/t95h/anotter/runtime/panfrost-existing.sh').read_text()
- guard=guard.replace('    exit 0', '    echo on > "$G/power/control"\n    [ "$(cat "$G/power/runtime_status")" = active ]\n    exit 0')
- return text.replace(marker,guard+'\n'+marker)
+ # The baseline is the validated readiness-driven implementation.
+ hold='echo t95h-hold > "$G/driver_override"'
+ supply='insmod /usr/lib/t95h/t95h_aldo2.ko'
+ provider='insmod /usr/lib/t95h/t95h_ana_provider.ko'
+ if 'wait_age' in text or not all(x in text for x in (hold,supply,provider)):
+  raise ValueError('Hardware startup readiness contract changed')
+ if not text.index(hold)<text.index(supply)<text.index(provider):
+  raise ValueError('GPU must be held before supply/provider registration')
+ return text
 
 def thermal_policy(dtb):
  # Only LibreELEC's staged DTB changes; shared OpenWrt/Anotter inputs stay locked.
@@ -108,13 +109,15 @@ FIRMWARE="misc-firmware wlan-firmware"
  cfg.update({k:v for k,v in upstream_cfg.items() if k in ('CONFIG_BT','CONFIG_RFKILL') or k.startswith(('CONFIG_BT_','CONFIG_RFKILL_'))})
  # Preserve our hardware settings, add LE userspace requirements explicitly.
  required=['BLK_DEV_INITRD','DEVTMPFS','DEVTMPFS_MOUNT','TMPFS','TMPFS_POSIX_ACL','SQUASHFS','SQUASHFS_ZSTD','SQUASHFS_XZ','CGROUPS','CGROUP_PIDS','CGROUP_FREEZER','CGROUP_DEVICE','NAMESPACES','UTS_NS','IPC_NS','PID_NS','NET_NS','SECCOMP','SECCOMP_FILTER','FHANDLE','INOTIFY_USER','SIGNALFD','TIMERFD','EPOLL','UNIX','UNIX_DIAG','BINFMT_ELF','BINFMT_SCRIPT','BLK_DEV_LOOP','RD_GZIP','RD_ZSTD','ZSTD_DECOMPRESS','AUTOFS_FS','EXT4_FS','VFAT_FS','NLS_CODEPAGE_437','NLS_ISO8859_1']
- required+=IWD_KERNEL_CONFIG+['SND_USB_AUDIO']
+ required+=IWD_KERNEL_CONFIG+['SND_USB_AUDIO','MEDIA_PLATFORM_DRIVERS','V4L_MEM2MEM_DRIVERS','VIDEO_SUN50I_DI300']
  bluetooth_required=['BT','BT_BREDR','BT_LE','BT_RFCOMM','BT_HIDP','BT_HCIBTUSB','RFKILL']
  for key in required: cfg['CONFIG_'+key]='y'
+ cfg['CONFIG_VIDEO_SUN50I_DI300']='m'
  cfg.update(CONFIG_EXTRA_FIRMWARE='""',CONFIG_EXTRA_FIRMWARE_DIR='"firmware"',CONFIG_LOCALVERSION='"-t95h-libreelec"',CONFIG_LOCALVERSION_AUTO='n',CONFIG_INITRAMFS_SOURCE='""',CONFIG_INITRAMFS_ROOT_UID='0',CONFIG_INITRAMFS_ROOT_GID='0',CONFIG_INITRAMFS_COMPRESSION_ZSTD='y',CONFIG_INITRAMFS_COMPRESSION_NONE='n',CONFIG_MODULE_COMPRESS='n',CONFIG_MODULE_COMPRESS_XZ='n',CONFIG_MODULE_COMPRESS_ZSTD='n',CONFIG_MODULE_COMPRESS_GZIP='n')
  (pr/'linux').mkdir();(pr/'linux/linux.aarch64.conf').write_text('\n'.join(f'# {k} is not set' if v=='n' else f'{k}={v}' for k,v in sorted(cfg.items()))+'\n')
  kl=json.loads((board/'kernel/source-lock.json').read_text());bl=json.loads((board/'baseline.json').read_text());w=bl['wlan']
  patches=[(board/'kernel'/kl['patch'],kl['patch_sha256']),(board/w['incremental_patch'],w['incremental_patch_sha256'])]+[(board/x['path'],x['sha256']) for x in w['followup_patches']]
+ patches+=di300.patches('7.2')
  dest=pr/'patches/linux';dest.mkdir(parents=True)
  for n,(s,h) in enumerate(patches):
   if sha(s)!=h:raise ValueError('Hardware patch changed')
@@ -161,6 +164,7 @@ FIRMWARE="misc-firmware wlan-firmware"
  freetype=le/'packages/print/freetype/package.mk';freetype.write_text(freetype_archive(freetype.read_text()))
  stage=le/'t95h-startup';subprocess.run(['/usr/bin/python3',str(ROOT/'tools/stage-startup-fixes.py'),'--profile','base-B','--output',str(stage)],check=True)
  thermal=thermal_policy(stage/'t95h.dtb')
+ thermal['dtb_sha256']=di300.add_dtb(stage/'t95h.dtb')
  hw=pr/'packages/t95h-hardware';shutil.copytree(board/'libreelec/hardware',hw)
  (hw/'start-hardware').write_text(hardware_startup((hw/'start-hardware').read_text()))
  for name in ['t95h-audio-init','t95h-audio.conf']:shutil.copy2(board/'audio'/name,hw/name)

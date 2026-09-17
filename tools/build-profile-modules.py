@@ -77,6 +77,9 @@ def main():
     for name in required:
         if len(list(directory.rglob(name))) != 1:
             raise ValueError('External module missing or duplicated: ' + name)
+    if 'CONFIG_VIDEO_SUN50I_DI300=m\n' in (kernel/'.config').read_text():
+        if len(list(directory.rglob('sun50i-di300.ko')))!=1:
+            raise ValueError('DI300 module missing from rootfs payload')
     files = {}
     for path in sorted(directory.rglob('*.ko')):
         vermagic = subprocess.check_output(['modinfo', '-F', 'vermagic', str(path)], text=True).strip()

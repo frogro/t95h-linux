@@ -51,6 +51,10 @@ def main():
  compiler=Path(str(prefix)+'gcc');version=subprocess.check_output([str(compiler),'--version'],text=True).splitlines()[0]
  out=a.output.resolve();out.mkdir(parents=True,exist_ok=False);(out/'tmp').mkdir()
  config=a.config.resolve(strict=True) if a.config else board/'profiles/kconfig-draft'/(a.profile+'.config');cfg=config.read_text();shutil.copyfile(config,out/'.config')
+ if 'CONFIG_VIDEO_SUN50I_DI300=m' in cfg:
+  from t95h_di300 import apply_source
+  if proof['kernel']!='7.2.3':raise ValueError('DI300 source needs kernel review')
+  (out/'di300-patches.json').write_text(json.dumps(apply_source(source,'7.2'),indent=2)+'\n')
  groups={'base'}|set(a.profile.split('-')[1:])
  firmware={item['file']:item for item in json.loads((board/'profiles/integration-draft.json').read_text())['firmware'] if item['profile'] in groups}
  names=re.search(r'^CONFIG_EXTRA_FIRMWARE="(.*)"$',cfg,re.M).group(1).split()

@@ -3,6 +3,7 @@
 import argparse, gzip, hashlib, importlib.util, json, shutil, struct, subprocess
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
+from t95h_di300 import verify_dtb
 M=1048576
 
 def run(*a): subprocess.run(list(map(str,a)),check=True)
@@ -22,6 +23,27 @@ def append_partition(prefix,raw_bytes,payload_bytes):
     b=bytearray(prefix)
     b[478:494]=struct.pack('<B3sB3sII',0,b'\0'*3,131,b'\0'*3,raw_bytes//512,payload_bytes//512)
     return b
+
+def inspect_emmc_boot(image, output):
+    # Inspect the actual embedded eMMC image too: validating the installer SD
+    # alone would allow an obsolete eMMC payload to slip into a new installer.
+    emmc_fat=output/'emmc-verify.fat'
+    with gzip.open(image,'rb') as f,emmc_fat.open('wb') as boot:
+        header=f.read(512)
+        if len(header)!=512 or header[510:512]!=b'\x55\xaa':raise ValueError('Invalid eMMC MBR')
+        start,count=partition(header,0)
+        if start!=8192 or not 0<count<=2097152:raise ValueError('Unexpected eMMC FAT layout')
+        first,last=start*512,(start+count)*512
+        h=hashlib.sha256(header);size=len(header)
+        while b:=f.read(M):
+            h.update(b)
+            low,high=max(size,first),min(size+len(b),last)
+            if low<high:boot.write(b[low-size:high-size])
+            size+=len(b)
+    if emmc_fat.stat().st_size!=count*512:raise ValueError('Truncated eMMC boot partition')
+    run('mcopy','-i',emmc_fat,'::/boot/t95h.dtb',output/'emmc-verify.dtb')
+    verify_dtb(output/'emmc-verify.dtb')
+    return size,h.hexdigest()
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
@@ -58,17 +80,17 @@ def main():
             dest.write(b);left-=len(b)
     run('mcopy','-i',fat,'::/boot/t95h.dtb',o/'before.dtb')
     spec=importlib.util.spec_from_file_location('dt',ROOT/'tools/emmc/prepare-access-dtb.py');dt=importlib.util.module_from_spec(spec);spec.loader.exec_module(dt)
+    verify_dtb(o/'before.dtb')
     dt.prepare(o/'before.dtb',o/'installer.dtb')
+    verify_dtb(o/'installer.dtb')
     run('mcopy','-o','-i',fat,o/'installer.dtb','::/boot/t95h.dtb')
     run('fsck.vfat','-n',fat)
     with raw.open('r+b') as f,fat.open('rb') as source:f.seek(start*512);shutil.copyfileobj(source,f,M)
     payload=o/'payload';payload.mkdir()
     shutil.copyfile(a.emmc,payload/'emmc.img.gz')
-    with gzip.open(a.emmc,'rb') as f:
-        h=hashlib.sha256();size=0
-        while b:=f.read(M):h.update(b);size+=len(b)
+    size,emmc_raw_sha256=inspect_emmc_boot(a.emmc,o)
     if size%M:raise ValueError('Unaligned eMMC image')
-    (payload/'raw-bytes').write_text(str(size)+'\n');(payload/'raw-sha256').write_text(h.hexdigest()+'\n');(payload/'os').write_text(a.os+'\n')
+    (payload/'raw-bytes').write_text(str(size)+'\n');(payload/'raw-sha256').write_text(emmc_raw_sha256+'\n');(payload/'os').write_text(a.os+'\n')
     shutil.copyfile(ROOT/'boards/t95h/media-installer/install-emmc.sh',payload/'install-emmc.sh')
     if a.os != 'openwrt6':
         shutil.copyfile(ROOT/'boards/t95h/media-installer/compare-config.py',payload/'compare-config.py')
