@@ -110,7 +110,7 @@ class GitHub:
                 time.sleep(15)
                 asset = self.assets(release['id']).get(path.name)
                 if asset is not None:
-                    if release.get('draft') and asset.get('state') == 'starter' and asset.get('size') == 0:
+                    if release.get('draft') and asset.get('state') == 'starter':
                         self.api(f"repos/{self.repo}/releases/assets/{asset['id']}", 'DELETE')
                     else:
                         self.verify(tag, path, asset)
@@ -146,6 +146,11 @@ class GitHub:
         assets = self.assets(release['id'])
         if set(assets) - set(paths):
             raise RuntimeError('Existing release has unexpected assets; inspect before continuing')
+        for name, asset in list(assets.items()):
+            if release['draft'] and asset.get('state') == 'starter':
+                print(f'Removing unfinished upload: {name}', flush=True)
+                self.api(f"repos/{self.repo}/releases/assets/{asset['id']}", 'DELETE')
+                del assets[name]
         for name, path in paths.items():
             if name in assets:
                 self.verify(tag, path, assets[name])

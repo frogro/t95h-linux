@@ -87,7 +87,7 @@ class PublisherTests(unittest.TestCase):
             asset = dict(name=path.name, size=5, state='uploaded', digest=pub.digest(path))
             client = pub.GitHub('o/r')
             release = dict(id=1, draft=True, upload_url='https://uploads.github.com/test')
-            with patch.object(client, 'api', side_effect=[pub.GitHubError(500, 'server'), None, asset]) as api, patch.object(client, 'assets', return_value={path.name: dict(id=9, state='starter', size=0)}):
+            with patch.object(client, 'api', side_effect=[pub.GitHubError(500, 'server'), None, asset]) as api, patch.object(client, 'assets', return_value={path.name: dict(id=9, state='starter', size=5)}):
                 client.upload('tag', release, path)
                 self.assertEqual(api.call_args_list[1].args, ('repos/o/r/releases/assets/9', 'DELETE'))
 
