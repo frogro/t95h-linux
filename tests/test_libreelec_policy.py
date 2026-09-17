@@ -52,3 +52,18 @@ class ResolverBootTests(unittest.TestCase):
    self.assertEqual(result.returncode,0,result.stderr)
    self.assertEqual(result.stderr,'')
    self.assertEqual(resolver.read_text(),'nameserver 192.0.2.1\ndomain test\n' if present else 'existing\n')
+
+class HardwareStartupTests(unittest.TestCase):
+ def test_shorter_timing_keeps_regulator_validation_and_runtime_pm(self):
+  text=(ROOT/'boards/t95h/libreelec/hardware/start-hardware').read_text()
+  fixed=m.hardware_startup(text)
+  self.assertIn('wait_age 30\n',fixed)
+  self.assertIn('wait_age 45\n',fixed)
+  self.assertNotIn('wait_age 120\n',fixed)
+  self.assertIn('existing Panfrost/provider bindings verified',fixed)
+  for line in text.splitlines():
+   if 'microvolts' in line or '960000' in line or '3300000' in line:
+    self.assertIn(line,fixed)
+  subprocess.run(['sh','-n'],input=fixed,text=True,check=True)
+ def test_changed_startup_contract_is_rejected(self):
+  with self.assertRaises(ValueError):m.hardware_startup('new upstream script')

@@ -50,7 +50,20 @@ def ffmpeg_t95h(text):
  if text.count(gate)!=1:raise ValueError('FFmpeg V4L2 Request project gate changed; review required')
  text=text.replace(gate,'if [ "${PROJECT}" = "T95H" -o "${PROJECT}" = "Allwinner" -o "${PROJECT}" = "Rockchip"')
  if text.count('Allwinner|Rockchip)')!=1:raise ValueError('FFmpeg deinterlace project gate changed; review required')
- return text.replace('Allwinner|Rockchip)','T95H|Allwinner|Rockchip)')
+ # No compatible V4L2 mem2mem deinterlacer is exposed on our T95H.
+ # Keep stateless Cedrus Request decoding enabled without that filter.
+ return text
+def hardware_startup(text):
+ # Match the Anotter timing while retaining regulator checks and probe guards.
+ for old in ('wait_age 60\n', 'wait_age 120\n'):
+  if text.count(old)!=1:raise ValueError('Hardware startup timing contract changed')
+ text=text.replace('wait_age 60\n','wait_age 30\n').replace('wait_age 120\n','wait_age 45\n')
+ marker='[ ! -L "$G/driver" ] && [ ! -L "$P/driver" ]'
+ if text.count(marker)!=1:raise ValueError('Hardware startup binding contract changed')
+ guard=(ROOT/'boards/t95h/anotter/runtime/panfrost-existing.sh').read_text()
+ guard=guard.replace('    exit 0', '    echo on > "$G/power/control"\n    [ "$(cat "$G/power/runtime_status")" = active ]\n    exit 0')
+ return text.replace(marker,guard+'\n'+marker)
+
 def thermal_policy(dtb):
  # Only LibreELEC's staged DTB changes; shared OpenWrt/Anotter inputs stay locked.
  trips='/thermal-zones/cpu-thermal/trips/'
@@ -149,6 +162,7 @@ FIRMWARE="misc-firmware wlan-firmware"
  stage=le/'t95h-startup';subprocess.run(['/usr/bin/python3',str(ROOT/'tools/stage-startup-fixes.py'),'--profile','base-B','--output',str(stage)],check=True)
  thermal=thermal_policy(stage/'t95h.dtb')
  hw=pr/'packages/t95h-hardware';shutil.copytree(board/'libreelec/hardware',hw)
+ (hw/'start-hardware').write_text(hardware_startup((hw/'start-hardware').read_text()))
  for name in ['t95h-audio-init','t95h-audio.conf']:shutil.copy2(board/'audio'/name,hw/name)
  shutil.copy2(board/'audio/t95h-audio.service',hw/'system.d/t95h-audio.service')
  src=hw/'sources';src.mkdir();shutil.copyfile(board/'external/regulator/t95h_aldo2.c',src/'t95h_aldo2.c');shutil.copyfile(stage/'ana/t95h_ana_provider.c',src/'t95h_ana_provider.c');(src/'Makefile').write_text('obj-m := t95h_aldo2.o t95h_ana_provider.o\n');shutil.copyfile(stage/'t95h.dtb',hw/'t95h.dtb')

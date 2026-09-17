@@ -201,3 +201,20 @@ Passwortdatei beim ersten Start an. Diese Erststart-/Initialisierungsmeldungen s
 keine weiteren aktuell fehlgeschlagenen Dienste. Keine Live-Konfiguration geändert.
 Der vorzeitig gestartete Lauf 35196734446 wurde zugunsten des vollständigeren
 Korrekturstands abgebrochen.
+
+## GPU-Start und Video-Filter, 17. September 2026
+
+Neue Builds übernehmen die unter Anotter erprobten Wartezeitpunkte 30/45 statt
+60/120 Sekunden. Vollständig gebundene Panfrost-/ANA-Provider werden akzeptiert;
+Reglerprüfungen und GPU-Runtime-PM-Schutz bleiben erhalten. Der erste LibreELEC-
+Live-Neustart erreichte Panfrost nach 45,1 Sekunden. Die vorzeitige GPU-Probe
+meldete weiterhin -110 bei Sekunde 31; die spätere Initialisierung war erfolgreich.
+Auch ein zweiter Neustart war erfolgreich; Kodi und cpufreq blieben fehlerfrei.
+Das sind Warmstarts, kein Nachweis wiederholter Kaltstarts.
+
+T95H aktiviert weiterhin FFmpegs stateless V4L2 Request API für Cedrus, fügt sich
+aber nicht mehr zur Auswahl des V4L2-mem2mem-Deinterlace-Filters hinzu. Dieser
+Filter fand live kein geeignetes Gerät und verursachte beim Kodi-Filtertest
+`avfilter_graph_config: Invalid argument`; progressive H264-Wiedergabe lief danach
+weiter. Die Build-Auswahl ist lokal getestet. Eine Wiedergabeprüfung mit den neu
+gebauten FFmpeg-Bibliotheken und Interlaced-Material steht noch aus.
