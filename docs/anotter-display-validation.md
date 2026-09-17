@@ -55,3 +55,17 @@ Native video testing does not validate Chromium hardware decoding, Kodi playback
 every monitor, audio synchronization, 60 fps, or repeated cold boots. OpenWrt and
 LibreELEC keep their existing kernels pending their own tests. The completed
 LibreELEC baseline build is run 34642912252 and is the first Kodi test candidate.
+
+## Local test-page animation, 17 September 2026
+
+The original CSS `left` animation caused 61.1–65.4% aggregate CPU busy on the
+Anotter live system; disabling it reduced that to 1.5%. The test page now uses
+`transform: translateX()` with a compositor hint. Its travel distance is computed
+on initial layout and resize, preserving the original track boundaries.
+
+After settling: transform enabled 35.7% at 408 MHz; disabled 1.3% at 720 MHz;
+re-enabled 44.4% at 720 MHz. CPU temperature was about 63–64 °C while animating.
+These are short /proc/stat samples with active thermal regulation, not a fixed-
+frequency benchmark. The change reduces observed CPU load but does not eliminate
+browser/compositor overhead or prove browser animation frame rate. JavaScript
+syntax checked; served page checked; change persisted on the personal test SD.
