@@ -69,3 +69,26 @@ These are short /proc/stat samples with active thermal regulation, not a fixed-
 frequency benchmark. The change reduces observed CPU load but does not eliminate
 browser/compositor overhead or prove browser animation frame rate. JavaScript
 syntax checked; served page checked; change persisted on the personal test SD.
+
+## Governor and browser capability audit, 17 September 2026
+
+Chromium SystemInfo reported ANGLE OpenGL ES on Mesa Panfrost with GPU
+compositing, rasterization and WebGL enabled. Video decoding and encoding were
+reported as `disabled_software`; accelerated graphics do not establish hardware
+video decoding. This agrees with the earlier Deskreen observation above, while
+the separate native GStreamer path did demonstrate Cedrus H.264 decoding.
+
+Short tests of the same animated page measured aggregate CPU busy of 34.0%
+with performance and 33.9% with ondemand, both near 65 degrees C and already
+thermally limited. These samples do not establish a long-term governor benefit.
+Performance was restored after the test.
+
+The next Anotter kernel includes CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y, making
+schedutil available for a comparative live test. The existing default governor
+remains unchanged until that test. The same kernel feeds the SD image and the
+combined SD/eMMC installer and their update payloads. The kernel build checks
+that requested enabled symbols survive olddefconfig.
+
+Live thermal trip points were CPU passive 60/70 degrees C, GPU passive 65
+degrees C, and critical 110 degrees C. No thermal threshold was changed. The
+critical trip is not a validated continuous operating temperature.
