@@ -97,11 +97,28 @@ class GitHub:
         if actual != expected:
             raise RuntimeError(f'Immutable asset differs: {path.name}')
 
+    def transfer(self, tag, release, path):
+        if self.last_write is not None:
+            time.sleep(max(0, self.interval - (time.monotonic() - self.last_write)))
+        self.last_write = time.monotonic()
+        try:
+            result = subprocess.run(['gh', 'release', 'upload', tag, str(path),
+                                     '--repo', self.repo], capture_output=True,
+                                    text=True, timeout=300)
+        except subprocess.TimeoutExpired as error:
+            raise GitHubError(0, f'Upload timed out: {path.name}') from error
+        if result.returncode:
+            match = re.search(r'HTTP (\d{3})', result.stderr)
+            raise GitHubError(int(match[1]) if match else 0, result.stderr)
+        asset = self.assets(release['id']).get(path.name)
+        if asset is None:
+            raise GitHubError(0, f'Upload not visible yet: {path.name}')
+        return asset
+
     def upload(self, tag, release, path):
-        url = release['upload_url'].split('{')[0] + '?name=' + quote(path.name, safe='')
         for attempt in range(4):
             try:
-                asset = self.api(url, 'POST', file=path)
+                asset = self.transfer(tag, release, path)
             except GitHubError as error:
                 if error.status != 0 and error.status < 500:
                     raise

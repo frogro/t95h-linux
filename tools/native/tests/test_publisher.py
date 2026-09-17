@@ -37,10 +37,10 @@ class PublisherTests(unittest.TestCase):
             def asset(p):return dict(name=p.name,size=p.stat().st_size,digest=pub.digest(p),state='uploaded')
             client=pub.GitHub('o/r')
             release=dict(id=1,draft=True,upload_url='https://uploads.github.com/test{?name,label}')
-            with patch.object(client,'api',side_effect=[release,asset(b),None]) as api,patch.object(client,'assets',side_effect=[{'a.apk':asset(a)},{'a.apk':asset(a),'b.apk':asset(b)}]):
+            with patch.object(client,'transfer',return_value=asset(b)) as transfer, patch.object(client,'api',side_effect=[release,None]) as api,patch.object(client,'assets',side_effect=[{'a.apk':asset(a)},{'a.apk':asset(a),'b.apk':asset(b)}]):
                 client.publish('tag',[a,b],'sha','title','notes')
-                self.assertEqual(api.call_count,3)
-                self.assertEqual(api.call_args_list[1].kwargs['file'],b)
+                self.assertEqual(api.call_count,2)
+                self.assertEqual(transfer.call_args.args[-1],b)
                 self.assertEqual(api.call_args_list[-1].args[1],'PATCH')
     def test_mismatch_and_public_incomplete_stop(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -72,11 +72,11 @@ class PublisherTests(unittest.TestCase):
             release = dict(id=1, upload_url='https://uploads.github.com/test{?name}')
             for existing, calls in [(None, 2), (asset, 1)]:
                 client = pub.GitHub('o/r')
-                with patch.object(client, 'api', side_effect=[pub.GitHubError(500, 'server'), asset]) as api, patch.object(client, 'assets', return_value={} if existing is None else {path.name: existing}):
+                with patch.object(client, 'transfer', side_effect=[pub.GitHubError(500, 'server'), asset]) as api, patch.object(client, 'assets', return_value={} if existing is None else {path.name: existing}):
                     client.upload('tag', release, path)
                     self.assertEqual(api.call_count, calls)
             client = pub.GitHub('o/r')
-            with patch.object(client, 'api', side_effect=pub.GitHubError(500, 'server')) as api, patch.object(client, 'assets', return_value={path.name: dict(asset, digest='wrong')}):
+            with patch.object(client, 'transfer', side_effect=pub.GitHubError(500, 'server')) as api, patch.object(client, 'assets', return_value={path.name: dict(asset, digest='wrong')}):
                 with self.assertRaises(RuntimeError): client.upload('tag', release, path)
                 self.assertEqual(api.call_count, 1)
 
@@ -87,9 +87,9 @@ class PublisherTests(unittest.TestCase):
             asset = dict(name=path.name, size=5, state='uploaded', digest=pub.digest(path))
             client = pub.GitHub('o/r')
             release = dict(id=1, draft=True, upload_url='https://uploads.github.com/test')
-            with patch.object(client, 'api', side_effect=[pub.GitHubError(500, 'server'), None, asset]) as api, patch.object(client, 'assets', return_value={path.name: dict(id=9, state='starter', size=5)}):
+            with patch.object(client, 'transfer', side_effect=[pub.GitHubError(500, 'server'), asset]), patch.object(client, 'api', return_value=None) as api, patch.object(client, 'assets', return_value={path.name: dict(id=9, state='starter', size=5)}):
                 client.upload('tag', release, path)
-                self.assertEqual(api.call_args_list[1].args, ('repos/o/r/releases/assets/9', 'DELETE'))
+                self.assertEqual(api.call_args_list[0].args, ('repos/o/r/releases/assets/9', 'DELETE'))
 
     def test_resume_draft_missing_from_tag_endpoint(self):
         client = pub.GitHub('o/r')
