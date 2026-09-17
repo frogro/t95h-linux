@@ -19,6 +19,8 @@ case "$os" in
  openwrt6) boot=/; root=/; confmax=94371840; case "$(uname -r)" in 6.*) ;; *) fail 'OpenWrt Kernel 6 erforderlich.';; esac;;
  *) fail 'Unbekanntes System.';;
 esac
+# OpenWrt ships sha256sum but may not ship diff; other OSes need recursive diff.
+if [ "$os" != openwrt6 ]; then command -v diff >/dev/null || fail 'diff fehlt; vor Installation bereitstellen.'; fi
 # Resolve real mounted filesystems through major/minor, not /dev aliases.
 mounted_device() {
  mm=$(awk -v p="$1" '$5==p {print $3;exit}' /proc/self/mountinfo)
@@ -146,7 +148,11 @@ else
 fi
 tar -xf "$work/config.tar" -C "$work/new"
 # Content check includes nested web/Kodi files and symlinks, not FAT Unix modes.
-while IFS= read -r f; do diff -r "$work/saved/$f" "$work/new/$f" || fail 'Konfigurationsvergleich fehlgeschlagen.'; done < "$work/list"
+if [ "$os" = openwrt6 ]; then
+ [ "$(sha256sum "$work/saved/sysupgrade.tgz" | cut -d ' ' -f1)" = "$(sha256sum "$work/new/sysupgrade.tgz" | cut -d ' ' -f1)" ] || fail 'Konfigurationsvergleich fehlgeschlagen.'
+else
+ while IFS= read -r f; do diff -r "$work/saved/$f" "$work/new/$f" || fail 'Konfigurationsvergleich fehlgeschlagen.'; done < "$work/list"
+fi
 sync
 umount "$work/new"
 printf 'PASS: eMMC installiert und Einstellungen übernommen.\nJetzt poweroff, Strom trennen, SD entfernen und wieder einschalten.\n'

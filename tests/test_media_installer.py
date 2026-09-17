@@ -30,3 +30,17 @@ class Layout(unittest.TestCase):
    import os
    subprocess.run(['sh','-eu','-c',block],env={**os.environ,'boot':str(boot),'work':str(work)},check=True)
    self.assertEqual(set((work/'list').read_text().splitlines()),{'kioskbrowser.ini','authorized_keys','wpa_supplicant.conf'})
+
+ def test_openwrt_config_readback_uses_hash_and_rejects_changed_archive(self):
+  text=(ROOT/'boards/t95h/media-installer/install-emmc.sh').read_text()
+  block=text.split('# Content check includes',1)[1].split('\n',1)[1].split('\nsync',1)[0]
+  import os
+  with tempfile.TemporaryDirectory() as d:
+   p=Path(d)
+   for name in ['saved','new']:
+    (p/name).mkdir();(p/name/'sysupgrade.tgz').write_bytes(b'config archive')
+   env={**os.environ,'work':d,'os':'openwrt6'}
+   command='fail() { exit 42; }; diff() { exit 99; }; '+block
+   self.assertEqual(subprocess.run(['sh','-eu','-c',command],env=env).returncode,0)
+   (p/'new/sysupgrade.tgz').write_bytes(b'corrupt archive')
+   self.assertEqual(subprocess.run(['sh','-eu','-c',command],env=env).returncode,42)
