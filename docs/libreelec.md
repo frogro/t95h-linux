@@ -179,3 +179,22 @@ Protokolle und persönliche eMMC-Testhelfer sind keine Imageeingaben. Die bisher
 60/120-Sekunden-Hardwarewartezeiten bleiben bestehen. Diese Änderungen beheben die
 bekannten Startskriptprobleme; ein erfolgreicher Kodi-Start muss erneut auf der Box
 geprüft werden. Kein alter Checkpoint wird für diesen neuen Quellstand übernommen.
+
+### Ergänzender Live-Abgleich vor dem Neubau
+
+SSH-Prüfung des laufenden SD-Images bestätigt den cpufreq-Zeitpunktfehler:
+`policy0` fehlte beim Dienststart und existiert nach erfolgreicher GPU-Initialisierung.
+Kodi läuft mit Mali-G31/Panfrost. Boot-SPL und Audiohelfer sind per SHA256 korrekt;
+Analogpfad ist aktiv, USB-Audio registriert und STORAGE auf 359 GiB erweitert.
+
+Zusätzlich gefunden und für den Neubau ergänzt:
+`CONFIG_PKCS8_PRIVATE_KEY_PARSER=y` (LibreELEC fordert den Parser beim Start an)
+und `CONFIG_CRYPTO_MD4=y` (iwd konnte EAP-MSCHAPv2 sonst nicht initialisieren).
+Beide sind Teil der verpflichtenden Kernelprüfung vor Image-Erstellung.
+
+Frühe DRM/Panfrost-Probe-Fehler wurden im selben Boot durch erfolgreiche
+Treiberbindung abgelöst. machine-id wurde erfolgreich erzeugt; Samba legte seine
+Passwortdatei beim ersten Start an. Diese Erststart-/Initialisierungsmeldungen sind
+keine weiteren aktuell fehlgeschlagenen Dienste. Keine Live-Konfiguration geändert.
+Der vorzeitig gestartete Lauf 35196734446 wurde zugunsten des vollständigeren
+Korrekturstands abgebrochen.
