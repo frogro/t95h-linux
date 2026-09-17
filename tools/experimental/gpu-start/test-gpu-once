@@ -1,0 +1,13 @@
+#!/bin/sh
+# The known-good fast script and its override must already exist on LibreELEC.
+set -eu
+base=/storage/.config/t95h
+unit=/storage/.config/system.d/t95h-hardware.service.d/fast-start.conf
+[ -x "$base/start-hardware-fast" ]
+[ -x "$base/start-hardware-ready" ]
+[ -f "$unit" ]
+# Restore the known-good next-boot path BEFORE attempting the candidate.
+printf '[Service]\nExecStart=\nExecStart=/storage/.config/t95h/start-hardware-fast\n' > "$unit.next"
+mv "$unit.next" "$unit"
+sync
+exec "$base/start-hardware-ready"

@@ -1,0 +1,49 @@
+--- a/drivers/media/platform/sunxi/sun50i-di300/sun50i-di300.c
++++ b/drivers/media/platform/sunxi/sun50i-di300/sun50i-di300.c
+@@ -228,7 +228,7 @@
+ 	ctx->dst0 = dst0;
+ 	ctx->dst1 = dst1;
+ 
+-	v4l2_m2m_buf_copy_metadata(src, dst0);
++	v4l2_m2m_buf_copy_metadata(src, dst0, false);
+ 
+ 	next = vb2_dma_contig_plane_dma_addr(&src->vb2_buf, 0);
+ 	curr = ctx->prev[0] ?
+@@ -505,7 +505,7 @@
+ 
+ static inline struct deinterlace_ctx *deinterlace_file2ctx(struct file *file)
+ {
+-	return container_of(file_to_v4l2_fh(file), struct deinterlace_ctx, fh);
++	return container_of((struct v4l2_fh *)file->private_data, struct deinterlace_ctx, fh);
+ }
+ 
+ static bool deinterlace_check_format(u32 pixelformat)
+@@ -1055,7 +1055,7 @@
+ 	if (mutex_lock_interruptible(&dev->dev_mutex))
+ 		return -ERESTARTSYS;
+ 
+-	ctx = kzalloc_obj(*ctx);
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx) {
+ 		mutex_unlock(&dev->dev_mutex);
+ 		return -ENOMEM;
+@@ -1101,7 +1101,8 @@
+ 		goto err_free;
+ 	}
+ 
+-	v4l2_fh_add(&ctx->fh, file);
++	file->private_data = &ctx->fh;
++	v4l2_fh_add(&ctx->fh);
+ 
+ 	mutex_unlock(&dev->dev_mutex);
+ 
+@@ -1121,7 +1122,8 @@
+ 
+ 	mutex_lock(&dev->dev_mutex);
+ 
+-	v4l2_fh_del(&ctx->fh, file);
++	v4l2_fh_del(&ctx->fh);
++	file->private_data = NULL;
+ 	v4l2_fh_exit(&ctx->fh);
+ 	v4l2_ctrl_handler_free(&ctx->hdl);
+ 	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);

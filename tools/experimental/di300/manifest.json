@@ -1,0 +1,65 @@
+{
+  "repository": "https://github.com/jernejsk/linux-1",
+  "last_di300_commit": "b4cc0dbd13ce79c1a5bc98a949d8920a59b6a0df",
+  "series": [
+    {
+      "file": "bc612b9a0e820c6cf29ddfd06ce234a9e9adbe41.patch",
+      "sha256": "79a9ff68f45cbb451e43283c4560b473674dd1f27f583d73c35db84032f8a0e6",
+      "commit": "bc612b9a0e820c6cf29ddfd06ce234a9e9adbe41"
+    },
+    {
+      "file": "c765b742d864c06403edd8315d07699b9750f1f0.patch",
+      "sha256": "8c1e7bf5d4eb36963d35aadb1fc019404b78795c5d06c32c8ce92d6a3c908e9a",
+      "commit": "c765b742d864c06403edd8315d07699b9750f1f0"
+    },
+    {
+      "file": "7c3bec1204dfae17ad1bc9cb476e6d84e71b2768.patch",
+      "sha256": "8f19b031ce83cc0315eaad57667b985bb404ac7e41d895d6ada9a3f51fd1f46e",
+      "commit": "7c3bec1204dfae17ad1bc9cb476e6d84e71b2768"
+    },
+    {
+      "file": "5d9e63dfff8cab29dcff07133ce3d31c2ddcecda.patch",
+      "sha256": "b5c303b227ddb904c34c1f6fb16eb332446b8afa0e6022d96934cbc48daac7f9",
+      "commit": "5d9e63dfff8cab29dcff07133ce3d31c2ddcecda"
+    },
+    {
+      "file": "cfb922e35ade9441c3163f16d4bf6577da75d5b5.patch",
+      "sha256": "60f3baf7b86292610ecaf6fe74ba201eb08b4309b50b03d7df78dd8a3fcc9732",
+      "commit": "cfb922e35ade9441c3163f16d4bf6577da75d5b5"
+    },
+    {
+      "file": "cb02b504ee12f5c460d1578442a2090f2dfed33c.patch",
+      "sha256": "1af6760c6471d2a5e69b32d1baa929be2619780bda7bde1238d18711407e1c3d",
+      "commit": "cb02b504ee12f5c460d1578442a2090f2dfed33c"
+    },
+    {
+      "file": "542200f9aa7f8ec0881c894af5aaebee80f08c81.patch",
+      "sha256": "a4ed4935b0a78bd9d03febb91f2037ac7d7af4b37a35cbe209f34276371a56cb",
+      "commit": "542200f9aa7f8ec0881c894af5aaebee80f08c81"
+    },
+    {
+      "file": "ecd8fe532022d5f33aeb48ef5947faf97ad25ad7.patch",
+      "sha256": "cf53f32d2d9e561052713a19398125930689839c52396f5af402e0d95af9e14d",
+      "commit": "ecd8fe532022d5f33aeb48ef5947faf97ad25ad7"
+    },
+    {
+      "file": "8d19375ac0656707c90f5c5975bfb4daa264aabf.patch",
+      "sha256": "f5dd5640ff9dfcf058f877fbded03742bd9fcc9008db25bbe11a26d60d91c28b",
+      "commit": "8d19375ac0656707c90f5c5975bfb4daa264aabf"
+    },
+    {
+      "file": "3c8eec89d0fb889baa2fcb6094e94ad55b3a05c5.patch",
+      "sha256": "f973d66da53bd4ef843c0e8cfe5f25573b3a1a3026bcda993212c439b101e4ac",
+      "commit": "3c8eec89d0fb889baa2fcb6094e94ad55b3a05c5"
+    },
+    {
+      "file": "b4cc0dbd13ce79c1a5bc98a949d8920a59b6a0df.patch",
+      "sha256": "3f4754afeeab8a56342990ed080e841e33ff3719fc1c77d26369c521d2277997",
+      "commit": "b4cc0dbd13ce79c1a5bc98a949d8920a59b6a0df"
+    }
+  ],
+  "compat_6_12": {
+    "file": "compat-6.12.patch",
+    "sha256": "40acb721439df0558e80655f8d1da7b8643139801a6ada55c2898fae2897a28a"
+  }
+}
