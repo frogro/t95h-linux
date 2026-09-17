@@ -18,21 +18,21 @@ diff --git a/target/linux/sunxi/base-files/lib/upgrade/platform.sh b/target/linu
 index 10412c5..ec9ece0 100644
 --- a/target/linux/sunxi/base-files/lib/upgrade/platform.sh
 +++ b/target/linux/sunxi/base-files/lib/upgrade/platform.sh
-@@ -1,4 +1,50 @@
+@@ -1,4 +1,57 @@
 +# The platform guard also executes after switch_to_ramfs.
-+RAMFS_COPY_BIN="$RAMFS_COPY_BIN sha256sum"
++RAMFS_COPY_BIN="$RAMFS_COPY_BIN sha256sum cmp"
 +
 +# T95H uses a board-specific 4 MiB boot prefix. Never replace it with
 +# the standard sunxi SPL update or accept a different partition layout.
 +t95h_check_layout() {
-+ local diskdev partdev prefix_hash expected_prefix image_size media
++ local diskdev partdev prefix_hash expected_prefix image_size media firmware_hash
 + [ "$(board_name)" = "t95h,h616-tvbox" ] || return 1
 + export_bootdevice && export_partdevice diskdev 0 || return 1
 + export_partdevice partdev 2 || return 1
 + media="$(cat /sys/class/block/$diskdev/device/type 2>/dev/null)"
 + case "$media" in
-+  SD) expected_prefix=d8fe417be041dd9cd7e1677fed52414fb81f066656a447c2367d9b0fcbc94b75;;
-+  MMC) expected_prefix=589a5fff38e1510524f89afd5691e7a8bac3437c42bcd3dddeaaf3d7ff4f9c78;;
++  SD) expected_prefix=550f1a8cbd9ad30fccc6c1e66fa0ab17aada12d389e2bef0238c3de2d7647842;;
++  MMC) expected_prefix=f66ab6b318da47550a67c00684f724bc4934db46b14ab9fca3832a3286cc5ea1;;
 +  *) echo "T95H: unsupported running-root device type"; return 1;;
 + esac
 + [ "$(cat /sys/class/block/$diskdev/ro 2>/dev/null)" = 0 ] || {
@@ -52,11 +52,18 @@ index 10412c5..ec9ece0 100644
 +  rm -f /tmp/t95h-upgrade-prefix
 +  echo "T95H: wrong SD/eMMC image, unsupported boot prefix or image layout"; return 1;
 + }
++ # Ignore only MBR/partition-table bytes (expanded and installer SDs differ).
++ firmware_hash="$(dd if="/dev/$diskdev" bs=512 skip=1 count=8191 2>/dev/null | sha256sum)"
++ case "$media:${firmware_hash%% *}" in
++  SD:50de66c9575c1271729a16f819903d6452c7f0863e89ba763c2f22a11e41c276|SD:1f3d6cc1fdd2397807c0b65eee72a38d48206d95dfb8752a592e9d5927f3f784|MMC:100e36d4bbd712cbf09beada02b5de9176cb9e0980aa81c1af817f58a308a98e|MMC:4a901d822ebcb84052bf364e739151a069adbc733ca515c3469cca762216bcca) ;;
++  *) echo "T95H: unknown installed firmware; refusing upgrade"; return 1;;
++ esac
 + get_partitions "/dev/$diskdev" t95h_current
 + rm -f /tmp/t95h-upgrade-prefix
 + awk 'NR==1 {if ($1!=1 || $2!=8192 || $3!=131072) exit 1}
-+      NR==2 {if ($1!=2 || $2!=139264 || $3<3956736) exit 1}
-+      END {if (NR!=2) exit 1}' /tmp/partmap.t95h_current || {
++      NR==2 {if ($1!=2 || $2!=139264 || $3<3956736) exit 1; end=$2+$3}
++      NR==3 {if ($1!=3 || $2!=end || $3<=0) exit 1}
++      END {if (NR!=2 && NR!=3) exit 1}' /tmp/partmap.t95h_current || {
 +  echo "T95H: incompatible installed partition layout"; return 1;
 + }
 +}
@@ -69,7 +76,7 @@ index 10412c5..ec9ece0 100644
  	local diskdev partdev diff
  
  	export_bootdevice && export_partdevice diskdev 0 || {
-@@ -29,13 +75,26 @@ platform_copy_config() {
+@@ -29,13 +82,45 @@ platform_copy_config() {
  	local partdev
  
  	if export_partdevice partdev 1; then
@@ -85,14 +92,33 @@ index 10412c5..ec9ece0 100644
  
  platform_do_upgrade() {
 + if [ "$(board_name)" = "t95h,h616-tvbox" ]; then
-+  local t95h_boot t95h_root
++  local t95h_boot t95h_root t95h_disk t95h_hash
 +  t95h_check_layout "$1" || return 1
 +  export_partdevice t95h_boot 1 && export_partdevice t95h_root 2 || return 1
++  export_partdevice t95h_disk 0 || return 1
++  # Stage and verify the exact 40 KiB SPL before writing any partition.
++  get_image "$1" | dd bs=512 iflag=fullblock skip=16 count=80 2>/dev/null > /tmp/t95h-new-spl
++  t95h_hash="$(sha256sum /tmp/t95h-new-spl)"
++  case "${t95h_hash%% *}" in
++   391e7661fefdaee49ea6e1bb3c6e3d1e26a53c451832e77e1378725ca9798a17|a95ab476cadef24808aedb7dece4cfd2b3f3360f788f712e7a9ef7d703e3eb23) ;;
++   *) echo 'T95H: SPL extraction mismatch'; return 1;;
++  esac
++  dd if="/dev/$t95h_disk" of=/tmp/t95h-old-spl bs=512 skip=16 count=80 || return 1
 +  # SD and eMMC use their own verified payload and root PARTUUID.
 +  # Standard sysupgrade runs this from RAM after unmounting root. Keep MBR,
-+  # boot firmware and partition sizes. Configuration backup uses FAT/preinit.
++  # partition sizes and later firmware. Configuration backup uses FAT/preinit.
 +  get_image "$1" | dd of="/dev/$t95h_boot" bs=1048576 iflag=fullblock skip=4 count=64 conv=fsync || return 1
 +  get_image "$1" | dd of="/dev/$t95h_root" bs=1048576 iflag=fullblock skip=68 count=1932 conv=fsync || return 1
++  # Update only SPL; never overwrite MBR, FIT/BL31 or a third payload partition.
++  if ! dd if=/tmp/t95h-new-spl of="/dev/$t95h_disk" bs=512 seek=16 count=80 conv=notrunc,fsync; then
++   dd if=/tmp/t95h-old-spl of="/dev/$t95h_disk" bs=512 seek=16 count=80 conv=notrunc,fsync
++   return 1
++  fi
++  dd if="/dev/$t95h_disk" bs=512 skip=16 count=80 2>/dev/null > /tmp/t95h-readback-spl
++  if ! cmp -s /tmp/t95h-new-spl /tmp/t95h-readback-spl; then
++   dd if=/tmp/t95h-old-spl of="/dev/$t95h_disk" bs=512 seek=16 count=80 conv=notrunc,fsync
++   return 1
++  fi
 +  sync
 +  return 0
 + fi
@@ -115,7 +141,7 @@ new file mode 100644
 index 0000000..3dde458
 --- /dev/null
 +++ b/target/linux/sunxi/files/arch/arm64/boot/dts/allwinner/sun50i-h616-t95h.dts
-@@ -0,0 +1,356 @@
+@@ -0,0 +0,356 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/dts-v1/;
 +#include "sun50i-h616.dtsi"
@@ -521,7 +547,7 @@ new file mode 100644
 index 0000000..44b99c0
 --- /dev/null
 +++ b/target/linux/sunxi/patches-6.12/470-arm64-dts-add-t95h-build-target.patch
-@@ -0,0 +1,10 @@
+@@ -0,0 +0,10 @@
 +--- a/arch/arm64/boot/dts/allwinner/Makefile
 ++++ b/arch/arm64/boot/dts/allwinner/Makefile
 +@@ -43,6 +43,7 @@
@@ -537,7 +563,7 @@ new file mode 100644
 index 0000000..0a92642
 --- /dev/null
 +++ b/target/linux/sunxi/patches-6.12/480-t95h-ac200-ethernet-backport.patch
-@@ -0,0 +1,3280 @@
+@@ -0,0 +0,3280 @@
 +From: T95H local port
 +Subject: [PATCH] sunxi: backport AC200 Ethernet support to Linux 6.12
 +

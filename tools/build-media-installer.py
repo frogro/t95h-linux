@@ -26,7 +26,7 @@ def append_partition(prefix,raw_bytes,payload_bytes):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for n in ('sd','emmc','output'):p.add_argument('--'+n,type=Path,required=True)
-    p.add_argument('--os',choices=['anotter','libreelec'],required=True)
+    p.add_argument('--os',choices=['anotter','libreelec','openwrt6'],required=True)
     p.add_argument('--compiler',default='aarch64-linux-gnu-gcc')
     a=p.parse_args();o=a.output.resolve();o.mkdir(parents=True,exist_ok=False)
     raw=o/'sd.img';unpack(a.sd,raw)
@@ -82,7 +82,7 @@ def main():
         if sha(f)!=sha(v):raise ValueError('Payload readback differs')
     newprefix=append_partition(prefix,raw.stat().st_size,partbytes)
     with raw.open('r+b') as f:f.write(newprefix)
-    name=a.sd.name.replace('-sd.img.gz','-sd-emmc-installer.img.gz')
+    name=a.sd.name.replace('-sd.img.gz','-sd-emmc-installer.img.gz').replace('-sdcard-install.img.gz','-sd-emmc-installer.img.gz')
     if name==a.sd.name:raise ValueError('Expected SD filename')
     h=hashlib.sha256();total=0
     with (o/name).open('xb') as dest,gzip.GzipFile(fileobj=dest,mode='wb',mtime=0,filename='',compresslevel=3) as gz:

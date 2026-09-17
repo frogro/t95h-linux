@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 class PortTests(unittest.TestCase):
     def test_prefixes(self):
-        for name, expected in [('prefix.bin','d8fe417be041dd9cd7e1677fed52414fb81f066656a447c2367d9b0fcbc94b75'),('emmc-prefix.bin','589a5fff38e1510524f89afd5691e7a8bac3437c42bcd3dddeaaf3d7ff4f9c78')]:
+        for name, expected in [('prefix.bin','550f1a8cbd9ad30fccc6c1e66fa0ab17aada12d389e2bef0238c3de2d7647842'),('emmc-prefix.bin','f66ab6b318da47550a67c00684f724bc4934db46b14ab9fca3832a3286cc5ea1')]:
             data=(ROOT/'overlay/target/linux/sunxi/image/t95h'/name).read_bytes()
             self.assertEqual(len(data),4*1024*1024)
             self.assertEqual(hashlib.sha256(data).hexdigest(),expected)
@@ -23,6 +23,7 @@ board_name() {{ echo t95h,h616-tvbox; }}
 export_bootdevice() {{ return 0; }}
 export_partdevice() {{ eval "$1=fake"; }}
 cat() {{ case "$1" in */device/type) echo {medium};; */ro) echo 0;; *) command cat "$@";; esac; }}
+dd() {{ case "$1" in if=/dev/fake) shift; command dd if='{ROOT}/overlay/target/linux/sunxi/image/t95h/{prefix}' "$@";; *) command dd "$@";; esac; }}
 get_image() {{ command cat '{ROOT}/overlay/target/linux/sunxi/image/t95h/{prefix}'; }}
 get_partitions() {{ printf '1 8192 131072\\n2 139264 3956736\\n' > '{tmp}/partmap.t95h_current'; }}
 t95h_check_layout unused {mode}

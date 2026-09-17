@@ -24,6 +24,10 @@ def build_fingerprint(root, commit, profile, public_key_hash):
         if relative.as_posix() in ('pipeline.py', 'publisher.py'):
             continue
         h.update(relative.as_posix().encode());h.update(path.read_bytes())
+    shared=root.parents[1]/'boards/t95h/audio'
+    if shared.is_dir():
+        for path in sorted(shared.iterdir()):
+            if path.is_file():h.update(path.name.encode());h.update(path.read_bytes())
     # Packaging checks and publishing do not change compiled outputs. Hash the
     # actual preparation/build functions, ignoring comments and formatting.
     tree=ast.parse((root/'pipeline.py').read_text())
@@ -59,6 +63,10 @@ def prepare(key):
     run('git','apply','--check',HERE/'port.patch',cwd=SOURCE)
     run('git','apply',HERE/'port.patch',cwd=SOURCE)
     shutil.copytree(HERE/'overlay',SOURCE,dirs_exist_ok=True)
+    audio=HERE.parents[1]/'boards/t95h/audio'
+    board_files=SOURCE/'package/utils/t95h-board/files'
+    shutil.copy2(audio/'t95h-audio-init',board_files/'usr/sbin/t95h-audio-init')
+    shutil.copy2(audio/'t95h-audio.conf',board_files/'etc/t95h-audio.conf')
     target=(SOURCE/'target/linux/sunxi/Makefile').read_text()
     if not re.search(r'^KERNEL_PATCHVER\s*:?=\s*6\.',target,re.M): raise RuntimeError('Stable target no longer uses kernel 6; port review required')
     run('./scripts/feeds','update','-a',cwd=SOURCE)
@@ -128,18 +136,41 @@ def package():
         if 't95h,h616-tvbox' not in json.loads(meta.read_text())['supported_devices']:raise RuntimeError('Wrong device metadata')
         name=f'T95H-OpenWrt-{d["version"]}-kernel6-{d["profile"]}-{medium}'
         for purpose in ['install','sysupgrade']:shutil.copy2(p,out/f'{name}-{purpose}.img.gz')
+    # Installer contains the same rootfs and a verified eMMC payload for this profile.
+    pair=WORK/'installer-inputs';pair.mkdir(exist_ok=True)
+    stem=f'T95H-OpenWrt-{d["version"]}-kernel6-{d["profile"]}'
+    for medium in ['sdcard','emmc']:
+        image=pair/f'{stem}-{medium}-install.img.gz'
+        shutil.copy2(out/image.name,image)
+        run(SOURCE/'staging_dir/host/bin/fwtool','-t','-i',pair/f'{medium}.json',image)
+    compiler=next((SOURCE/'staging_dir').glob('toolchain-*/bin/aarch64-openwrt-linux-musl-gcc'))
+    installer=WORK/'installer-sd'
+    if installer.exists():shutil.rmtree(installer)
+    run('python3',HERE.parents[1]/'tools/build-media-installer.py',
+        '--sd',pair/f'{stem}-sdcard-install.img.gz','--emmc',pair/f'{stem}-emmc-install.img.gz',
+        '--os','openwrt6','--compiler',compiler,'--output',installer)
+    report=json.loads((installer/'installer.json').read_text())
+    shutil.copy2(installer/report['file'],out/report['file'])
+    shutil.copy2(installer/'installer.json',out/'installer.json')
     shutil.copy2(SOURCE/'target/linux/sunxi/base-files/lib/upgrade/platform.sh',out/'platform-dual-update.sh')
+    bridge=(HERE/'migrate-upgrade.sh').read_text().replace('@PLATFORM_SHA256@',sha(out/'platform-dual-update.sh'))
+    (out/'migrate-upgrade.sh').write_text(bridge)
+    (out/'migrate-upgrade.sh').chmod(0o755)
     shutil.copy2(WORK/'lock.json',out/'build-lock.json')
     shutil.copy2(WORK/'logs/native-module-audit.json',out/'hardware-modules.json')
     (out/'RELEASE-NOTES.md').write_text(f'''T95H OpenWrt {d['version']} – Kernel 6 – {d['profile']}
 
-SD und eMMC haben jeweils ein Installations- und ein Sysupgrade-Image. Die beiden Dateien pro Medium sind inhaltsgleich; die Namen kennzeichnen den Verwendungszweck. Für LuCI das zum laufenden Medium passende sysupgrade.img.gz wählen und Einstellungen beibehalten aktivieren. Keine Prüfung mit Force umgehen.
+SD und eMMC haben jeweils ein Installations- und ein Sysupgrade-Image. Die beiden Dateien pro Medium sind inhaltsgleich; die Namen kennzeichnen den Verwendungszweck. Für LuCI das zum laufenden Medium passende sysupgrade.img.gz wählen und Einstellungen beibehalten aktivieren. Keine Prüfung mit Force umgehen. Bestehende Kernel-6-Images benötigen einmalig den geprüften Übergang: migrate-upgrade.sh und platform-dual-update.sh aus demselben Release herunterladen, SHA256SUMS prüfen, `sh migrate-upgrade.sh --check`, dann `sh migrate-upgrade.sh --apply`. Unbekannte Altstände werden abgewiesen. Danach übernimmt Sysupgrade auch den korrigierten SPL mit Rückleseprüfung; MBR, spätere Firmware, Einstellungen und eine vorhandene dritte Installer-Partition bleiben erhalten.
+
+Zusätzlich: kombiniertes sd-emmc-installer.img.gz mit exakt demselben Profil. Nur zur Erstinstallation auf SD verwenden, niemals als Sysupgrade-Eingabe. Zum Aktualisieren einer solchen SD das normale sdcard-sysupgrade.img.gz verwenden. Zum eMMC-Installieren die dritte Partition einhängen und install-emmc.sh dort ausdrücklich starten; eMMC wird dabei vollständig gelöscht und die OpenWrt-Konfiguration übernommen.
+
+WLAN-Vorgabe: OpenWrt / openwrtopenwrt. Beim Update wird nur der historische AP-Name T95H-Test migriert; individuell gewählte SSIDs bleiben erhalten.
 
 SD- und eMMC-Updates einschließlich Konfigurationsübernahme wurden mit dem lokalen Vorgänger praktisch getestet. Der frische CI-Build ist noch nicht auf Hardware geprüft. Unzuverlässige Kaltstarts (mehrere Einschaltversuche) sowie XR819-Interruptmeldungen bleiben offen.
 
-Enthalten: getesteter Boot-/eMMC-/HDMI-Stand, GPU/CPU-Regelung, vollständiger verfügbarer OpenWrt-Modulkatalog und signierter versionsgebundener Feed. Die schnelle procd-Prüfung verhindert einen Watchdog-Neustart; die vollständige Dekompressionsprüfung bleibt vor jedem Schreibzugriff zwingend.
+Enthalten: getesteter SD-SPL, daraus abgeleiteter noch hardwareungetesteter eMMC-SPL, bisheriger HDMI-Stand, GPU/CPU-Regelung, vollständiger verfügbarer OpenWrt-Modulkatalog und signierter versionsgebundener Feed. Die schnelle procd-Prüfung verhindert einen Watchdog-Neustart; die vollständige Dekompressionsprüfung bleibt vor jedem Schreibzugriff zwingend.
 
-Alte Systeme benötigen vor dem ersten Update den passenden Plattformskriptstand. Persönliche eMMC-Installationshelfer gehören nicht zu diesem Release.
+Alte Systeme benötigen vor dem ersten Update den passenden Plattformskriptstand. Der kombinierte Installer enthält den im Repository gepflegten Installationshelfer.
 ''')
     sums=[sha(p)+'  '+p.name for p in sorted(out.iterdir()) if p.is_file() and p.name!='SHA256SUMS']
     (out/'SHA256SUMS').write_text('\n'.join(sums)+'\n')

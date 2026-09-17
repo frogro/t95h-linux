@@ -27,7 +27,7 @@ def config(text):
         m = re.fullmatch(r'# (CONFIG_\w+) is not set', line)
         if m: values[m[1]] = 'n'
     values.update({'CONFIG_'+x: 'y' for x in REQUIRED})
-    values.update(CONFIG_LOCALVERSION='"-t95h-anotter-de33"', CONFIG_LOCALVERSION_AUTO='n', CONFIG_INITRAMFS_SOURCE='""')
+    values.update(CONFIG_SND_USB_AUDIO='y', CONFIG_LOCALVERSION='"-t95h-anotter-de33"', CONFIG_LOCALVERSION_AUTO='n', CONFIG_INITRAMFS_SOURCE='""')
     return '\n'.join(f'# {k} is not set' if v == 'n' else f'{k}={v}' for k,v in sorted(values.items()))+'\n'
 
 def prefix(data):
@@ -132,6 +132,9 @@ def main():
     run('rsync','-a',str(o/'modules/root/lib/modules')+'/',str(root/'lib/modules')+'/')
     put(root,'usr/bin/t95h-desktop-view',(ROOT/'boards/t95h/anotter/runtime/desktop-view').read_text(),0o755)
     hw=root/'usr/lib/t95h'; hw.mkdir(parents=True,exist_ok=True)
+    put(root,'usr/lib/t95h/t95h-audio-init',(ROOT/'boards/t95h/audio/t95h-audio-init').read_text(),0o755)
+    put(root,'etc/t95h-audio.conf',(ROOT/'boards/t95h/audio/t95h-audio.conf').read_text())
+    put(root,'etc/systemd/system/t95h-audio.service',(ROOT/'boards/t95h/audio/t95h-audio.service').read_text().replace('kodi.service','lightdm.service'))
     for name in ['t95h_aldo2.ko','t95h_ana_provider.ko']:
         candidates=list((root/'lib/modules'/release).rglob(name))
         if len(candidates)!=1: raise ValueError('Missing private hardware module '+name)
@@ -160,7 +163,7 @@ def main():
     dtb=o/'modules/startup/t95h.dtb'
     tool('anotter/display.py','dtb',dtb)
     run('fdtput','-t','s',dtb,'/soc/mmc@4021000','status','disabled')
-    for unit in ['t95h-hardware','t95h-dns-init','t95h-public-boot','t95h-session-runtime']:
+    for unit in ['t95h-audio','t95h-hardware','t95h-dns-init','t95h-public-boot','t95h-session-runtime']:
         run('systemctl','--root',root,'enable',unit)
     for f in (root/'etc/ssh').glob('ssh_host_*'): f.unlink()
     put(root,'etc/machine-id','')
@@ -178,14 +181,15 @@ def main():
     conf.write_text(text)
     out=o/'release'; out.mkdir()
     put(out,'prefix.bin', '')
-    (out/'prefix.bin').write_bytes(prefix((inputs/'prefix.bin').read_bytes()))
+    run('python3',ROOT/'tools/emmc/prepare-corrected-prefix.py','--source',inputs/'prefix.bin','--output',o/'corrected-prefix.bin','--medium','sd')
+    (out/'prefix.bin').write_bytes(prefix((o/'corrected-prefix.bin').read_bytes()))
     fat=o/'boot.fat'; ext=o/'root.ext4'
     with fat.open('wb') as f: f.truncate(128*M)
     with ext.open('wb') as f: f.truncate(6144*M)
     run('mkfs.vfat','-F','32','-n','T95HKIOSK','-i',DISK,fat)
     boot=root/'boot/firmware/boot'; boot.mkdir(parents=True,exist_ok=True)
     shutil.copyfile(o/'kernel/arch/arm64/boot/Image',boot/'Image'); shutil.copyfile(dtb,boot/'t95h.dtb')
-    script=(ROOT/'boards/t95h/boot/scripts/boot.scm.txt').read_text()
+    script=(ROOT/'boards/t95h/boot/scripts/boot-clean.scm.txt').read_text()
     script=re.sub(r'^setenv bootargs .*$',f'setenv bootargs console=ttyS0,115200 console=tty0 loglevel=7 root=PARTUUID={DISK}-02 rootwait rootfstype=ext4 ro net.ifnames=0',script,flags=re.M)
     put(o,'boot.txt',script)
     run('mkimage','-A','arm64','-T','script','-C','none','-n','T95H AnotterKiosk','-d',o/'boot.txt',boot/'boot.scm')

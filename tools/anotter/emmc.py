@@ -12,7 +12,7 @@ def main():
  m=json.loads((release/'manifest.json').read_text());sd=release/m['image']
  if sha(sd)!=m['sha256']:raise ValueError('SD image changed')
  d=b/'emmc';d.mkdir()
- run('python3',ROOT/'tools/emmc/prepare-boot-prefix.py','--source',b/'inputs/prefix.bin','--output',d/'prefix.bin')
+ run('python3',ROOT/'tools/emmc/prepare-corrected-prefix.py','--source',b/'inputs/prefix.bin','--output',d/'prefix.bin','--medium','emmc')
  # Keep partition starts/sizes but distinguish SD and eMMC PARTUUIDs.
  with gzip.open(sd,'rb') as f:sd_prefix=f.read(4*M)
  prefix=bytearray((d/'prefix.bin').read_bytes());prefix[440:444]=struct.pack('<I',0xa0950002);prefix[446:510]=sd_prefix[446:510];(d/'prefix.bin').write_bytes(prefix)

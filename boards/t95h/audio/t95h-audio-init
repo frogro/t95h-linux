@@ -1,0 +1,30 @@
+#!/bin/sh
+# ALSA controls only. No PMIC/MMIO writes and no unbounded boot wait.
+set -eu
+ENABLED=1
+LINEOUT_VOLUME=6
+DAC_VOLUME=63
+config=${T95H_AUDIO_CONFIG:-/etc/t95h-audio.conf}
+[ ! -f "$config" ] || . "$config"
+# LibreELEC keeps persistent user settings in /storage.
+[ ! -f /storage/.config/t95h-audio.conf ] || . /storage/.config/t95h-audio.conf
+[ "$ENABLED" = 1 ] || exit 0
+case "$LINEOUT_VOLUME:$DAC_VOLUME" in *[!0-9:]*|:*|*:) echo 'Invalid audio volume' >&2; exit 1;; esac
+if [ "$LINEOUT_VOLUME" -gt 31 ] || [ "$DAC_VOLUME" -gt 63 ]; then
+ echo "Audio volume out of range" >&2; exit 1
+fi
+command -v amixer >/dev/null
+n=0
+until amixer -c Codec cget name='DAC Playback Switch' >/dev/null 2>&1; do
+ n=$((n+1)); [ "$n" -lt 30 ] || { echo 'T95H analog codec unavailable' >&2; exit 1; }
+ sleep 1
+done
+# Mute the endpoint while configuring the signal path and volume.
+amixer -q -c Codec cset name='Line Out Playback Switch' off,off
+amixer -q -c Codec cset name='DAC Reversed Playback Switch' off,off
+amixer -q -c Codec cset name='Line Out Source Playback Route' Stereo,Stereo
+amixer -q -c Codec cset name='DAC Playback Volume' "$DAC_VOLUME"
+amixer -q -c Codec cset name='Line Out Playback Volume' "$LINEOUT_VOLUME"
+amixer -q -c Codec cset name='DAC Playback Switch' on,on
+amixer -q -c Codec cset name='Line Out Playback Switch' on,on
+echo 'T95H analog playback route initialized'

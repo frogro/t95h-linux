@@ -1,0 +1,11 @@
+--- a/multimedia/gstreamer1/Makefile
++++ b/multimedia/gstreamer1/Makefile
+@@ -200,6 +200,8 @@
+ 	)
+ 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/libexec/gstreamer-$(GST_VERSION)/gst-plugin-scanner \
+ 		       $(1)/usr/lib/gstreamer-$(GST_VERSION)
++	$(INSTALL_DIR) $(1)/usr/libexec/gstreamer-$(GST_VERSION)
++	$(LN) ../../lib/gstreamer-$(GST_VERSION)/gst-plugin-scanner $(1)/usr/libexec/gstreamer-$(GST_VERSION)/gst-plugin-scanner
+ endef
+ 
+ 

@@ -1,0 +1,18 @@
+#!/bin/sh
+# Migrate only the historical test AP; keep user-selected SSIDs and passwords.
+[ "$(cat /tmp/sysinfo/board_name)" = "t95h,h616-tvbox" ] || exit 0
+. /lib/functions.sh
+migrate_test_ap() {
+ local section="$1" mode ssid device
+ config_get mode "$section" mode
+ config_get ssid "$section" ssid
+ config_get device "$section" device
+ [ "$mode" = ap ] && [ "$device" = radio0 ] && [ "$ssid" = T95H-Test ] || return 0
+ uci set wireless."$section".ssid='OpenWrt'
+ uci set wireless."$section".encryption='psk2'
+ uci set wireless."$section".key='openwrtopenwrt'
+}
+config_load wireless
+config_foreach migrate_test_ap wifi-iface
+uci commit wireless
+exit 0

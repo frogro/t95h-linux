@@ -88,7 +88,7 @@ FIRMWARE="misc-firmware wlan-firmware"
  cfg.update({k:v for k,v in upstream_cfg.items() if k in ('CONFIG_BT','CONFIG_RFKILL') or k.startswith(('CONFIG_BT_','CONFIG_RFKILL_'))})
  # Preserve our hardware settings, add LE userspace requirements explicitly.
  required=['BLK_DEV_INITRD','DEVTMPFS','DEVTMPFS_MOUNT','TMPFS','TMPFS_POSIX_ACL','SQUASHFS','SQUASHFS_ZSTD','SQUASHFS_XZ','CGROUPS','CGROUP_PIDS','CGROUP_FREEZER','CGROUP_DEVICE','NAMESPACES','UTS_NS','IPC_NS','PID_NS','NET_NS','SECCOMP','SECCOMP_FILTER','FHANDLE','INOTIFY_USER','SIGNALFD','TIMERFD','EPOLL','UNIX','UNIX_DIAG','BINFMT_ELF','BINFMT_SCRIPT','BLK_DEV_LOOP','RD_GZIP','RD_ZSTD','ZSTD_DECOMPRESS','AUTOFS_FS','EXT4_FS','VFAT_FS','NLS_CODEPAGE_437','NLS_ISO8859_1']
- required+=IWD_KERNEL_CONFIG
+ required+=IWD_KERNEL_CONFIG+['SND_USB_AUDIO']
  bluetooth_required=['BT','BT_BREDR','BT_LE','BT_RFCOMM','BT_HIDP','BT_HCIBTUSB','RFKILL']
  for key in required: cfg['CONFIG_'+key]='y'
  cfg.update(CONFIG_EXTRA_FIRMWARE='""',CONFIG_EXTRA_FIRMWARE_DIR='"firmware"',CONFIG_LOCALVERSION='"-t95h-libreelec"',CONFIG_LOCALVERSION_AUTO='n',CONFIG_INITRAMFS_SOURCE='""',CONFIG_INITRAMFS_ROOT_UID='0',CONFIG_INITRAMFS_ROOT_GID='0',CONFIG_INITRAMFS_COMPRESSION_ZSTD='y',CONFIG_INITRAMFS_COMPRESSION_NONE='n',CONFIG_MODULE_COMPRESS='n',CONFIG_MODULE_COMPRESS_XZ='n',CONFIG_MODULE_COMPRESS_ZSTD='n',CONFIG_MODULE_COMPRESS_GZIP='n')
@@ -140,6 +140,8 @@ FIRMWARE="misc-firmware wlan-firmware"
  stage=le/'t95h-startup';subprocess.run(['/usr/bin/python3',str(ROOT/'tools/stage-startup-fixes.py'),'--profile','base-B','--output',str(stage)],check=True)
  thermal=thermal_policy(stage/'t95h.dtb')
  hw=pr/'packages/t95h-hardware';shutil.copytree(board/'libreelec/hardware',hw)
+ for name in ['t95h-audio-init','t95h-audio.conf']:shutil.copy2(board/'audio'/name,hw/name)
+ shutil.copy2(board/'audio/t95h-audio.service',hw/'system.d/t95h-audio.service')
  src=hw/'sources';src.mkdir();shutil.copyfile(board/'external/regulator/t95h_aldo2.c',src/'t95h_aldo2.c');shutil.copyfile(stage/'ana/t95h_ana_provider.c',src/'t95h_ana_provider.c');(src/'Makefile').write_text('obj-m := t95h_aldo2.o t95h_ana_provider.o\n');shutil.copyfile(stage/'t95h.dtb',hw/'t95h.dtb')
  firmware=hw/'firmware';firmware.mkdir();selected={}
  for entry in json.loads((board/'profiles/integration-draft.json').read_text())['firmware']:

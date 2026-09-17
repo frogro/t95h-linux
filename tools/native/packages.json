@@ -23,6 +23,7 @@
   ],
   "B": [
     "kmod-video-uvc",
+    "kmod-usb-audio",
     "libmesa-panfrost",
     "kmscube",
     "gstreamer1-utils",
@@ -79,7 +80,8 @@
     "kmod-nft-bridge",
     "kmod-sched-core",
     "kmod-sched-cake",
-    "kmod-ifb"
+    "kmod-ifb",
+    "alsa-utils"
   ],
   "B_config_only": [
     "gstreamer1-plugins-good",

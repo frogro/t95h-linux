@@ -1,0 +1,22 @@
+{
+  "sd": {
+    "legacy_prefix_sha256": "d8fe417be041dd9cd7e1677fed52414fb81f066656a447c2367d9b0fcbc94b75",
+    "prefix_sha256": "550f1a8cbd9ad30fccc6c1e66fa0ab17aada12d389e2bef0238c3de2d7647842",
+    "legacy_spl_sha256": "4dc314c6395d1df5069736931255e3b96eebd1fb519788b604484f0b8064f74f",
+    "spl_sha256": "391e7661fefdaee49ea6e1bb3c6e3d1e26a53c451832e77e1378725ca9798a17",
+    "firmware_tail_sha256": "dc5324bd4dc077f7cad397a80ec182855da75e877a5229547cc3bca4bea1ccc2",
+    "firmware_region_sha256": "1f3d6cc1fdd2397807c0b65eee72a38d48206d95dfb8752a592e9d5927f3f784",
+    "legacy_firmware_region_sha256": "50de66c9575c1271729a16f819903d6452c7f0863e89ba763c2f22a11e41c276",
+    "hardware_boot_tested": true
+  },
+  "emmc": {
+    "legacy_prefix_sha256": "589a5fff38e1510524f89afd5691e7a8bac3437c42bcd3dddeaaf3d7ff4f9c78",
+    "prefix_sha256": "f66ab6b318da47550a67c00684f724bc4934db46b14ab9fca3832a3286cc5ea1",
+    "legacy_spl_sha256": "bea5bfb6d1e518c40d74b5624260dbeba9c0ac993d928d027da8c55abb83d922",
+    "spl_sha256": "a95ab476cadef24808aedb7dece4cfd2b3f3360f788f712e7a9ef7d703e3eb23",
+    "firmware_tail_sha256": "36fa1560b0a277c8d2256987bd7d103dfc4a89549958c0d77c135ff782f7eebd",
+    "firmware_region_sha256": "4a901d822ebcb84052bf364e739151a069adbc733ca515c3469cca762216bcca",
+    "legacy_firmware_region_sha256": "100e36d4bbd712cbf09beada02b5de9176cb9e0980aa81c1af817f58a308a98e",
+    "hardware_boot_tested": false
+  }
+}

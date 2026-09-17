@@ -1,0 +1,13 @@
+[Unit]
+Description=T95H analog ALSA playback route
+After=t95h-hardware.service alsa-restore.service
+Before=kodi.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/t95h/t95h-audio-init
+TimeoutStartSec=40
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

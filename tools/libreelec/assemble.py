@@ -37,12 +37,10 @@ def main():
  if len(prefix)!=4*M or sha(a.prefix)!=lock['boot_prefix_sha256']:raise ValueError('Bootprefix mismatch')
  dtb=le/'t95h-startup/t95h.dtb';reports={}
  for media in ('sd','emmc'):
-  d=o/media;d.mkdir();original=prefix
-  if media=='emmc':
-   # The exact eMMC prefix transformation is provided by the existing checked helper.
-   # See CLI below; no hardware tool is invoked.
-   run('python3',ROOT/'tools/emmc/prepare-boot-prefix.py','--source',a.prefix,'--output',d/'emmc-prefix.bin')
-   original=(d/'emmc-prefix.bin').read_bytes()
+  d=o/media;d.mkdir()
+  run('python3',ROOT/'tools/emmc/prepare-corrected-prefix.py','--source',a.prefix,'--output',d/'corrected-prefix.bin','--medium',media)
+  original=(d/'corrected-prefix.bin').read_bytes()
+
   b=bytearray(original);b[440:444]=struct.pack('<I',0x1e950001 if media=='sd' else 0x1e950002)
   b[446:510]=b'\0'*64
   b[446:462]=struct.pack('<B3sB3sII',0,b'\0'*3,12,b'\0'*3,8192,2097152)
@@ -59,7 +57,7 @@ def main():
   chosen=dtb
   if media=='emmc':
    spec=importlib.util.spec_from_file_location('dt',ROOT/'tools/emmc/prepare-access-dtb.py');dt=importlib.util.module_from_spec(spec);spec.loader.exec_module(dt);chosen=d/'t95h.dtb';dt.prepare(dtb,chosen)
-  text=(ROOT/'boards/t95h/boot/scripts/boot.scm.txt').read_text()
+  text=(ROOT/'boards/t95h/boot/scripts/boot-clean.scm.txt').read_text()
   start=text.index('setenv bootargs ');end=text.index('\n',start)
   text=text[:start]+f'setenv bootargs console=ttyS0,115200 console=tty0 earlycon=uart8250,mmio32,0x05000000 loglevel=7 boot=UUID={bootid[:4]}-{bootid[4:]} disk=UUID={rootid} quiet ssh net.ifnames=0'+text[end:]
   # Use the same filename for boot and future LE update payloads.

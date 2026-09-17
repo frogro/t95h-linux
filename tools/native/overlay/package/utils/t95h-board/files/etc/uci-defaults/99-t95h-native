@@ -1,5 +1,7 @@
 #!/bin/sh
 [ "$(cat /tmp/sysinfo/board_name)" = "t95h,h616-tvbox" ] || exit 0
+# A new, bounded audio worker is enabled for both clean installs and upgrades.
+/etc/init.d/t95h-audio enable
 # Keep restored network, passwords and service choices across profile upgrades.
 [ -e /tmp/t95h-config-restored ] && exit 0
 sed -i 's|^root:[^:]*:|root:$6$t95hnative$kAVfT3gxI5zPaGlipAhicwSr13RA4wFEIMHdfd6cccb4vk0BzbLgbunYuxQcLUIVwzTBBgOLSN667rGICcvJU.:|' /etc/shadow

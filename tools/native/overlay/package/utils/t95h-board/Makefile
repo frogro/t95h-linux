@@ -1,6 +1,6 @@
 include $(TOPDIR)/rules.mk
 PKG_NAME:=t95h-board
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 PKG_LICENSE:=GPL-2.0-only
 include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
@@ -9,7 +9,12 @@ define Package/t95h-board
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=T95H native board initialization
-  DEPENDS:=@TARGET_sunxi +kmod-t95h-power +kmod-t95h-xradio +iw +wpad-basic-mbedtls +kmod-usb-hid +kmod-i2c-gpio +kmod-t95h-compute +kmod-t95h-media +kmod-t95h-ir +kmod-btusb +wireguard-tools +kmod-crypto-aead +kmod-crypto-manager +kmod-crypto-null +kmod-crypto-cmac +kmod-crypto-hmac +kmod-crypto-user +kmod-crypto-rng +kmod-crypto-sha3 +kmod-crypto-sha256 +kmod-crypto-sha512 +kmod-crypto-lib-chacha20poly1305 +kmod-crypto-lib-curve25519 +kmod-udptunnel4 +kmod-udptunnel6 +kmod-wireguard +kmod-tun +kmod-veth +kmod-nf-socket +kmod-nf-tproxy +kmod-nft-socket +kmod-nft-tproxy +kmod-nft-bridge +kmod-sched-core +kmod-sched-cake +kmod-ifb
+  DEPENDS:=@TARGET_sunxi +alsa-utils +kmod-t95h-power +kmod-t95h-xradio +iw +wpad-basic-mbedtls +kmod-usb-hid +kmod-i2c-gpio +kmod-t95h-compute +kmod-t95h-media +kmod-t95h-ir +kmod-btusb +wireguard-tools +kmod-crypto-aead +kmod-crypto-manager +kmod-crypto-null +kmod-crypto-cmac +kmod-crypto-hmac +kmod-crypto-user +kmod-crypto-rng +kmod-crypto-sha3 +kmod-crypto-sha256 +kmod-crypto-sha512 +kmod-crypto-lib-chacha20poly1305 +kmod-crypto-lib-curve25519 +kmod-udptunnel4 +kmod-udptunnel6 +kmod-wireguard +kmod-tun +kmod-veth +kmod-nf-socket +kmod-nf-tproxy +kmod-nft-socket +kmod-nft-tproxy +kmod-nft-bridge +kmod-sched-core +kmod-sched-cake +kmod-ifb
+endef
+
+define Package/t95h-board/conffiles
+/etc/config/wireless
+/etc/t95h-audio.conf
 endef
 
 define Build/Prepare

@@ -60,7 +60,11 @@ Beide USB-Buchsen sind Hostanschlüsse. Bei älteren Releases können Umfang und
 Dateinamen abweichen; maßgeblich ist deren Releasebeschreibung. Die OpenWrt-Version
 steht im Dateinamen, das Profil bezeichnet den Funktionsumfang.
 
-**Standardzugang:** WLAN `openwrt`, WLAN-Passwort `openwrtopenwrt`;
+**Native OpenWrt-Images mit Kernel 6:** WLAN `OpenWrt`, Passwort `openwrtopenwrt`.
+Siehe [Bootkorrektur und Updateübergang](docs/boot-and-native-update-20260917.md)
+und [Multimedia-Livetests](docs/multimedia-live-validation.md).
+
+**Bisheriger Standardzugang (Kernel 7):** WLAN `openwrt`, WLAN-Passwort `openwrtopenwrt`;
 SSH und LuCI: Benutzer `root`, Passwort `openwrt`.
 Über WLAN ist die Box unter `192.168.50.1` erreichbar, über Ethernet erhält sie
 normalerweise eine Adresse vom Router. Die Standardpasswörter nach dem Start ändern.

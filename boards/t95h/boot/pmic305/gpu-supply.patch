@@ -1,0 +1,45 @@
+--- a/drivers/power/axp305.c
++++ b/drivers/power/axp305.c
+@@ -12,6 +12,7 @@
+ #include <common.h>
+ #include <command.h>
+ #include <errno.h>
++#include <linux/delay.h>
+ #include <asm/arch/pmic_bus.h>
+ #include <axp_pmic.h>
+ 
+@@ -66,7 +67,33 @@
+ 	if ((axp_chip_id & AXP305_CHIP_VERSION_MASK) != 0x40)
+ 		return -ENODEV;
+ 
+-	return ret;
++	/* T95H: initialise DCDCC before Linux's read-only GPU provider.
++	 * AXP806 encoding: 600mV + selector * 10mV. Android uses 960mV.
++	 * Accept only known initial states; preserve enable and upper bits.
++	 * Step upwards from reset's 900mV; retain an existing 1100mV rail.
++	 */
++	{
++		u8 ctl, voltage, check;
++		ret = pmic_bus_read(0x10, &ctl);
++		if (ret) return ret;
++		ret = pmic_bus_read(0x14, &voltage);
++		if (ret) return ret;
++		if (!(ctl & BIT(2))) return -EINVAL;
++		if ((voltage & 0x7f) == 36 || (voltage & 0x7f) == 50)
++			return 0;
++		if ((voltage & 0x7f) != 30) return -EINVAL;
++		while ((voltage & 0x7f) < 36) {
++			voltage++;
++			ret = pmic_bus_write(0x14, voltage);
++			if (ret) return ret;
++			udelay(150);
++			ret = pmic_bus_read(0x14, &check);
++			if (ret) return ret;
++			if (check != voltage) return -EIO;
++		}
++		udelay(1000);
++	}
++	return 0;
+ }
+ 
+ #if !CONFIG_IS_ENABLED(ARM_PSCI_FW) && !IS_ENABLED(CONFIG_SYSRESET_CMD_POWEROFF)

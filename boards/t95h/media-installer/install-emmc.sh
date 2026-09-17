@@ -13,6 +13,7 @@ os=$(cat "$base/os")
 case "$os" in
  anotter) boot=/boot/firmware; root=/; confmax=94371840;;
  libreelec) boot=/flash; root=/storage; confmax=419430400;;
+ openwrt6) boot=/; root=/; confmax=94371840; case "$(uname -r)" in 6.*) ;; *) fail 'OpenWrt Kernel 6 erforderlich.';; esac;;
  *) fail 'Unbekanntes System.';;
 esac
 # Resolve real mounted filesystems through major/minor, not /dev aliases.
@@ -21,6 +22,9 @@ mounted_device() {
  [ -n "$mm" ] && basename "$(readlink -f /sys/dev/block/$mm)"
 }
 bdev=$(mounted_device "$boot") || fail 'Bootmedium fehlt.'
+if [ "$os" = openwrt6 ]; then
+ case "$bdev" in mmcblk[0-9]p2) bdev=${bdev%p2}p1;; *) fail 'OpenWrt-Root nicht auf MMC-Partition 2.';; esac
+fi
 case "$bdev" in mmcblk[0-9]p1) sd=${bdev%p1};; *) fail 'Boot muss auf SD-Partition 1 liegen.';; esac
 [ "$(cat /sys/class/block/$sd/device/type)" = SD ] || fail 'Nur von SD installieren.'
 [ "$(mounted_device "$root")" = "${sd}p2" ] || fail 'Root/Storage liegt nicht auf derselben SD.'
@@ -78,7 +82,11 @@ IFS= read -r answer || fail 'Abgebrochen.'
 [ "$answer" = 'EMMC LOESCHEN' ] || fail 'Abgebrochen; nichts geschrieben.'
 # Snapshot settings before any target write. Do not copy boot files/fstab/UUIDs.
 : > "$work/list"
-if [ "$os" = anotter ]; then
+if [ "$os" = openwrt6 ]; then
+ sysupgrade -b "$work/sysupgrade.tgz" || fail 'Konfigurationssicherung fehlgeschlagen.'
+ echo sysupgrade.tgz > "$work/list"
+ source=$work
+elif [ "$os" = anotter ]; then
  for f in kioskbrowser.ini authorized_keys id_rsa id_ed25519 ssh_host_rsa_key ssh_host_rsa_key.pub ssh_host_ed25519_key ssh_host_ed25519_key.pub splash.png www-public; do
   [ ! -e "$boot/$f" ] || echo "$f" >> "$work/list"
  done
@@ -108,7 +116,7 @@ for n in 0 1; do
  echo 1 > /sys/class/block/$b/force_ro
 done
 "$base/reread-partitions" "/dev/$disk"
-if [ "$os" = anotter ]; then
+if [ "$os" = anotter ] || [ "$os" = openwrt6 ]; then
  mount -t vfat -o rw,umask=0077 "/dev/${disk}p1" "$work/new"
 else
  mount -t ext4 -o rw,noatime "/dev/${disk}p2" "$work/new"

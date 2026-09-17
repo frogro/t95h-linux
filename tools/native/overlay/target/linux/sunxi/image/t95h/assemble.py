@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 
 M = 1024 * 1024
-PREFIX_HASH = 'd8fe417be041dd9cd7e1677fed52414fb81f066656a447c2367d9b0fcbc94b75'
+PREFIX_HASH = '550f1a8cbd9ad30fccc6c1e66fa0ab17aada12d389e2bef0238c3de2d7647842'
 
 def sha(path):
     with path.open('rb') as stream:
@@ -69,9 +69,28 @@ def main():
         if 'Inode:' not in result.stdout:
             raise ValueError('Missing runtime module: '+module)
 
+    profile = root_file('/usr/share/t95h/profile').strip()
+    if 'A' in profile.split('-'):
+        if 'CONFIG_USB_NET_RNDIS_HOST=m' not in config.splitlines():
+            raise ValueError('RNDIS host must be a loadable module')
+        result = subprocess.run([str(args.host/'debugfs'), '-R',
+            f'stat /lib/modules/{kernel_release}/rndis_host.ko', str(args.rootfs)],
+            capture_output=True, text=True, check=True)
+        if 'Inode:' not in result.stdout:
+            raise ValueError('Profile A is missing rndis_host.ko')
+
+    if 'B' in profile.split('-'):
+        if 'CONFIG_SND_USB_AUDIO=m' not in config.splitlines():
+            raise ValueError('USB audio must be a loadable module')
+        result = subprocess.run([str(args.host/'debugfs'), '-R',
+            f'stat /lib/modules/{kernel_release}/snd-usb-audio.ko', str(args.rootfs)],
+            capture_output=True, text=True, check=True)
+        if 'Inode:' not in result.stdout:
+            raise ValueError('Profile B is missing snd-usb-audio.ko')
+
     base = Path(__file__).resolve().parent
     emmc = args.medium == 'emmc'
-    prefix_hash = '589a5fff38e1510524f89afd5691e7a8bac3437c42bcd3dddeaaf3d7ff4f9c78' if emmc else PREFIX_HASH
+    prefix_hash = 'f66ab6b318da47550a67c00684f724bc4934db46b14ab9fca3832a3286cc5ea1' if emmc else PREFIX_HASH
     prefix = base / ('emmc-prefix.bin' if emmc else 'prefix.bin')
     if prefix.stat().st_size != 4*M or sha(prefix) != prefix_hash:
         raise ValueError('T95H boot-prefix hash mismatch')
@@ -130,7 +149,7 @@ def main():
         run('e2fsck', '-fn', rootfs)
         # The common rootfs contains both guarded upgrade paths.
         upgrade = root_file('/lib/upgrade/platform.sh')
-        for expected in (PREFIX_HASH, '589a5fff38e1510524f89afd5691e7a8bac3437c42bcd3dddeaaf3d7ff4f9c78', 'RAMFS_COPY_BIN'):
+        for expected in (PREFIX_HASH, 'f66ab6b318da47550a67c00684f724bc4934db46b14ab9fca3832a3286cc5ea1', 'RAMFS_COPY_BIN'):
             if expected not in upgrade:
                 raise ValueError('Rootfs lacks dual-media upgrade support: '+expected)
         hashes = {}

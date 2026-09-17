@@ -1,7 +1,7 @@
 PKG_NAME="t95h-hardware"
 PKG_VERSION="1"
 PKG_LICENSE="GPL"
-PKG_DEPENDS_TARGET="toolchain linux Python3 e2fsprogs"
+PKG_DEPENDS_TARGET="toolchain linux Python3 e2fsprogs alsa"
 PKG_SECTION="tools"
 PKG_LONGDESC="Experimental T95H locked hardware modules and systemd startup"
 PKG_TOOLCHAIN="manual"
@@ -18,6 +18,11 @@ makeinstall_target() {
   cp ${PKG_DIR}/grow-emmc-storage ${INSTALL}/usr/lib/t95h/
   chmod 755 ${INSTALL}/usr/lib/t95h/grow-emmc-storage
   ln -s ../t95h-grow-emmc.service ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants/t95h-grow-emmc.service
+  mkdir -p ${INSTALL}/etc
+  cp ${PKG_DIR}/t95h-audio-init ${INSTALL}/usr/lib/t95h/
+  chmod 755 ${INSTALL}/usr/lib/t95h/t95h-audio-init
+  cp ${PKG_DIR}/t95h-audio.conf ${INSTALL}/etc/
+  ln -s ../t95h-audio.service ${INSTALL}/usr/lib/systemd/system/multi-user.target.wants/t95h-audio.service
   cp ${PKG_DIR}/start-hardware ${INSTALL}/usr/lib/t95h/
   chmod 755 ${INSTALL}/usr/lib/t95h/start-hardware
   cp ${PKG_DIR}/prepare-regulatory ${INSTALL}/usr/lib/t95h/
