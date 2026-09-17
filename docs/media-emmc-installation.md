@@ -1,4 +1,4 @@
-# AnotterKiosk und LibreELEC auf eMMC installieren
+# OpenWrt 6, AnotterKiosk und LibreELEC auf eMMC installieren
 
 Das Release muss eine Datei **`…-sd-emmc-installer.img.gz`** enthalten.
 Das normale SD-Image und das rohe `…-emmc.img.gz` sind dafür nicht austauschbar.
@@ -8,8 +8,9 @@ die tatsächliche entpackte Größe an. Die eMMC muss das enthaltene Zielimage f
 1. Die Installations-SD wie in der README beschrieben schreiben.
 2. Die Box von dieser SD starten und das System einrichten. Bei AnotterKiosk
    zuvor `authorized_keys` und `kioskbrowser.ini` auf der SD bearbeiten.
-3. Als root anmelden. Anotter verwendet SSH-Schlüssel; bei LibreELEC SSH in dessen
-   Einrichtung aktivieren und die dort eingerichteten Zugangsdaten verwenden.
+3. Als root anmelden: Bei OpenWrt die Zugangsdaten aus der Einrichtung verwenden.
+   Anotter verwendet SSH-Schlüssel; bei LibreELEC SSH in dessen Einrichtung
+   aktivieren und die dort eingerichteten Zugangsdaten verwenden.
 4. Die zusätzliche Installationspartition einhängen und das Skript starten:
 
 ```sh
@@ -17,6 +18,10 @@ mkdir -p /tmp/t95h-install
 mount -o ro,exec /dev/disk/by-label/T95HINSTALL /tmp/t95h-install
 sh /tmp/t95h-install/install-emmc.sh
 ```
+
+Unter OpenWrt kann der Pfad `/dev/disk/by-label/T95HINSTALL` fehlen.
+Mit `block info` die Partition mit `LABEL="T95HINSTALL"` suchen und deren
+Gerätepfad im `mount`-Befehl einsetzen.
 
 Falls die Partition bereits automatisch eingehängt wurde, deren Mountpunkt
 verwenden und dort `sh install-emmc.sh` ausführen. Das Skript muss direkt aus
@@ -31,6 +36,7 @@ Die Einstellungen werden von der gestarteten SD übernommen:
 
 | System | Übernahme |
 | --- | --- |
+| OpenWrt 6 | Die OpenWrt-Konfigurationssicherung, darunter Netzwerk, WLAN und Zugangseinstellungen |
 | AnotterKiosk | `kioskbrowser.ini`, SSH-Schlüsseldateien auf der Bootpartition, Startbild und `www-public` |
 | LibreELEC | `.config`, `.cache` und `.kodi` aus `/storage`, darunter Netzwerk-, SSH- und Kodi-Einstellungen |
 
@@ -42,20 +48,3 @@ Nach **PASS**: `poweroff`, Strom trennen, SD entfernen und wieder einschalten.
 Bei einem Fehler nicht von einer erfolgreichen Installation ausgehen. Der
 Installer verändert die gestartete SD nicht. Ein erneutes Schreiben eines
 Images ist eine Neuinstallation und kein Update.
-
-## Teststand dieses Adapters
-
-Die eMMC-Bootprefix- und Controller-Anpassungen stammen aus den vorhandenen
-T95H-Tests. Die neuen Anotter-/LibreELEC-Installationswege sind vorerst
-Release-Kandidaten und müssen jeweils auf der Box getestet werden. Insbesondere
-ersetzt ein OpenWrt-eMMC-Test nicht den Bootnachweis für diese beiden Systeme.
-RPMB und interner Controller-Speicher werden nicht als gelöscht ausgegeben.
-
-## Konfigurationsvergleich ohne diff
-
-Neue kombinierte Anotter-/LibreELEC-Images enthalten einen Python-Vergleicher
-auf der Installationspartition. Er prüft rekursiv Dateinamen, Typen, Inhalte
-und Symlinkziele; Dateirechte werden wegen FAT nicht verglichen. Python und
-das Werkzeug werden vor dem ersten eMMC-Schreibzugriff geprüft. Das externe
-Programm `diff` ist nicht mehr erforderlich. OpenWrt behält den SHA256-Vergleich
-seines Konfigurationsarchivs. Bereits veröffentlichte Images ändern sich nicht.

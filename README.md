@@ -1,179 +1,139 @@
 # Deine T95H kann mehr
 
-**OpenWrt, LibreELEC und AnotterKiosk wurden für die T95H mit Allwinner H616 portiert.**
-Dieses Repository veröffentlicht die passenden Images: herunterladen, auf SD
-schreiben und die Box als Netzwerkgerät, Mediacenter oder Kiosk nutzen.
+Nutze deine **T95H mit Allwinner H616** als Router, Mediacenter oder
+Web-Anzeige. Wähle ein System, schreibe es auf eine SD-Karte und starte die Box.
 
-**[→ Images herunterladen](https://github.com/frogro/t95h-linux/releases)** ·
-[Installation auf SD](#image-herunterladen-und-auf-sd-schreiben)
+**[→ Images herunterladen](https://github.com/frogro/t95h-linux/releases)**
 
 ## Welches System passt zu dir?
 
-| System | Dafür ist es da |
+| System | Was du damit machen kannst |
 | --- | --- |
-| [OpenWrt](#openwrt--netzwerk-und-router) | Netzwerk, Router und Access Point mit Weboberfläche. Je nach Profil kommen USB-Netzwerkgeräte, Modems und Multimedia-Treiber hinzu. |
-| [Kodi / LibreELEC](#kodi--libreelec--das-mediacenter) | Filme, Musik und andere Medien am Fernseher. LibreELEC startet direkt die Kodi-Oberfläche. |
-| [AnotterKiosk](#anotterkiosk--webseiten-und-bildschirmübertragung) | Eine Webseite im Vollbild: etwa Dashboard, Haussteuerung oder Infotafel. Mit zusätzlicher Bildschirmübertragung lässt sich auch ein PC auf der Box anzeigen und optional bedienen. |
-
-Nicht jedes Release enthält alle Systeme oder Varianten. Die Releasebeschreibung
-nennt die enthaltene Version, Änderungen und Hinweise zur jeweiligen T95H-Hardware.
-Bitte ausschließlich die Images für **T95H/H616** verwenden.
+| **OpenWrt** | Netzwerk und WLAN verwalten, einen Access Point einrichten und USB-Netzwerkgeräte nutzen. Mit Multimedia-Anwendungen auch Video aufnehmen oder streamen. |
+| **LibreELEC / Kodi** | Filme, Musik und Medien aus deinem Netzwerk am Fernseher abspielen. Die Box startet direkt mit Kodi. |
+| **AnotterKiosk** | Eine Webseite im Vollbild anzeigen, etwa eine Haussteuerung oder Infotafel. Auch der Bildschirm eines anderen Computers lässt sich anzeigen. |
 
 ## Image herunterladen und auf SD schreiben
 
-1. Unter **Releases → Assets** das gewünschte T95H-Image herunterladen.
-   Für den Start von SD eine Datei mit `sd` beziehungsweise `install.img` im
-   Namen wählen. Eine `sysupgrade.bin` ist nur zum Aktualisieren von OpenWrt.
-2. Eine Datei mit `.img.gz` entpacken, sodass eine `.img` entsteht. Unter Linux
-   geht das mit `gzip -dk DATEINAME.img.gz`, unter Windows etwa mit 7-Zip.
-   Falls vorhanden, die heruntergeladene Datei mit `SHA256SUMS` vergleichen.
-3. SD-Karte am Computer anschließen. Für AnotterKiosk mindestens **8 GB**
-   verwenden; für andere Images die Mindestgröße im Release beachten.
-4. In einem Image-Schreibprogramm, beispielsweise Raspberry Pi Imager mit
-   **eigenem Image** oder balenaEtcher, die `.img` und die richtige SD-Karte
-   auswählen und schreiben. **Dabei wird der gesamte Inhalt der SD gelöscht.**
-   Keine Raspberry-Pi-spezifischen Anpassungen von Benutzer, WLAN oder SSH anwenden.
-   Unter Linux bietet auch „Laufwerke“ die Funktion „Laufwerksabbild wiederherstellen“.
-5. Nach dem Schreiben die SD sicher entfernen. Für AnotterKiosk zuvor die
-   unten beschriebene Konfiguration auf der SD anpassen.
-6. Box stromlos machen, SD einsetzen, HDMI und Ethernet anschließen und einschalten.
-   Der erste Start kann länger dauern. Die Netzwerkadresse steht im Router.
+1. **Herunterladen:** Öffne oben „Images herunterladen“. Wähle dein System
+   und klappe beim passenden Release **Assets** auf. Lade das SD-Image herunter:
+   eine Datei mit `-sd.img.gz` oder bei OpenWrt `-sdcard-install.img.gz` am Ende.
+   Möchtest du später auf den internen Speicher wechseln, nimm stattdessen
+   `-sd-emmc-installer.img.gz`.
+2. **Entpacken:** Entpacke die heruntergeladene `.gz`-Datei. Du erhältst eine
+   Datei mit der Endung `.img`.
+3. **Auf die Karte schreiben:** Stecke eine SD-Karte in deinen Computer.
+   Öffne Raspberry Pi Imager, wähle **Eigenes Image**, dann die `.img`-Datei
+   und deine SD-Karte. Starte den Schreibvorgang. Zusätzliche Einstellungen
+   für Raspberry Pi überspringen. **Der bisherige Inhalt der SD-Karte wird gelöscht.**
+4. **Box starten:** Entferne die Karte sicher vom Computer. Setze sie in die
+   ausgeschaltete T95H ein, verbinde HDMI und ein Netzwerkkabel und schalte die Box ein.
+   Für AnotterKiosk kannst du vorher noch die gewünschte Webseite einstellen – siehe unten.
 
-Das Image muss auf die **ganze SD-Karte** geschrieben werden. Die `.img` nur als
-Datei auf die Karte zu kopieren reicht nicht. Ein getrenntes Formatieren vorher
-ist nicht erforderlich.
+Verwende eine **SD-Karte mit mindestens 16 GB**. Du musst sie nicht vorher
+formatieren. Die Image-Datei einfach auf die Karte zu kopieren reicht nicht;
+das Schreibprogramm übernimmt die Einrichtung.
 
 ## OpenWrt – Netzwerk und Router
 
-OpenWrt bietet eine Weboberfläche (LuCI), SSH und Netzwerkfunktionen.
-Welche zusätzlichen Treiber enthalten sind, steht im Profil des Releases:
+Verbinde die Box für die Einrichtung per Netzwerkkabel mit deinem Router.
+Ihre IP-Adresse findest du dort in der Geräteliste. Öffne diese Adresse
+im Browser, um die Weboberfläche **LuCI** aufzurufen.
 
-| Profil | Enthalten |
+| Zugang bei einer neuen Installation mit Kernel 6 | Vorgabe |
 | --- | --- |
-| `base` | Grundsystem, Ethernet, internes WLAN sowie Unterstützung für HDMI-Konsole, Audio, IR und Frontdisplay |
-| `base-A` | Grundsystem plus ausgewählte USB-Netzwerk- und Modemtreiber |
-| `base-B` | Grundsystem plus GPU-/Multimedia-Unterstützung und USB-Video (UVC) |
+| Benutzer für Weboberfläche und SSH | `root` |
+| Passwort | `openwrt` |
+| WLAN-Name | `OpenWrt` |
+| WLAN-Passwort | `openwrtopenwrt` |
+
+Ändere die Standardpasswörter nach der Anmeldung. Wenn du bei einem Update
+Einstellungen übernimmst, gelten deine bisherigen Zugangsdaten weiter.
+
+Das **Profil** im Dateinamen bestimmt die zusätzlich installierten Programme
+und Treiber:
+
+| Profil | Umfang |
+| --- | --- |
+| `base` | Netzwerk-Grundsystem mit Ethernet und internem WLAN |
+| `base-A` | Zusätzlich USB-Netzwerkadapter und Modems |
+| `base-B` | Zusätzlich Multimedia-Anwendungen, GPU-Unterstützung und USB-Video |
 | `base-A-B` | Beide Erweiterungen zusammen |
 
-Enthaltene Treiber bedeuten nicht, dass jedes angeschlossene Gerät getestet wurde.
-Beide USB-Buchsen sind Hostanschlüsse. Bei älteren Releases können Umfang und
-Dateinamen abweichen; maßgeblich ist deren Releasebeschreibung. Die OpenWrt-Version
-steht im Dateinamen, das Profil bezeichnet den Funktionsumfang.
+**Aktualisieren:** Sichere in LuCI deine Einstellungen und öffne
+**System → Backup / Firmware aktualisieren**. Wähle die `sysupgrade`-Datei
+für dein Speichermedium: `sdcard` für SD oder `emmc` für den internen Speicher.
+Die Option zum Beibehalten der Einstellungen übernimmt deine Konfiguration.
+Das kombinierte Installationsimage ist keine Sysupgrade-Datei.
 
-**Native OpenWrt-Images mit Kernel 6:** WLAN `OpenWrt`, Passwort `openwrtopenwrt`.
-Siehe [Bootkorrektur und Updateübergang](docs/boot-and-native-update-20260917.md)
-und [Multimedia-Livetests](docs/multimedia-live-validation.md).
+Für ältere OpenWrt-Images gelten deren Zugangsdaten und Dateinamen.
+Beim Wechsel von einem älteren Kernel-6-Image hilft die
+[Anleitung zum Updateübergang](docs/boot-and-native-update-20260917.md#boot-und-updates).
 
-**Bisheriger Standardzugang (Kernel 7):** WLAN `openwrt`, WLAN-Passwort `openwrtopenwrt`;
-SSH und LuCI: Benutzer `root`, Passwort `openwrt`.
-Über WLAN ist die Box unter `192.168.50.1` erreichbar, über Ethernet erhält sie
-normalerweise eine Adresse vom Router. Die Standardpasswörter nach dem Start ändern.
+## LibreELEC / Kodi – Filme und Musik
 
-### SD oder eMMC?
+Nach dem Start führt dich Kodi durch die Einrichtung. Wähle Sprache und
+Netzwerk und füge anschließend deine Medien hinzu – beispielsweise von einem
+USB-Laufwerk oder einer Netzwerkfreigabe.
 
-| Datei im Release | Verwendung |
+Die Bedienung erfolgt am Fernseher mit Tastatur, Maus oder einer kompatiblen
+Fernbedienung.
+
+## AnotterKiosk – deine Webseite am Bildschirm
+
+AnotterKiosk öffnet nach dem Start automatisch eine Webseite im Vollbild.
+So stellst du deine eigene Startseite ein:
+
+1. Stecke die beschriebene SD-Karte noch einmal in deinen Computer.
+2. Öffne auf dem Laufwerk **T95HKIOSK** die Datei **`kioskbrowser.ini`**
+   mit einem Texteditor.
+3. Ändere im vorhandenen Abschnitt `[browser]` die Adresse hinter `url`:
+
+   ```ini
+   [browser]
+   url="http://mein-server/meine-seite/"
+   ```
+
+4. Speichere die Datei, entferne die SD sicher und starte die Box damit.
+
+Die Webseite muss im Netzwerk der Box erreichbar sein. Für WLAN trägst du
+in derselben Datei unter `[wifi]` deinen Netzwerknamen und dein Passwort ein.
+Eigene lokale Webseiten kannst du auf der SD unter `www-public` ablegen.
+
+Die [Anotter-Anleitung](docs/anotter-kiosk.md#internes-wlan) erklärt die
+WLAN-Einrichtung; im selben Dokument findest du auch den SSH-Zugang.
+Zum Aktualisieren gibt es eine eigene
+[Anleitung für den Imagewechsel mit Einstellungserhalt](docs/anotter-image-update.md).
+
+### Bildschirm eines anderen Computers anzeigen
+
+Dafür gibt es zwei Wege im lokalen Netzwerk:
+
+| Weg | So verwendest du ihn |
 | --- | --- |
-| `…-sd-install.img` | OpenWrt dauerhaft von SD starten |
-| `…-sd-emmc-installer.img.gz` | Von SD starten und OpenWrt anschließend auf den internen eMMC-Speicher installieren |
-| `…-sd-sysupgrade.bin` | Ein vorhandenes OpenWrt auf SD aktualisieren |
-| `…-emmc-sysupgrade.bin` | Ein vorhandenes OpenWrt auf eMMC aktualisieren |
+| **Deskreen CE im Kiosk-Browser** | Starte Deskreen auf deinem Computer. Trage die angezeigte Verbindungsadresse als Kiosk-URL ein und bestätige die Bildschirmfreigabe am Computer. |
+| **go2rtc mit Cedrus-Player** | Starte die Bildschirmaufnahme und go2rtc auf deinem Computer. Verbinde dich per SSH mit der Box und starte `t95h-desktop-view`. Der Player zeigt das Video direkt über HDMI. Mit `Strg+C` kehrst du zur Kiosk-Webseite zurück. |
 
-Für eMMC zuerst die **eMMC-Installations-SD** starten. Dann an der HDMI-Konsole
-mit USB-Tastatur oder per SSH anmelden und ausführen:
+Die [Schritt-für-Schritt-Anleitung zur Bildschirmübertragung](docs/screen-sharing.md)
+führt dich durch beide Wege. Der beschriebene go2rtc-Aufbau verwendet einen
+Linux-PC mit Intel-Grafik und überträgt das Bild ohne Ton. Ein HDMI-Grabber
+ist für diese beiden Wege nicht erforderlich.
 
-```sh
-t95h-install-emmc
-```
+Optional kannst du mit **VirtualHere** auch Maus und Tastatur an der Box zum
+Bedienen des sendenden Computers verwenden. Die Einrichtung steht in derselben
+Anleitung. VirtualHere wird separat installiert und hat eigene Lizenzbedingungen.
 
-**Achtung: Das vorhandene Betriebssystem und alle Daten auf der eMMC werden
-bei Bestätigung gelöscht.** Das bloße Starten der SD löscht noch nichts.
-Der Befehl fragt ausdrücklich nach `EMMC LOESCHEN`.
-Die aktuellen OpenWrt-Zugangseinstellungen der SD werden übernommen, darunter
-Passwort, SSH-Schlüssel und Netzwerk-/WLAN-Konfiguration.
-Nach erfolgreicher Installation herunterfahren, Strom trennen, SD entfernen
-und wieder einschalten. [Weitere Informationen](docs/emmc-installation.md).
+## Ohne SD-Karte starten: Installation auf eMMC
 
-### Updates
+**eMMC ist der interne Speicher der Box.** Wähle beim Download das kombinierte
+`-sd-emmc-installer.img.gz` und starte zunächst von dieser SD-Karte.
+Die Installation auf den internen Speicher löst du anschließend selbst aus.
+Das Einsetzen und Starten der SD allein löscht dort nichts.
 
-OpenWrt ist über die zum Release gehörende **Sysupgrade-Datei updatefähig**.
-Vorher die Konfiguration sichern. Die passende SD- oder eMMC-Datei unter
-**System → Backup / Firmware aktualisieren** in LuCI auswählen und die
-Einstellungen bei Bedarf beibehalten. Ablehnungen nicht mit „Force“ umgehen.
-Eine `.img` neu zu flashen ist eine Neuinstallation.
+**Bei der Installation wird das bisherige System auf der eMMC ersetzt.**
+Der Installer fragt vorher nach einer Bestätigung und übernimmt die vorgesehenen
+Einstellungen des SD-Systems.
 
-Die ursprüngliche Partitionierung muss erhalten bleiben; selbst vergrößerte
-oder zusätzliche Partitionen können die Updateprüfung scheitern lassen.
-Updates ersetzen nicht automatisch den Bootloader. Einschränkungen und den
-Teststand jeweils in der Releasebeschreibung beachten.
-
-## Kodi / LibreELEC – das Mediacenter
-
-LibreELEC macht die Box zum Kodi-Mediacenter am Fernseher. Über Kodi lassen sich
-Medienbibliotheken, Netzwerkquellen und passende Add-ons nutzen.
-
-Das normale SD-Image startet direkt von SD. Eine Datei mit
-`sd-emmc-installer` im Namen ermöglicht zusätzlich die
-[Installation auf den internen eMMC-Speicher](docs/media-emmc-installation.md).
-Das rohe eMMC-Image allein ist keine Installations-SD.
-
-Den jeweiligen Download und Teststand findest du unter
-[Releases](https://github.com/frogro/t95h-linux/releases).
-Ein eigener T95H-Updateweg wird noch nicht angeboten; OpenWrt-Updatedateien
-sind hier nicht verwendbar. [Weitere Informationen zu LibreELEC](docs/libreelec.md).
-
-## AnotterKiosk – Webseiten und Bildschirmübertragung
-
-AnotterKiosk startet automatisch einen Browser und zeigt die eingestellte
-Webseite im Vollbild, etwa ein Dashboard, eine Haussteuerung oder eine lokale
-Infoseite. Die Inhalte und die Bedienoberfläche liefert die Webseite.
-Die ursprüngliche Startseite kann zunächst erscheinen; sie muss für eine eigene
-Anzeige durch die gewünschte Adresse ersetzt werden.
-
-Nach dem Flashen die SD erneut am Computer einstecken und auf der Partition
-**T95HKIOSK** die Datei **`kioskbrowser.ini`** mit einem Texteditor öffnen.
-Im vorhandenen Abschnitt `[browser]` die Zeile `url` ändern:
-
-```ini
-[browser]
-url="http://mein-server/meine-seite/"
-```
-
-Speichern, SD sicher entfernen und die Box starten. Für diesen Port zunächst
-Ethernet verwenden. Die Webseite muss von der Box aus erreichbar sein.
-Die INI-Datei bietet außerdem Einstellungen für Auflösung, Sprache und weitere
-Kiosk-Funktionen. Eigene lokale Webseiten lassen sich auf der Bootpartition
-unter `www-public` ablegen.
-
-SSH wird wie im Original über eine Datei **`authorized_keys`** auf dieser
-Partition eingerichtet. Dort den **öffentlichen** SSH-Schlüssel des eigenen
-Computers eintragen. Es gibt kein vorgegebenes SSH-Passwort.
-[Konfiguration, SSH und Änderungen im laufenden Betrieb](docs/anotter-kiosk.md).
-
-Je nach Release gibt es ein SD-Image und eine SD mit zusätzlichem eMMC-Installer.
-[AnotterKiosk auf eMMC installieren](docs/media-emmc-installation.md).
-Ein Update ohne erneutes Flashen wird hier noch nicht angeboten.
-
-### Bildschirmübertragung und optionale Fernsteuerung
-
-Ein anderer Computer kann seinen Bildschirm im lokalen Netzwerk bereitstellen.
-Mit Deskreen CE trägt man dessen Verbindungsadresse als Kiosk-URL ein und gibt
-den Bildschirm auf dem sendenden Computer frei. Eine neue Sitzung kann eine
-neue Adresse erfordern. Eine externe Cloud ist für diesen Aufbau nicht nötig.
-
-Im T95H-Test war **go2rtc mit direkter Cedrus-Videoausgabe** deutlich besser
-bedienbar als Deskreen im Browser. Das ist ein zusätzlicher nativer
-Player und noch keine fertige Funktion der Kiosk-Webseite. Der getestete
-Aufbau und seine Grenzen stehen in der [Anleitung zur Bildschirmübertragung](docs/screen-sharing.md).
-
-Optional kann **VirtualHere** Maus und Tastatur an der Box als USB-Geräte an
-den sendenden Computer weiterreichen. Währenddessen bedienen sie den entfernten
-Computer; für lokale Dialoge an der Box muss man den Empfänger wieder freigeben.
-VirtualHere ist separate Software mit eigenen Lizenzbedingungen und wird nicht
-mit dem Image ausgeliefert.
-
-## Weitere Informationen
-
-[Anotter-Konfiguration](docs/anotter-kiosk.md) ·
-[Bildschirmübertragung](docs/screen-sharing.md) ·
-[LibreELEC](docs/libreelec.md) ·
-[Technische Build-Dokumentation](docs/actions-build.md)
+Folge der [Anleitung zur eMMC-Installation](docs/media-emmc-installation.md).
+Nach erfolgreichem Abschluss: Box herunterfahren, Strom trennen, SD entfernen
+und wieder einschalten.

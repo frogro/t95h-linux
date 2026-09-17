@@ -1,79 +1,35 @@
 # Bildschirmübertragung an die T95H
 
-Die normale Kiosk-Funktion zeigt Webseiten. Bildschirmübertragung benötigt
-zusätzlich ein Programm auf dem Computer, dessen Bild angezeigt werden soll.
-Die hier getestete Verbindung bleibt im lokalen Netzwerk. Der sendende Computer
-muss eingeschaltet und die Bildschirmfreigabe aktiv sein.
+Du kannst den Bildschirm eines Computers über dein lokales Netzwerk auf der
+T95H anzeigen. Der Computer bleibt dabei eingeschaltet und gibt seinen
+Bildschirm frei. Ein HDMI-Grabber ist dafür nicht nötig.
 
-## Einfacher Einstieg: Deskreen CE
+## Weg 1: Deskreen CE im Kiosk-Browser
 
-Deskreen CE auf dem sendenden Computer starten. Seine lokale Verbindungsadresse
-in der `kioskbrowser.ini` als `url` eintragen und den Kiosk neu starten. Verbindung
-bestätigen, Bildschirm auswählen und freigeben. Die Adresse kann sich bei einer
-neuen Sitzung ändern. Bei „Seite nicht erreichbar“ zuerst die Anwendung, die
-aktuelle Adresse und die Erreichbarkeit im LAN prüfen.
+1. Starte Deskreen CE auf dem Computer, dessen Bildschirm du anzeigen möchtest.
+2. Trage die dort angezeigte Verbindungsadresse in der `kioskbrowser.ini`
+   unter `[browser]` als `url` ein und starte den Kiosk neu.
+3. Bestätige die Verbindung auf dem sendenden Computer.
+4. Wähle den Bildschirm oder das Fenster aus und gib es frei.
 
-Auf unserer T95H war dieser Weg funktional, für präzise Mausbedienung jedoch
-zu träge. Der neue Displaykernel allein beseitigt diesen Engpass nicht.
+Bei einer neuen Sitzung kann Deskreen eine neue Adresse anzeigen. Übertrage
+diese dann in die Kiosk-Konfiguration. Beende die Freigabe auf dem Computer,
+um die Übertragung zu stoppen; für deine normale Kiosk-Webseite trägst du
+wieder deren Adresse ein.
 
-## Bessere Bedienbarkeit im Test: go2rtc und Cedrus
+## Weg 2: go2rtc mit direkter Cedrus-Videoausgabe
 
-Der getestete Aufbau besteht aus Bildschirmaufnahme und Intel-H264-Encoding auf
-dem sendenden Linux-PC, [go2rtc](https://github.com/AlexxIT/go2rtc) als lokalem
-Streamserver und einem nativen Player auf der Box. Der Player ersetzt während
-der Übertragung den Kiosk-Browser auf HDMI. Er ist keine zweite Webseite.
-Panfrost beschleunigt Grafik; Cedrus übernimmt hier die Videodekodierung.
+Auf dem Computer erfasst ein Aufnahmeprogramm den Bildschirm und komprimiert
+ihn als H.264-Video. **go2rtc** stellt diesen Stream bereit. Auf der T95H
+übernimmt **Cedrus** die Dekodierung; ein Player zeigt das Bild über HDMI an.
+Währenddessen pausiert der Kiosk-Browser. Die Kiosk-URL bleibt unverändert.
 
-Der aktuelle Messstand: 1080p, etwa 34–38 tatsächlich gelieferte Bilder/s,
-30 ms Empfangspuffer. Die Aufnahme war auf maximal 60 fps eingestellt.
-Die entscheidenden Player-Einstellungen sind:
-
-```sh
-gst-launch-1.0 rtspsrc location=rtsp://STREAMSERVER:8554/desktop \
-  protocols=tcp latency=30 drop-on-latency=true \
-  ! rtph264depay ! h264parse ! v4l2slh264dec \
-  ! video/x-raw,format=NV12 \
-  ! kmssink driver-name=sun4i-drm plane-id=35 \
-    plane-properties=props,zpos=2 skip-vsync=true sync=false
-```
-
-Dies ist das dokumentierte **Testrezept**, kein universeller Installationsbefehl.
-Es benötigt den passenden DE33-Kernel/DTB, GStreamer mit `v4l2slh264dec` und
-`kmssink`, einen laufenden H264-Stream und exklusiven Zugriff auf die Anzeige.
-Die Plane-ID muss auf anderen Builds geprüft werden. Beim Test lief RTSP über
-einen lokalen SSH-Tunnel; dann ist die Adresse `rtsp://127.0.0.1:18554/desktop`.
-Ein direkter LAN-Stream muss entsprechend erreichbar und gegen ungewollten
-Zugriff geschützt sein. Es gibt keinen vorkonfigurierten öffentlichen Relay.
-
-Die folgenden Anotter-Builds verwenden für diesen Testweg CPU-Drosselgrenzen
-von 70/75 °C. Die GPU-Grenze und die kritische CPU-Grenze bleiben unverändert;
-der Player selbst verändert keine Temperaturgrenzen.
-
-Ein neuer Freigabedialog nach dem Neustart der Aufnahme ist normal. Bricht die
-Quelle ab, reicht ein Neustart des Players allein nicht: zuerst die Aufnahme
-wieder freigeben. Für die Rückkehr zur normalen Webseite den Player beenden und
-LightDM starten. Diese Einrichtung wird noch nicht automatisch im Image aktiviert.
-
-## Optional: Maus und Tastatur mit VirtualHere
-
-Auf der Box läuft der VirtualHere USB Server, auf dem sendenden Computer der
-[VirtualHere Client](https://www.virtualhere.com/usb_client_software).
-Dort den USB-Empfänger der Maus/Tastatur auswählen und verbinden. Beide Geräte
-steuern dann den sendenden Computer über das Bild auf der Box.
-
-Für einen lokalen „Allow“-Dialog im Kiosk den Empfänger im Client mit
-**Stop Using** freigeben. Nach der Bestätigung mit **Use** wieder verbinden.
-Ein Empfänger kann nicht gleichzeitig lokal und entfernt verwendet werden.
-VirtualHere ist optional, nicht im Image enthalten und separat nach den
-Lizenzbedingungen des Anbieters zu verwenden. Bildschirmübertragung allein
-überträgt keine USB-Eingaben.
-
-[Technische Messergebnisse](anotter-display-validation.md).
+Die folgende Anleitung richtet diesen Weg ein. Mit `Strg+C` im Player beendest
+du die Übertragung auf der Box und kehrst zur Kiosk-Webseite zurück.
 
 ## Schritt für Schritt: Linux-PC mit Intel-Grafik → T95H
 
-Dieser Weg entspricht dem getesteten Ubuntu/GNOME-Wayland-PC mit Intel-Grafik.
-Er ist nicht an einen ThinkPad gebunden. Windows, macOS und andere Grafikchips
+Diese Anleitung verwendet Ubuntu/GNOME mit Wayland und Intel-Grafik. Windows, macOS und andere Grafikchips
 benötigen eine andere Aufnahme-/Encoder-Einrichtung; die folgenden Befehle
 sind dafür nicht unverändert gedacht. Ton wird hier nicht übertragen.
 
@@ -94,8 +50,7 @@ GNOME-Variante. Diese Anleitung setzt eine laufende **Wayland-Desktopsitzung**
 voraus. Die Aufnahme als normal angemeldeter Benutzer starten, nicht mit sudo
 und nicht aus einer reinen SSH-Sitzung. Mit `vainfo --display drm --device
 /dev/dri/renderD128` prüfen, ob H264-Encoding verfügbar ist; Zugriffs- oder
-Treiberfehler zuerst beheben. Auf dem Test-PC war ein passender Intel-iHD-Treiber
-nötig. Dessen lokaler Sonderpfad wird nicht allgemein vorausgesetzt.
+Treiberfehler zuerst beheben.
 
 Die Programme haben unterschiedliche Aufgaben: **PipeWire/GStreamer** erfasst
 den freigegebenen Bildschirm, **FFmpeg/Intel VAAPI** komprimiert das Bild,
@@ -114,7 +69,7 @@ chmod +x go2rtc
 ./go2rtc -config go2rtc.yaml
 ```
 
-Das ist die im Test verwendete go2rtc-Version für einen **x86-64-PC**. Für
+Der Download ist für einen **x86-64-PC**. Für
 ARM-PCs die passende Datei aus den [go2rtc-Releases](https://github.com/AlexxIT/go2rtc/releases)
 verwenden. Das Terminal geöffnet lassen. Die beiliegende Konfiguration bindet
 Stream und API nur an den eigenen PC; die Box erreicht sie über SSH.
@@ -148,12 +103,25 @@ In dieser SSH-Sitzung auf der Box:
 t95h-desktop-view
 ```
 
-Dieser Befehl ist ab dem neuen **DE33-Anotter-Release** enthalten. Er prüft die
-benötigten GStreamer-Elemente, hält den Browser an und zeigt den Stream direkt.
+Der Befehl hält den Browser an und zeigt den Stream direkt.
 Mit `Strg+C` beenden; die normale Kiosk-Webseite startet wieder. Die
 `kioskbrowser.ini` muss für diesen nativen Weg nicht geändert werden.
-Auf älteren Images ist der Befehl noch nicht vorhanden.
 
 Anschließend optional VirtualHere verbinden. Soll ein lokaler Dialog an der Box
 bedient werden, dort zuerst den USB-Empfänger im VirtualHere-Client freigeben.
 Die Videoverbindung selbst bleibt davon unberührt.
+
+## Optional: Maus und Tastatur mit VirtualHere
+
+Installiere den VirtualHere USB Server auf der Box und den
+[VirtualHere Client](https://www.virtualhere.com/usb_client_software) auf dem
+sendenden Computer. Wähle im Client den USB-Empfänger von Maus und Tastatur
+an der Box aus und verbinde ihn mit **Use**. Die Geräte bedienen nun den
+sendenden Computer.
+
+Mit **Stop Using** gibst du sie wieder für die Box frei, beispielsweise für
+einen lokalen Bestätigungsdialog. Ein USB-Empfänger kann jeweils nur an einer
+Seite verwendet werden. Die Bildübertragung läuft davon unabhängig weiter.
+
+VirtualHere wird separat installiert und unterliegt den Lizenzbedingungen
+des Anbieters.
