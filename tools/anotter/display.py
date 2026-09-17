@@ -60,9 +60,23 @@ def dtb(path):
     dt.pack()
     path.write_bytes(dt.as_bytearray())
 
+def thermal(path):
+    """Apply the Anotter CPU policy; preserve GPU, critical trips and cooling maps."""
+    import libfdt
+    dt = libfdt.Fdt(path.read_bytes())
+    base = '/thermal-zones/cpu-thermal/trips/cpu-trip-'
+    expected = [(60000, 'passive'), (70000, 'passive'), (110000, 'critical')]
+    for i, (temp, kind) in enumerate(expected):
+        node = dt.path_offset(base + str(i))
+        if bytes(dt.getprop(node, 'temperature')) != temp.to_bytes(4, 'big') or bytes(dt.getprop(node, 'type')) != kind.encode() + b'\0':
+            raise ValueError('Unexpected CPU thermal trip ' + str(i))
+    for i, temp in enumerate((70000, 75000)):
+        dt.setprop(dt.path_offset(base + str(i)), 'temperature', temp.to_bytes(4, 'big'))
+    path.write_bytes(dt.as_bytearray())
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['apply', 'verify', 'dtb'])
+    parser.add_argument('mode', choices=['apply', 'verify', 'dtb', 'thermal'])
     parser.add_argument('path', type=Path)
     args = parser.parse_args()
     globals()[args.mode](args.path.resolve())

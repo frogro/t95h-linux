@@ -45,6 +45,10 @@ einen lokalen SSH-Tunnel; dann ist die Adresse `rtsp://127.0.0.1:18554/desktop`.
 Ein direkter LAN-Stream muss entsprechend erreichbar und gegen ungewollten
 Zugriff geschützt sein. Es gibt keinen vorkonfigurierten öffentlichen Relay.
 
+Die folgenden Anotter-Builds verwenden für diesen Testweg CPU-Drosselgrenzen
+von 70/75 °C. Die GPU-Grenze und die kritische CPU-Grenze bleiben unverändert;
+der Player selbst verändert keine Temperaturgrenzen.
+
 Ein neuer Freigabedialog nach dem Neustart der Aufnahme ist normal. Bricht die
 Quelle ab, reicht ein Neustart des Players allein nicht: zuerst die Aufnahme
 wieder freigeben. Für die Rückkehr zur normalen Webseite den Player beenden und

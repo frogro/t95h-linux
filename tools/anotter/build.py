@@ -189,6 +189,7 @@ def main():
     # Enable the internal XR819 host; association uses the public Anotter config.
     dtb=o/'modules/startup/t95h.dtb'
     tool('anotter/display.py','dtb',dtb)
+    tool('anotter/display.py','thermal',dtb)
     run('fdtput','-t','s',dtb,'/soc/mmc@4021000','status','okay')
     if subprocess.check_output(['fdtget','-t','s',str(dtb),'/soc/mmc@4021000','status'],text=True).strip()!='okay':raise ValueError('Internal WLAN host disabled')
     builtin=(root/'lib/modules'/release/'modules.builtin').read_text()

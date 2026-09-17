@@ -92,3 +92,20 @@ that requested enabled symbols survive olddefconfig.
 Live thermal trip points were CPU passive 60/70 degrees C, GPU passive 65
 degrees C, and critical 110 degrees C. No thermal threshold was changed. The
 critical trip is not a validated continuous operating temperature.
+
+## Accepted CPU trips: 70/75 degrees C, 17 September 2026
+
+After the short live comparison, the user selected passive CPU trips of 70/75
+degrees C for subsequent Anotter images and the native go2rtc/Cedrus test path.
+The Anotter DTB adapter changes only those two temperatures. GPU trips, CPU
+critical 110 degrees C, hysteresis, voltages and cooling maps are preserved.
+The adapted DTB is included in the SD build before eMMC/installer and update
+payloads are derived. OpenWrt and LibreELEC are outside this change.
+
+In 120 seconds of browser animation, CPU temperature was 67.7–70.3 degrees C;
+20 of 24 samples showed 1512 MHz, the remainder 720/936 MHz. A subsequent
+60-second four-worker CPU load reached 68.7–70.1 degrees C at 480–720 MHz.
+No reboot or failed service occurred; the known WLAN missed interrupts remained.
+This is a short comparison, not long-term stability certification or a new
+Cedrus playback result. Live 70/75 was reapplied after the comparison; it lasts
+until reboot on the existing image. New builds carry the values in their DTB.
