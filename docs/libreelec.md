@@ -106,8 +106,11 @@ eMMC-Erweiterung steht noch aus. Bereits installierte Images werden nicht verän
 ## Vorbereitete Betriebsparameter
 
 Das nächste Build verwendet `ondemand` mit dem vollen zulässigen CPU-Taktbereich.
-Die erste passive CPU-Temperaturschwelle liegt bei 65 °C mit 2 °C Hysterese;
-70 °C als zweite passive Schwelle und 110 °C als kritische Schwelle bleiben erhalten.
+Die passiven CPU-Temperaturschwellen liegen bei 70/75 °C. Die bestehende
+Hysterese und 110 °C als kritische Schwelle bleiben erhalten. Die Werte gelten
+für SD, eMMC und den kombinierten Installer; der vorhandene SD/eMMC-Teststand
+35196967768 verwendet weiterhin 65/70 °C. Der 70/75-Livetest wurde bisher unter
+Anotter durchgeführt, nicht unter LibreELEC.
 Die GPU bleibt nach ihrer Initialisierung aktiv, damit keine PLL-Taktwechsel im
 Runtime-Ruhezustand stattfinden. Ihre thermische Taktbegrenzung bleibt wirksam.
 Der Regulatory-Datenbank-Reload wird bei frühen Fehlern höchstens 15-mal versucht;

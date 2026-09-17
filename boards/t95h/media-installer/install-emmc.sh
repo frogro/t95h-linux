@@ -19,8 +19,11 @@ case "$os" in
  openwrt6) boot=/; root=/; confmax=94371840; case "$(uname -r)" in 6.*) ;; *) fail 'OpenWrt Kernel 6 erforderlich.';; esac;;
  *) fail 'Unbekanntes System.';;
 esac
-# OpenWrt ships sha256sum but may not ship diff; other OSes need recursive diff.
-if [ "$os" != openwrt6 ]; then command -v diff >/dev/null || fail 'diff fehlt; vor Installation bereitstellen.'; fi
+# OpenWrt compares its archive; other OSes use the bundled tree comparator.
+if [ "$os" != openwrt6 ]; then
+ command -v python3 >/dev/null || fail 'Python für Konfigurationsvergleich fehlt.'
+ python3 "$base/compare-config.py" --check || fail 'Konfigurationsvergleich nicht ausführbar.'
+fi
 # Resolve real mounted filesystems through major/minor, not /dev aliases.
 mounted_device() {
  mm=$(awk -v p="$1" '$5==p {print $3;exit}' /proc/self/mountinfo)
@@ -151,7 +154,7 @@ tar -xf "$work/config.tar" -C "$work/new"
 if [ "$os" = openwrt6 ]; then
  [ "$(sha256sum "$work/saved/sysupgrade.tgz" | cut -d ' ' -f1)" = "$(sha256sum "$work/new/sysupgrade.tgz" | cut -d ' ' -f1)" ] || fail 'Konfigurationsvergleich fehlgeschlagen.'
 else
- while IFS= read -r f; do diff -r "$work/saved/$f" "$work/new/$f" || fail 'Konfigurationsvergleich fehlgeschlagen.'; done < "$work/list"
+ while IFS= read -r f; do python3 "$base/compare-config.py" -r "$work/saved/$f" "$work/new/$f" || fail 'Konfigurationsvergleich fehlgeschlagen.'; done < "$work/list"
 fi
 sync
 umount "$work/new"

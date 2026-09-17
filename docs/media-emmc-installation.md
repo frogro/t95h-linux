@@ -50,3 +50,12 @@ T95H-Tests. Die neuen Anotter-/LibreELEC-Installationswege sind vorerst
 Release-Kandidaten und müssen jeweils auf der Box getestet werden. Insbesondere
 ersetzt ein OpenWrt-eMMC-Test nicht den Bootnachweis für diese beiden Systeme.
 RPMB und interner Controller-Speicher werden nicht als gelöscht ausgegeben.
+
+## Konfigurationsvergleich ohne diff
+
+Neue kombinierte Anotter-/LibreELEC-Images enthalten einen Python-Vergleicher
+auf der Installationspartition. Er prüft rekursiv Dateinamen, Typen, Inhalte
+und Symlinkziele; Dateirechte werden wegen FAT nicht verglichen. Python und
+das Werkzeug werden vor dem ersten eMMC-Schreibzugriff geprüft. Das externe
+Programm `diff` ist nicht mehr erforderlich. OpenWrt behält den SHA256-Vergleich
+seines Konfigurationsarchivs. Bereits veröffentlichte Images ändern sich nicht.

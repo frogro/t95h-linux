@@ -44,3 +44,19 @@ class Layout(unittest.TestCase):
    self.assertEqual(subprocess.run(['sh','-eu','-c',command],env=env).returncode,0)
    (p/'new/sysupgrade.tgz').write_bytes(b'corrupt archive')
    self.assertEqual(subprocess.run(['sh','-eu','-c',command],env=env).returncode,42)
+
+class ConfigurationCompare(unittest.TestCase):
+ def test_nested_content_symlinks_missing_files_and_types(self):
+  import runpy
+  equal=runpy.run_path(str(ROOT/'boards/t95h/media-installer/compare-config.py'))['equal']
+  with tempfile.TemporaryDirectory() as d:
+   a=Path(d)/'a';b=Path(d)/'b'
+   for p in (a,b):
+    (p/'nested').mkdir(parents=True);(p/'nested/f').write_bytes(b'one')
+    (p/'link').symlink_to('nested/f');(p/'dangling').symlink_to('missing')
+   self.assertTrue(equal(a,b))
+   (b/'nested/f').write_bytes(b'two');self.assertFalse(equal(a,b))
+   (b/'nested/f').write_bytes(b'one');(b/'link').unlink();(b/'link').symlink_to('other')
+   self.assertFalse(equal(a,b))
+   (b/'link').unlink();(b/'link').symlink_to('nested/f');(b/'nested/f').unlink()
+   self.assertFalse(equal(a,b));(b/'nested/f').mkdir();self.assertFalse(equal(a,b))

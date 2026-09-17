@@ -10,13 +10,13 @@ spec=importlib.util.spec_from_file_location('le_policy',ROOT/'tools/libreelec/pr
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 
 class PolicyTests(unittest.TestCase):
- def test_only_first_trip_changes(self):
+ def test_only_passive_cpu_trips_change(self):
   with tempfile.TemporaryDirectory() as t:
    d=Path(t);src=d/'test.dts';dtb=d/'test.dtb'
    src.write_text('/dts-v1/; / { untouched = <123>; thermal-zones { cpu-thermal { trips { cpu-trip-0 { temperature=<60000>; hysteresis=<2000>; }; cpu-trip-1 { temperature=<70000>; }; cpu-trip-2 { temperature=<110000>; }; }; }; }; };')
    subprocess.run(['dtc','-I','dts','-O','dtb','-o',str(dtb),str(src)],check=True)
    result=m.thermal_policy(dtb)
-   self.assertEqual(result['cpu_trip_temperatures'],[65000,70000,110000])
+   self.assertEqual(result['cpu_trip_temperatures'],[70000,75000,110000])
    self.assertEqual(subprocess.check_output(['fdtget','-t','u',str(dtb),'/','untouched'],text=True).strip(),'123')
    with self.assertRaises(ValueError):m.thermal_policy(dtb)
 

@@ -59,9 +59,10 @@ def thermal_policy(dtb):
  before=[read('cpu-trip-'+str(i),'temperature') for i in range(3)]
  if before!=[60000,70000,110000] or read('cpu-trip-0','hysteresis')!=2000:
   raise ValueError('Unexpected CPU thermal policy; review required')
- subprocess.run(['fdtput','-t','u',str(dtb),trips+'cpu-trip-0','temperature','65000'],check=True)
+ for i,temp in enumerate((70000,75000)):
+  subprocess.run(['fdtput','-t','u',str(dtb),trips+'cpu-trip-'+str(i),'temperature',str(temp)],check=True)
  after=[read('cpu-trip-'+str(i),'temperature') for i in range(3)]
- if after!=[65000,70000,110000] or read('cpu-trip-0','hysteresis')!=2000:
+ if after!=[70000,75000,110000] or read('cpu-trip-0','hysteresis')!=2000:
   raise ValueError('CPU thermal policy verification failed')
  return {'cpu_trip_temperatures':after,'cpu_hysteresis':2000,'dtb_sha256':sha(dtb)}
 

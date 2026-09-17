@@ -70,6 +70,8 @@ def main():
     if size%M:raise ValueError('Unaligned eMMC image')
     (payload/'raw-bytes').write_text(str(size)+'\n');(payload/'raw-sha256').write_text(h.hexdigest()+'\n');(payload/'os').write_text(a.os+'\n')
     shutil.copyfile(ROOT/'boards/t95h/media-installer/install-emmc.sh',payload/'install-emmc.sh')
+    if a.os != 'openwrt6':
+        shutil.copyfile(ROOT/'boards/t95h/media-installer/compare-config.py',payload/'compare-config.py')
     for n in ('check-boot-selection','reread-partitions'):
         run(a.compiler,'-Os','-static',ROOT/'boards/t95h/emmc-installer'/(n+'.c'),'-o',payload/n)
     (payload/'SHA256SUMS').write_text(''.join(sha(f)+'  '+f.name+'\n' for f in sorted(payload.iterdir())))
