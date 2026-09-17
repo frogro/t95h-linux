@@ -19,6 +19,23 @@ def put(root, name, text, mode=0o644):
     if p.is_symlink(): p.unlink()
     p.write_text(text); p.chmod(mode)
 
+def fix_alsa_restore_rules(text):
+    old='LABEL="alsa_restore_go"'
+    if 'LABEL="alsa_restore_std"' in text:
+        return text
+    if text.count(old)!=2 or 'GOTO="alsa_restore_std"' not in text:
+        raise ValueError('Unknown ALSA restore rule layout')
+    pos=text.rindex(old)
+    return text[:pos]+text[pos:].replace(old,'LABEL="alsa_restore_std"',1)
+
+def serialize_ntp_service(text):
+    lines=text.splitlines()
+    matches=[i for i,line in enumerate(lines) if line.startswith('ExecStart=ntpdate ')]
+    if len(matches)!=1:raise ValueError('Unknown upstream NTP service command')
+    i=matches[0]
+    lines[i]=lines[i].replace('ExecStart=ntpdate ', 'ExecStart=/usr/bin/flock /run/lock/ntpsec-ntpdate /usr/sbin/ntpdate ',1)
+    return '\n'.join(lines)+'\n'
+
 def config(text):
     values = {}
     for line in text.splitlines():
@@ -102,6 +119,11 @@ def main():
     finally:
         for path in reversed(mounts): run('umount',path)
     shutil.rmtree(root/'kiosk_skeleton')
+    # Share Debian's if-up NTP lock so simultaneous queries cannot step twice.
+    ntp=root/'etc/systemd/system/ntpdate.service'
+    ntp.write_text(serialize_ntp_service(ntp.read_text()))
+    alsa=root/'usr/lib/udev/rules.d/90-alsa-restore.rules'
+    alsa.write_text(fix_alsa_restore_rules(alsa.read_text()))
     # Normal systemd boot, no Raspberry Pi firmware/init or Xorg configuration.
     for name in ['20-noglamor.conf']:
         (root/'usr/share/X11/xorg.conf.d'/name).unlink(missing_ok=True)
@@ -153,7 +175,7 @@ def main():
     if start.count(marker)!=1: raise ValueError('Hardware startup contract changed')
     start=start.replace(marker,guard+'\n'+marker)
     put(root,'usr/lib/t95h/start-hardware',start,0o755)
-    unit=(ROOT/'boards/t95h/libreelec/hardware/system.d/t95h-hardware.service').read_text().replace('kodi.service','lightdm.service')
+    unit=(ROOT/'boards/t95h/anotter/runtime/t95h-hardware.service').read_text()
     put(root,'etc/systemd/system/t95h-hardware.service',unit)
     put(root,'usr/lib/t95h/public-boot-files',(ROOT/'boards/t95h/anotter/runtime/public-boot-files').read_text(),0o755)
     put(root,'etc/systemd/system/t95h-public-boot.service',(ROOT/'boards/t95h/anotter/runtime/t95h-public-boot.service').read_text())

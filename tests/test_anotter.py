@@ -24,3 +24,21 @@ class KernelProbeTest(unittest.TestCase):
         self.assertIn('CONFIG_RUSTC_HAS_FILE_AS_C_STR',builder.HOST_PROBES)
         for feature in ['CONFIG_RUST','CONFIG_DRM_PANFROST','CONFIG_USER_NS','CONFIG_EXT4_FS']:
             self.assertNotIn(feature,builder.HOST_PROBES)
+
+class StartupRegressionTests(unittest.TestCase):
+    def test_alsa_duplicate_label_and_already_fixed_package(self):
+        text='LABEL="alsa_restore_go"\nGOTO="alsa_restore_std"\nLABEL="alsa_restore_go"\nRUN+="restore"\n'
+        fixed=m.fix_alsa_restore_rules(text)
+        self.assertEqual(fixed.count('LABEL="alsa_restore_go"'),1)
+        self.assertEqual(fixed.count('LABEL="alsa_restore_std"'),1)
+        self.assertEqual(m.fix_alsa_restore_rules(fixed),fixed)
+        with self.assertRaises(ValueError):m.fix_alsa_restore_rules('changed')
+    def test_ntp_preserves_servers_and_uses_ifup_lock(self):
+        text='[Service]\nExecStart=ntpdate ptbtime2.ptb.de ptbtime3.ptb.de\nRestart=on-failure\n'
+        self.assertEqual(m.serialize_ntp_service(text),text.replace('ExecStart=ntpdate','ExecStart=/usr/bin/flock /run/lock/ntpsec-ntpdate /usr/sbin/ntpdate'))
+        with self.assertRaises(ValueError):m.serialize_ntp_service('ExecStart=other\n')
+    def test_kiosk_service_has_no_libreelec_cpu_dependency(self):
+        text=(ROOT/'boards/t95h/anotter/runtime/t95h-hardware.service').read_text()
+        self.assertNotIn('cpufreq',text)
+        self.assertIn('Before=lightdm.service',text)
+        self.assertIn('ExecStart=/usr/lib/t95h/start-hardware',text)
