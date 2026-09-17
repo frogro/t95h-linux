@@ -94,7 +94,7 @@ def main():
             if actual!=fingerprint: raise ValueError('Debian signing key mismatch')
             target.write(subprocess.check_output(['gpg','--batch','--dearmor'],input=(keydir/name).read_bytes()))
     root=o/'root'
-    packages='debian-archive-keyring,systemd-sysv,udev,sudo,locales,dbus-user-session,polkitd,dhcpcd,rsync,ca-certificates,xserver-xorg-core,xserver-xorg-input-libinput,xinit,libgl1-mesa-dri,mesa-utils,alsa-utils,kmod,gstreamer1.0-tools,gstreamer1.0-plugins-base,gstreamer1.0-plugins-good,gstreamer1.0-plugins-bad'
+    packages='debian-archive-keyring,systemd-sysv,udev,sudo,locales,dbus-user-session,polkitd,dhcpcd,rsync,ca-certificates,xserver-xorg-core,xserver-xorg-input-libinput,xinit,libgl1-mesa-dri,mesa-utils,alsa-utils,kmod,gstreamer1.0-tools,gstreamer1.0-alsa,gstreamer1.0-gl,gstreamer1.0-plugins-base,gstreamer1.0-plugins-good,gstreamer1.0-plugins-bad'
     run('mmdebstrap','--keyring='+str(keyring),'--architectures=arm64','--variant=minbase','--include='+packages,'trixie',root,
         'deb https://deb.debian.org/debian trixie main non-free-firmware',
         'deb https://deb.debian.org/debian trixie-updates main non-free-firmware',
@@ -115,6 +115,10 @@ def main():
         for unit in ['kiosk-watchdog','kiosk-wifi']:
             run('chroot',root,'systemctl','disable',unit)
         run('chroot',root,'dpkg-query','-W','-f=${Package}\t${Version}\t${Architecture}\n',stdout=(o/'packages.tsv').open('w'))
+        # Inspect real installed elements so missing split Debian plugins fail the build.
+        with (o/'gstreamer-elements.log').open('w') as report:
+            for element in ('alsasink','glupload','glcolorconvert','gldownload'):
+                run('chroot',root,'gst-inspect-1.0',element,stdout=report,stderr=subprocess.STDOUT)
         run('chroot',root,'apt-get','clean')
     finally:
         for path in reversed(mounts): run('umount',path)

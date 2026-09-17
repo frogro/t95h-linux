@@ -44,3 +44,8 @@ These are T95H helpers, not an official upstream in-place updater. Rootfs edits 
 extra packages are not preserved; offline hardware updates still need device tests.
 The experimental unsafe upstream script is not included.
 The prior NTP concurrency and ALSA rule fixes remain included.
+
+GStreamer ALSA and OpenGL split packages are now explicitly installed and their
+required elements checked during the build. This addresses missing alsasink and
+glupload in the previous candidate. XR819 SDIO data errors/missed interrupts also
+occur under Anotter; they remain an accepted known limitation, not a fixed issue.

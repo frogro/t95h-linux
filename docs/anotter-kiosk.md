@@ -204,3 +204,21 @@ werden (eine bereits aktive Verbindung zuvor mit `ifdown wlan0` beenden).
 Der kombinierte Installer übernimmt auch eine separate `wpa_supplicant.conf` auf
 eMMC. Es werden keine privaten Netz-Zugangsdaten ins Release eingebaut.
 Die früher beobachteten XR819-Interruptprobleme sind damit nicht als behoben erklärt.
+
+
+## Liveprüfung und akzeptierte WLAN-Einschränkung (2026-09-17)
+
+Auch Anotter mit Kernel 7.2.3 zeigt unter WLAN-Verkehr `data error` am
+SDIO-Host 4021000.mmc und XR819 `missed interrupt`. Der Fehler ist somit nicht
+auf OpenWrt oder den AP-Modus beschränkt. Auf Nutzerwunsch wird er vorerst als
+bekannte Einschränkung akzeptiert; weitere Treiberexperimente sind nicht geplant.
+Ein WLAN-Echo-Test übertrug 8 MiB je Richtung bytegleich in 10,38 Sekunden
+(ca. 6,5 Mbit/s je Richtung, 12,9 Mbit/s Nutzdaten insgesamt). Das ist kein
+unidirektionaler Durchsatzbenchmark und kein Langzeit-Stabilitätsnachweis.
+
+Die Liveprüfung fand fehlende GStreamer-Elemente `alsasink` und `glupload`.
+Der Build installiert deshalb jetzt zusätzlich `gstreamer1.0-alsa` und
+`gstreamer1.0-gl` und prüft die Elemente einschließlich `glcolorconvert` und
+`gldownload` vor dem Verpacken. Diese Ergänzung gilt über das gemeinsame Rootfs
+für SD, eMMC und den kombinierten Installer. Ein neuer vollständiger Build und
+Liveprüfung der ergänzten Plugins stehen noch aus.
