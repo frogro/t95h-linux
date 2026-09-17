@@ -30,6 +30,12 @@ def udevil_archive(text):
  url='PKG_URL="https://github.com/alpharde/udevil/archive/${PKG_VERSION}.tar.gz"'
  if text.count(url)!=1:raise ValueError('udevil archive recipe changed; review required')
  return text.replace(url,'PKG_URL="https://github.com/arnie97/udevil-ng/archive/${PKG_VERSION}.tar.gz"\nPKG_SOURCE_DIR="udevil-ng-${PKG_VERSION}"').replace(old,'PKG_SHA256="9285649d4304e7aac303d67e9ddcc6979602296bbfd80cf984317701de3a46e9"')
+def guard_pnp_resolver(text):
+ # IP autoconfiguration is optional for local SD/eMMC boot.
+ lines=[line for line in text.splitlines() if line.startswith('grep ') and '/proc/net/pnp' in line]
+ if len(lines)!=1:raise ValueError('Expected one initramfs PNP resolver read')
+ line=lines[0]
+ return text.replace(line, 'if [ -r /proc/net/pnp ]; then\n  '+line+'\nfi')
 def config(text):
  out={}
  for l in text.splitlines():
@@ -107,6 +113,8 @@ FIRMWARE="misc-firmware wlan-firmware"
     PKG_PATCH_DIRS="t95h"
     ;;
 ''';pkg.write_text(s.replace(marker,marker+case))
+ init=le/'packages/sysutils/busybox/scripts/init'
+ init.write_text(guard_pnp_resolver(init.read_text()))
  kodi=le/'packages/mediacenter/kodi/package.mk';ks=kodi.read_text();ks=ks.replace('[ "${PROJECT}" = "Allwinner" -o', '[ "${PROJECT}" = "T95H" -o "${PROJECT}" = "Allwinner" -o');kodi.write_text(ks)
  ffmpeg=le/'packages/multimedia/ffmpeg/package.mk';ffmpeg.write_text(ffmpeg_t95h(ffmpeg.read_text()))
  for package in ('glibc','gcc','systemd'):

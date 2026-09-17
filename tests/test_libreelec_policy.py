@@ -33,3 +33,22 @@ class PolicyTests(unittest.TestCase):
    return r.returncode,int((d/'count').read_text())
  def test_regulatory_retries_transient_failure(self):self.assertEqual(self.regulatory(2),(0,3))
  def test_regulatory_does_not_hide_persistent_failure(self):self.assertEqual(self.regulatory(99),(1,15))
+
+class ResolverBootTests(unittest.TestCase):
+ def test_missing_optional_pnp_preserves_resolver_without_warning(self):
+  self.check_pnp(False)
+ def test_present_pnp_keeps_dns_filtering(self):
+  self.check_pnp(True)
+ def test_changed_upstream_read_is_rejected(self):
+  with self.assertRaises(ValueError):m.guard_pnp_resolver('echo changed\n')
+ def check_pnp(self,present):
+  with tempfile.TemporaryDirectory() as t:
+   d=Path(t);pnp=d/'pnp';resolver=d/'resolv.conf'
+   resolver.write_text('existing\n')
+   if present:pnp.write_text('nameserver 0.0.0.0\nnameserver 192.0.2.1\ndomain test\n')
+   source="grep '^\\(nameserver\\|domain\\) ' /proc/net/pnp | grep -v '^nameserver 0\\.0\\.0\\.0$' > /etc/resolv.conf\n"
+   script=m.guard_pnp_resolver(source).replace('/proc/net/pnp',str(pnp)).replace('/etc/resolv.conf',str(resolver))
+   result=subprocess.run(['sh','-c',script],capture_output=True,text=True)
+   self.assertEqual(result.returncode,0,result.stderr)
+   self.assertEqual(result.stderr,'')
+   self.assertEqual(resolver.read_text(),'nameserver 192.0.2.1\ndomain test\n' if present else 'existing\n')

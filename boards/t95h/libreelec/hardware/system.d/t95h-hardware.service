@@ -6,6 +6,7 @@ Before=kodi.service
 [Service]
 Type=oneshot
 ExecStart=/usr/lib/t95h/start-hardware
+ExecStartPost=/usr/bin/systemctl --no-block start cpufreq.service
 TimeoutStartSec=240
 RemainAfterExit=yes
 

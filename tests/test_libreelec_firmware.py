@@ -10,8 +10,11 @@ class FirmwareTests(unittest.TestCase):
    p=Path(d);src=p/'pkg';build=p/'build';out=p/'install'
    (src/'firmware/xr819').mkdir(parents=True);(src/'system.d').mkdir();build.mkdir()
    for name in ['t95h-audio-init','t95h-audio.conf','system.d/t95h-audio.service','t95h.dtb','cpufreq.conf','grow-emmc-storage','system.d/t95h-grow-emmc.service','start-hardware','prepare-regulatory','kodi.conf','system.d/test.service','firmware/xr819/fw.bin']:(src/name).write_text(name)
+   for name in ['cpufreq.conf','system.d/t95h-hardware.service']:(src/name).write_text((ROOT/'boards/t95h/libreelec/hardware'/name).read_text())
    for name in ['t95h_aldo2.ko','t95h_ana_provider.ko']:(build/name).write_text(name)
    subprocess.run(['bash','-eu','-c','source "$1"; get_full_firmware_dir() { echo usr/lib/kernel-overlays/base/lib/firmware; }; makeinstall_target','test',str(ROOT/'boards/t95h/libreelec/hardware/package.mk')],env={'PATH':'/usr/bin:/bin','PKG_DIR':str(src),'PKG_BUILD':str(build),'INSTALL':str(out)},check=True)
+   self.assertIn('ConditionPathExists=/sys/devices/system/cpu/cpufreq/policy0/scaling_governor',(out/'usr/lib/systemd/system/cpufreq.service.d/t95h.conf').read_text())
+   self.assertIn('ExecStartPost=/usr/bin/systemctl --no-block start cpufreq.service',(out/'usr/lib/systemd/system/t95h-hardware.service').read_text())
    self.assertFalse((out/'usr/lib/firmware').exists())
    self.assertEqual((out/'usr/lib/kernel-overlays/base/lib/firmware/xr819/fw.bin').read_text(),'firmware/xr819/fw.bin')
    (out/'usr/lib/firmware').symlink_to('/run/kernel-overlays/firmware')

@@ -44,8 +44,8 @@ Vor einer Veröffentlichung sind noch erforderlich:
 
 Die Kernelversion kann gleich bleiben, während die Kernelkonfiguration und ABI
 für LibreELEC angepasst werden. Ein erfolgreicher OpenWrt-Test ersetzt keine
-LibreELEC-Hardwareprüfung. Automatische Speichererweiterung ist derzeit nicht
-Teil dieses Ports.
+LibreELEC-Hardwareprüfung. Die automatische Speichererweiterung ist unten beschrieben; ihr Hardwaretest
+steht noch aus.
 
 ### Fortsetzbare Actions-Builds
 
@@ -121,3 +121,61 @@ SHA256-Lastprozessen, aktiver GPU und ähnlichen Anfangstemperaturen. Bei 65 °C
 wurden rund 31 % mehr Hashes pro Sekunde gemessen; CPU-Spitze 72,4 °C statt
 62,3 °C. Keine neuen Kernelwarnungen während des Vergleichs. Dies ist kein
 Nachweis höherer Video-FPS oder eines abgeschlossenen Langzeit-/Neustarttests.
+
+## Nächste Schritte nach dem erfolgreichen Build (vereinbart am 12.09.2026)
+
+Ein erfolgreicher Build startet die folgende Prüfung; er ist noch keine Freigabe
+für automatische Updates.
+
+### Updates aus dem eigenen GitHub-Repository
+
+- T95H-Updatepakete erstellen, die KERNEL, SYSTEM, den zum Medium passenden
+  Device Tree und erforderliche Bootdateien konsistent aktualisieren.
+- Einen eigenen Update-Kanal für `frogro/t95h-linux` anbinden: Die Box soll
+  freigegebene neue Versionen über das Internet anzeigen und herunterladen
+  können. Installation nach Bestätigung und Neustart.
+- GitHub Actions soll bei späteren LibreELEC-Versionen Build, Prüfungen,
+  Updatepakete und Kanal-Metadaten zusammenführen. Zunächst ausschließlich
+  vom Repository-Betreiber freigegebene Releases anbieten; keine ungeprüften
+  automatischen Builds.
+- Kompatibilitäts- und Integritätsprüfung sowie abgebrochene Downloads testen.
+  SD und eMMC getrennt prüfen; Kodi-Einstellungen, Zugangsdaten und Medien
+  müssen erhalten bleiben. Ein Wiederherstellungsweg muss dokumentiert sein.
+
+Updatepakete und Update-Kanal sind noch nicht implementiert. Die bisherigen
+Installationsimages sind nicht als T95H-Updatepakete freigegeben.
+
+### Offene Tests des neu gebauten Images
+
+- Wiederholte Kaltstarts und Neustarts ohne Hänger; Bootjournal prüfen.
+- Längere Videowiedergabe mit Hardwaredecodierung, dauerhaft aktiver GPU und
+  65-Grad-CPU-Regelung; Temperatur, Takt und Kernelmeldungen aufzeichnen.
+- Internes WLAN einschließlich Regulatory-Dienst, Verbindungsaufbau und Verkehr.
+- HDMI-Ton; Klinkenton erneut mit dem fertigen Image prüfen.
+- Bluetooth mit geeignetem USB-Adapter; internes Bluetooth nicht voraussetzen.
+- IR-Empfang und tatsächliche Fernbedienungsbelegung.
+- SD-Speichererweiterung, eMMC-Installation und anschließende automatische
+  eMMC-Speichererweiterung; Installer-SD muss unverändert nutzbar bleiben.
+- ARD, ZDF, YouTube und IPTV erneut auf Wiedergabe prüfen; frühere Fehler
+  anhand der Logs von Anbieter-/Add-on- und Portierungsproblemen unterscheiden.
+- Nach Umsetzung des Update-Kanals ein vollständiges Update auf SD und eMMC
+  einschließlich Erhalt der Einstellungen und Medien testen.
+
+## Bootkorrekturen vom 17.09.2026
+
+Der SD-Test von Build 35172223957 meldete einen ungeprüften Zugriff auf
+`/proc/net/pnp` und einen fehlgeschlagenen `cpufreq.service`. Die entsprechenden
+lokalen Korrekturen fehlten in Commit 345c392 und werden nun mitgebaut:
+
+- Initramfs liest PNP-DNS-Daten nur, wenn die optionale Datei vorhanden ist.
+- Der frühe CPU-Dienst wird bei fehlender CPU-Policy übersprungen. Nach
+  erfolgreicher verzögerter Hardwareinitialisierung wird er erneut gestartet.
+- Paketinstallation wird darauf geprüft, dass beide Dienstkorrekturen tatsächlich
+  im Zielsystem landen. DNS-Verhalten wird mit vorhandener und fehlender PNP-Datei
+  getestet.
+
+Keine weiteren lokalen LibreELEC-Codeänderungen lagen vor. Unversionierte WLAN-
+Protokolle und persönliche eMMC-Testhelfer sind keine Imageeingaben. Die bisherigen
+60/120-Sekunden-Hardwarewartezeiten bleiben bestehen. Diese Änderungen beheben die
+bekannten Startskriptprobleme; ein erfolgreicher Kodi-Start muss erneut auf der Box
+geprüft werden. Kein alter Checkpoint wird für diesen neuen Quellstand übernommen.
