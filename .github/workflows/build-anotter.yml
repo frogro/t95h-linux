@@ -13,6 +13,11 @@ jobs:
     timeout-minutes: 350
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Reserve release tag at the exact build commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python3 tools/anotter/publish.py --reserve-tag
       - name: Free runner space for kernel and Debian rootfs
         run: |
           sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc

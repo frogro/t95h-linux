@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch, Mock
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('anotter_publish',ROOT/'tools/anotter/publish.py')
@@ -36,3 +37,15 @@ class PublishTests(unittest.TestCase):
             root=Path(tmp);m=self.fixture(root);m['sd_emmc_installer']['emmc_source_sha256']='wrong'
             (root/'manifest.json').write_text(json.dumps(m))
             with self.assertRaisesRegex(ValueError,'does not match'):pub.verify(root)
+
+class TagTests(unittest.TestCase):
+    def test_reserves_exact_source_commit(self):
+        sha='a'*40;client=Mock()
+        client.api.side_effect=[None,{'object':{'type':'commit','sha':sha}}]
+        with patch.object(pub,'GitHub',return_value=client):pub.reserve_tag('o/r','123','1',sha)
+        self.assertEqual(client.api.call_args.args,('repos/o/r/git/refs','POST',{'ref':'refs/tags/anotter-123-1','sha':sha}))
+    def test_existing_wrong_tag_is_not_moved(self):
+        client=Mock();client.api.return_value={'object':{'type':'commit','sha':'b'*40}}
+        with patch.object(pub,'GitHub',return_value=client):
+            with self.assertRaisesRegex(ValueError,'build commit'):pub.reserve_tag('o/r','123','1','a'*40)
+        self.assertEqual(client.api.call_count,1)

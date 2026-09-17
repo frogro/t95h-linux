@@ -5,6 +5,7 @@ import gzip
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -74,12 +75,31 @@ def source_info(repo, run):
     return info
 
 
+def reserve_tag(repo, run, attempt, commit):
+    if not run.isdecimal() or not attempt.isdecimal() or not re.fullmatch(r'[0-9a-f]{40}', commit):
+        raise ValueError('Invalid build identity')
+    client = GitHub(repo)
+    tag = f'anotter-{run}-{attempt}'
+    ref = client.api(f'repos/{repo}/git/ref/tags/{tag}')
+    if ref is None:
+        ref = client.api(f'repos/{repo}/git/refs', 'POST',
+                         dict(ref='refs/tags/' + tag, sha=commit))
+    if ref['object']['type'] != 'commit' or ref['object']['sha'] != commit:
+        raise ValueError('Release tag does not point at the build commit')
+    print('Build commit reserved:', tag, commit, flush=True)
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--source-run', required=True)
+    parser.add_argument('--source-run')
+    parser.add_argument('--reserve-tag', action='store_true')
     parser.add_argument('--directory', type=Path)
     args = parser.parse_args()
-    if not args.source_run.isdecimal():
+    if args.reserve_tag:
+        reserve_tag(os.environ['GH_REPO'], os.environ['GITHUB_RUN_ID'],
+                    os.environ['GITHUB_RUN_ATTEMPT'], os.environ['GITHUB_SHA'])
+        return
+    if not args.source_run or not args.source_run.isdecimal():
         raise ValueError('Invalid source run')
     repo = os.environ['GH_REPO']
     info = source_info(repo, args.source_run)
