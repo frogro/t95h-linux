@@ -44,7 +44,7 @@ class GitHub:
             args = ['gh', 'api', '--include', '--method', method, endpoint]
             data = None
             if file is not None:
-                args += ['-H', 'Content-Type: application/octet-stream', '--input', str(file)]
+                args += ['-H', 'Content-Type: application/octet-stream', '-H', f'Content-Length: {file.stat().st_size}', '--input', str(file)]
             elif payload is not None:
                 args += ['--input', '-']
                 data = json.dumps(payload)
@@ -110,8 +110,11 @@ class GitHub:
                 time.sleep(15)
                 asset = self.assets(release['id']).get(path.name)
                 if asset is not None:
-                    self.verify(tag, path, asset)
-                    return
+                    if release.get('draft') and asset.get('state') == 'starter' and asset.get('size') == 0:
+                        self.api(f"repos/{self.repo}/releases/assets/{asset['id']}", 'DELETE')
+                    else:
+                        self.verify(tag, path, asset)
+                        return
                 if attempt == 3:
                     raise
                 print(f'Upload absent after server/transport failure; retry {attempt + 1}/3: {path.name}', flush=True)
@@ -124,6 +127,19 @@ class GitHub:
         paths = {p.name: p for p in paths}
         endpoint = f'repos/{self.repo}/releases'
         release = self.api(f'{endpoint}/tags/{quote(tag, safe="")}')
+        if release is None:
+            page = 1
+            drafts = []
+            while True:
+                batch = self.api(f'{endpoint}?per_page=100&page={page}')
+                drafts.extend(r for r in batch if r['tag_name'] == tag)
+                if len(batch) < 100:
+                    break
+                page += 1
+            if len(drafts) > 1:
+                raise RuntimeError('Multiple release drafts for tag; inspect before continuing')
+            if drafts:
+                release = drafts[0]
         if release is None:
             release = self.api(endpoint, 'POST', dict(tag_name=tag, target_commitish=target,
                                name=title, body=notes, draft=True, prerelease=prerelease))

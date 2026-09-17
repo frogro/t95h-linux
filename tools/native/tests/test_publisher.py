@@ -28,7 +28,7 @@ class PublisherTests(unittest.TestCase):
     @patch.object(pub.subprocess,'run')
     def test_ambiguous_upload_not_repeated(self,run):
         run.return_value=self.response(502,{'message':'server error'})
-        with self.assertRaises(RuntimeError):pub.GitHub('o/r').api('https://uploads.github.com/test','POST',file=Path('asset'))
+        with self.assertRaises(RuntimeError):pub.GitHub('o/r').api('https://uploads.github.com/test','POST',file=Path(__file__))
         self.assertEqual(run.call_count,1)
     def test_resume_and_verify(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -79,3 +79,21 @@ class PublisherTests(unittest.TestCase):
             with patch.object(client, 'api', side_effect=pub.GitHubError(500, 'server')) as api, patch.object(client, 'assets', return_value={path.name: dict(asset, digest='wrong')}):
                 with self.assertRaises(RuntimeError): client.upload('tag', release, path)
                 self.assertEqual(api.call_count, 1)
+
+    @patch.object(pub.time, 'sleep')
+    def test_failed_empty_upload_is_cleaned_before_retry(self, sleep):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'image.gz'; path.write_bytes(b'image')
+            asset = dict(name=path.name, size=5, state='uploaded', digest=pub.digest(path))
+            client = pub.GitHub('o/r')
+            release = dict(id=1, draft=True, upload_url='https://uploads.github.com/test')
+            with patch.object(client, 'api', side_effect=[pub.GitHubError(500, 'server'), None, asset]) as api, patch.object(client, 'assets', return_value={path.name: dict(id=9, state='starter', size=0)}):
+                client.upload('tag', release, path)
+                self.assertEqual(api.call_args_list[1].args, ('repos/o/r/releases/assets/9', 'DELETE'))
+
+    def test_resume_draft_missing_from_tag_endpoint(self):
+        client = pub.GitHub('o/r')
+        draft = dict(id=1, tag_name='tag', draft=True)
+        with patch.object(client, 'api', side_effect=[None, [draft], None]) as api, patch.object(client, 'assets', return_value={}):
+            client.publish('tag', [], 'main', 'title', 'notes')
+            self.assertEqual(api.call_args_list[-1].args[1], 'PATCH')
