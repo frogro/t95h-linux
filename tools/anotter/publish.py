@@ -109,8 +109,11 @@ def main():
                         '--name', 't95h-anotter-sd-experimental', '--dir', str(directory)], check=True)
     assets = verify(directory)
     print('PASS: SD, eMMC and combined installer checksums verified', flush=True)
+    # Existing verified tags define the source commit. target_commitish is
+    # only used for NEW tags; avoid asking Actions to create an old workflow ref.
+    reserve_tag(repo, args.source_run, str(info['run_attempt']), info['head_sha'])
     GitHub(repo).publish(f'anotter-{args.source_run}-{info["run_attempt"]}', assets,
-                         info['head_sha'], 'T95H AnotterKiosk – SD und eMMC',
+                         'main', 'T95H AnotterKiosk – SD und eMMC',
                          (directory / 'RELEASE-NOTES.md').read_text(), prerelease=True)
 
 
