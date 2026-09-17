@@ -49,4 +49,7 @@ def main():
  m['emmc']={'file':name,'sha256':sha(target),'raw_sha256':h.hexdigest(),'hardware_install_tested':False};m['sd_emmc_installer']=ins
  (release/'manifest.json').write_text(json.dumps(m,indent=2)+'\n')
  with (release/'SHA256SUMS').open('a') as f:f.write(sha(target)+'  '+name+'\n'+ins['sha256']+'  '+ins['file']+'\n')
+ with (release/'SHA256SUMS').open('a') as f:
+  for name in ('update-anotter-sd.py','UPDATE.md','manifest.json'):
+   f.write(sha(release/name)+'  '+name+'\n')
 if __name__=='__main__':main()

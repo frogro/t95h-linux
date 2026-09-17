@@ -10,6 +10,9 @@ fail() { echo "STOP: $*" >&2; exit 1; }
 base=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 (cd "$base" && sha256sum -c SHA256SUMS) || fail 'Installationspaket beschädigt.'
 os=$(cat "$base/os")
+mode=${1:-install}
+case "$mode" in install) ;; --update) [ "$os" = anotter ] || fail 'Update-Modus nur für Anotter.';; *) fail 'Aufruf: install-emmc.sh [--update]';; esac
+[ "$#" -le 1 ] || fail 'Zu viele Argumente.'
 case "$os" in
  anotter) boot=/boot/firmware; root=/; confmax=94371840;;
  libreelec) boot=/flash; root=/storage; confmax=419430400;;
@@ -68,16 +71,27 @@ for n in 0 1; do
 done
 work=/tmp/t95h-emmc-install.lock
 mkdir "$work" 2>/dev/null || fail 'Installationsauftrag vorhanden; vor erneutem Versuch Zustand prüfen.'
-mkdir "$work/new" "$work/saved"
+mkdir "$work/new" "$work/saved" "$work/old"
 cleanup() {
  umount "$work/new" 2>/dev/null || :
+ umount "$work/old" 2>/dev/null || :
  for n in 0 1; do echo 1 > /sys/class/block/${disk}boot$n/force_ro 2>/dev/null || :; done
 }
 trap cleanup EXIT
 umask 077
 printf 'ACHTUNG: Das vorhandene Betriebssystem und ALLE Daten auf der eMMC werden gelöscht.\n'
 printf 'Ziel /dev/%s (%s MiB), neues System: %s.\n' "$disk" "$((sectors / 2048))" "$os"
-printf 'Einstellungen dieser SD werden übernommen. Zum Bestätigen EMMC LOESCHEN eingeben: '
+if [ "$mode" = --update ]; then
+ # Only read the existing target FAT; never use the rescue SD's defaults.
+ [ "$(od -An -tx1 -j 440 -N 4 "/dev/$disk" | tr -d ' \n')" = 020095a0 ] || fail 'Kein T95H-Anotter-eMMC-Layout.'
+ mount -t vfat -o ro,umask=0077 "/dev/${disk}p1" "$work/old"
+ [ -f "$work/old/kioskbrowser.ini" ] && [ -f "$work/old/boot/boot.scm" ] || fail 'Kein vorhandenes Anotter-System auf eMMC.'
+ boot=$work/old
+ printf 'UPDATE: Einstellungen der vorhandenen eMMC werden übernommen. '
+else
+ printf 'Einstellungen dieser SD werden übernommen. '
+fi
+printf 'Zum Bestätigen EMMC LOESCHEN eingeben: '
 IFS= read -r answer || fail 'Abgebrochen.'
 [ "$answer" = 'EMMC LOESCHEN' ] || fail 'Abgebrochen; nichts geschrieben.'
 # Snapshot settings before any target write. Do not copy boot files/fstab/UUIDs.
@@ -103,6 +117,15 @@ avail=$(df -Pk "$work" | awk 'NR==2 {print $4}')
 [ "$avail" -gt $((bytes / 512 + 16384)) ] || fail 'Zu wenig RAM für Konfigurationssicherung.'
 tar -cf "$work/config.tar" -C "$source" -T "$work/list"
 tar -xf "$work/config.tar" -C "$work/saved"
+if [ "$mode" = --update ]; then
+ umount "$work/old"
+ # Keep only a configuration recovery copy on the installer SD, never a full image.
+ recovery="$base/anotter-settings-$(date +%Y%m%d-%H%M%S)-$$.tar"
+ (set -C; cat "$work/config.tar" > "$recovery") || fail 'Konfigurationssicherung auf Installer-SD fehlgeschlagen.'
+ cmp "$work/config.tar" "$recovery" || fail 'Konfigurationssicherung unvollständig.'
+ sync
+ printf 'Einstellungen gesichert: %s\n' "$recovery"
+fi
 check_target
 # Full image write. pipefail prevents a truncated gzip stream reporting success.
 gzip -dc "$base/emmc.img.gz" | dd of="/dev/$disk" bs=1048576 conv=fsync

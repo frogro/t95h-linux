@@ -207,6 +207,7 @@ def main():
     conf.write_text(text)
     out=o/'release'; out.mkdir()
     shutil.copy2(ROOT/'docs/anotter-image-update.md',out/'UPDATE.md')
+    shutil.copy2(ROOT/'tools/anotter/update-sd.py',out/'update-anotter-sd.py')
     put(out,'prefix.bin', '')
     run('python3',ROOT/'tools/emmc/prepare-corrected-prefix.py','--source',inputs/'prefix.bin','--output',o/'corrected-prefix.bin','--medium','sd')
     (out/'prefix.bin').write_bytes(prefix((o/'corrected-prefix.bin').read_bytes()))

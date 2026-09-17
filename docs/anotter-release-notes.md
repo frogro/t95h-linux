@@ -36,6 +36,11 @@ starts after hardware initialization; no configured SSID leaves Ethernet unchang
 The eMMC installer preserves the separate WLAN configuration too. Known XR819
 interrupt issues are not claimed fixed; this complete image needs WLAN testing.
 
-UPDATE.md describes upstream's image-flashing procedure for T95H. No official
-in-place updater exists; the experimental unsafe upstream script is not included.
+UPDATE.md describes the image-flashing procedure with T95H settings retention.
+The release's update-anotter-sd.py preserves supported FAT settings for either SD
+variant; install-emmc.sh --update on the combined SD preserves the existing eMMC's
+settings. Both retain a small private settings recovery copy, not a full old image.
+These are T95H helpers, not an official upstream in-place updater. Rootfs edits and
+extra packages are not preserved; offline hardware updates still need device tests.
+The experimental unsafe upstream script is not included.
 The prior NTP concurrency and ALSA rule fixes remain included.
