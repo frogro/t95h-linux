@@ -7,8 +7,11 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tools'))
+from native.publisher import GitHub
 
 def gh(*args):
     return subprocess.check_output(['gh', *map(str, args)], text=True)
@@ -66,25 +69,33 @@ def main():
     gh('run', 'download', args.source_run, '--repo', repo, '--name',
        't95h-libreelec-base-B-candidates', '--dir', directory)
     assets = verify(directory)
-    publication_commit = os.environ.get('GITHUB_SHA') or subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
-    provenance = directory / 'release-source.json'
-    provenance.write_text(json.dumps({'run': args.source_run, 'commit': info['head_sha'],
-        'attempt': info['run_attempt'], 'url': info['html_url'],
-        'publication_commit': publication_commit,
-        'checksums_verified': True, 'hardware_tested': False}, indent=2) + '\n')
-    assets.append(provenance)
+    print('PASS: SD, eMMC and combined installer checksums verified', flush=True)
+    client = GitHub(repo)
     tag = f"libreelec-{args.source_run}-{info['run_attempt']}"
     releases = json.loads(gh('api', '--paginate', f'repos/{repo}/releases', '--slurp'))
     existing = next((r for page in releases for r in page if r['tag_name'] == tag), None)
-    if existing and not existing['draft']:
-        print('Already published: ' + existing['html_url'])
-        return
-    if not existing:
-        gh('release', 'create', tag, '--repo', repo, '--target', publication_commit,
-           '--draft', '--prerelease', '--title', 'T95H LibreELEC – SD und eMMC',
-           '--notes-file', ROOT / 'docs/libreelec-release-notes.md')
-    gh('release', 'upload', tag, *assets, '--repo', repo, '--clobber')
-    gh('release', 'edit', tag, '--repo', repo, '--draft=false')
+    publication_commit = os.environ.get('GITHUB_SHA') or subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+    provenance_data = {'run': args.source_run, 'commit': info['head_sha'],
+        'attempt': info['run_attempt'], 'url': info['html_url'],
+        'publication_commit': publication_commit,
+        'checksums_verified': True, 'hardware_tested': False}
+    # A resumed publication must preserve the original provenance bytes.
+    previous = next((a for a in existing.get('assets', [])
+                     if a['name'] == 'release-source.json' and a['state'] == 'uploaded'), None) if existing else None
+    provenance = directory / 'release-source.json'
+    if previous:
+        raw = gh('api', '-H', 'Accept: application/octet-stream',
+                 f"repos/{repo}/releases/assets/{previous['id']}")
+        old = json.loads(raw)
+        for key in ('run', 'commit', 'attempt', 'url', 'checksums_verified', 'hardware_tested'):
+            if old.get(key) != provenance_data[key]:
+                raise ValueError('Existing release provenance mismatch: ' + key)
+        provenance.write_text(raw)
+    else:
+        provenance.write_text(json.dumps(provenance_data, indent=2) + '\n')
+    assets.append(provenance)
+    client.publish(tag, assets, publication_commit, 'T95H LibreELEC – SD und eMMC',
+                   (ROOT / 'docs/libreelec-release-notes.md').read_text(), prerelease=True)
     print(f'https://github.com/{repo}/releases/tag/{tag}')
 
 if __name__ == '__main__':

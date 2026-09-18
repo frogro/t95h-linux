@@ -1,0 +1,26 @@
+name: Publish completed OpenWrt Kernel 6 images
+on:
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: Completed native OpenWrt run with successful build and release bundle
+        required: true
+        type: string
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: t95h-native-feed-publication
+  queue: max
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify and resume completed images and signed module feed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NATIVE_WORK: ${{ github.workspace }}/build/native
+          SOURCE_RUN: ${{ inputs.source_run }}
+        run: python3 -u tools/native/resume-publication.py --source-run "$SOURCE_RUN"
